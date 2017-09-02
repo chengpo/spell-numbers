@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.monkeyapp.numbers.MainActivity">
+
+    <TextView
+        android:id="@+id/digit_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:padding="10dp"
+        android:layout_marginBottom="20dp"
+        tools:text="123.00"/>
+
+    <TextView
+        android:id="@+id/word_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
+        android:padding="10dp"
+        android:layout_marginBottom="20dp"
+        tools:text="123.00"/>
+
+    <android.support.v7.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:layout_gravity="center"
+        app:alignmentMode="alignBounds"
+        app:columnCount="3"
+        app:rowOrderPreserved="true"
+        app:useDefaultMargins="false">
+
+        <Button
+            android:id="@+id/btn_seven"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:text="@string/digit_seven"/>
+
+        <Button
+            android:id="@+id/btn_eight"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:text="@string/digit_eight"/>
+
+        <Button
+            android:id="@+id/btn_nine"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:text="@string/digit_nine"/>
+
+        <Button
+            android:id="@+id/btn_four"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:text="@string/digit_four"/>
+
+        <Button
+            android:id="@+id/btn_five"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:text="@string/digit_five"/>
+
+        <Button
+            android:id="@+id/btn_six"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:text="@string/digit_six"/>
+
+        <Button
+            android:id="@+id/btn_one"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:text="@string/digit_one"/>
+
+        <Button
+            android:id="@+id/btn_two"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:text="@string/digit_two"/>
+
+        <Button
+            android:id="@+id/btn_three"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:text="@string/digit_three"/>
+
+        <Button
+            android:id="@+id/btn_dot"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:text="@string/dot"/>
+
+        <Button
+            android:id="@+id/btn_zero"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:text="@string/digit_zero"/>
+
+        <Button
+            android:id="@+id/btn_del"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:text="@string/del"/>
+
+    </android.support.v7.widget.GridLayout>
+
+</LinearLayout>
