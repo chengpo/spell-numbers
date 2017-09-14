@@ -38,87 +38,99 @@
 
         <Button
             android:id="@+id/btn_seven"
+            android:onClick="onDigitClicked"
+            android:text="@string/digit_seven"
             app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             app:layout_gravity="fill"
-            android:text="@string/digit_seven"/>
+            app:layout_rowWeight="1"/>
 
         <Button
             android:id="@+id/btn_eight"
+            android:onClick="onDigitClicked"
+            android:text="@string/digit_eight"
             app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             app:layout_gravity="fill"
-            android:text="@string/digit_eight"/>
+            app:layout_rowWeight="1"/>
 
         <Button
             android:id="@+id/btn_nine"
+            android:onClick="onDigitClicked"
+            android:text="@string/digit_nine"
             app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             app:layout_gravity="fill"
-            android:text="@string/digit_nine"/>
+            app:layout_rowWeight="1"/>
 
         <Button
             android:id="@+id/btn_four"
+            android:onClick="onDigitClicked"
+            android:text="@string/digit_four"
             app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             app:layout_gravity="fill"
-            android:text="@string/digit_four"/>
+            app:layout_rowWeight="1"/>
 
         <Button
             android:id="@+id/btn_five"
+            android:onClick="onDigitClicked"
+            android:text="@string/digit_five"
             app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             app:layout_gravity="fill"
-            android:text="@string/digit_five"/>
+            app:layout_rowWeight="1"/>
 
         <Button
             android:id="@+id/btn_six"
+            android:onClick="onDigitClicked"
+            android:text="@string/digit_six"
             app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             app:layout_gravity="fill"
-            android:text="@string/digit_six"/>
+            app:layout_rowWeight="1"/>
 
         <Button
             android:id="@+id/btn_one"
+            android:onClick="onDigitClicked"
+            android:text="@string/digit_one"
             app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             app:layout_gravity="fill"
-            android:text="@string/digit_one"/>
+            app:layout_rowWeight="1"/>
 
         <Button
             android:id="@+id/btn_two"
+            android:onClick="onDigitClicked"
+            android:text="@string/digit_two"
             app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             app:layout_gravity="fill"
-            android:text="@string/digit_two"/>
+            app:layout_rowWeight="1"/>
 
         <Button
             android:id="@+id/btn_three"
+            android:onClick="onDigitClicked"
+            android:text="@string/digit_three"
             app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             app:layout_gravity="fill"
-            android:text="@string/digit_three"/>
+            app:layout_rowWeight="1"/>
 
         <Button
             android:id="@+id/btn_dot"
+            android:onClick="onDigitClicked"
+            android:text="@string/dot"
             app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             app:layout_gravity="fill"
-            android:text="@string/dot"/>
+            app:layout_rowWeight="1"/>
 
         <Button
             android:id="@+id/btn_zero"
+            android:onClick="onDigitClicked"
+            android:text="@string/digit_zero"
             app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             app:layout_gravity="fill"
-            android:text="@string/digit_zero"/>
+            app:layout_rowWeight="1"/>
 
         <Button
             android:id="@+id/btn_del"
+            android:onClick="onDigitClicked"
+            android:text="@string/del"
             app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             app:layout_gravity="fill"
-            android:text="@string/del"/>
+            app:layout_rowWeight="1"/>
 
     </android.support.v7.widget.GridLayout>
 
