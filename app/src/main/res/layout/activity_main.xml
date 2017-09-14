@@ -9,7 +9,7 @@
     tools:context="com.monkeyapp.numbers.MainActivity">
 
     <TextView
-        android:id="@+id/digit_text_view"
+        android:id="@+id/digitTextView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.1"
@@ -18,7 +18,7 @@
         tools:text="123.00"/>
 
     <TextView
-        android:id="@+id/word_text_view"
+        android:id="@+id/wordTextView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.4"

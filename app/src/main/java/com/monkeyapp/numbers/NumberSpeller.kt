@@ -25,7 +25,9 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 class NumberSpeller {
-    val NUM_WORDS : IntArray = intArrayOf(
+    class LargeNumberException : IllegalArgumentException("Number is too large to spell")
+
+    val NUM_WORDS: IntArray = intArrayOf(
             R.string.num_zero,
             R.string.num_one,
             R.string.num_two,
@@ -68,24 +70,23 @@ class NumberSpeller {
                         if (integer % 10 > 0) spell(integer % 10, decimal) else emptyList())
             }
             in 100..999 -> {
-                val step = integer/100
+                val step = integer / 100
                 return arrayListOf(NUM_WORDS[step.toInt()], R.string.num_hundred).plus(
                         if (integer % 100 > 0) spell(integer % 100, decimal) else emptyList())
             }
-            in 1000..1000*1000-1 -> {
+            in 1000..1000 * 1000 - 1 -> {
                 return spell(integer / 1000, decimal).plus(arrayListOf(R.string.num_thousand)).plus(
                         if (integer % 1000 > 0) spell(integer % 1000, decimal) else emptyList())
             }
-            in 1000*1000..1000*1000*1000-1 -> {
-                return spell(integer / (1000*1000), decimal).plus(arrayListOf(R.string.num_million)).plus(
-                        if (integer % (1000*1000) > 0) spell(integer % (1000*1000), decimal) else emptyList())
+            in 1000 * 1000..1000 * 1000 * 1000 - 1 -> {
+                return spell(integer / (1000 * 1000), decimal).plus(arrayListOf(R.string.num_million)).plus(
+                        if (integer % (1000 * 1000) > 0) spell(integer % (1000 * 1000), decimal) else emptyList())
             }
-            in 1000*1000*1000..1000*1000*1000*1000L-1 -> {
-                return spell(integer / (1000*1000*1000), decimal).plus(arrayListOf(R.string.num_billion)).plus(
-                        if (integer % (1000*1000*1000) > 0) spell(integer % (1000*1000*1000), decimal) else emptyList())
+            in 1000 * 1000 * 1000..1000 * 1000 * 1000 * 1000L - 1 -> {
+                return spell(integer / (1000 * 1000 * 1000), decimal).plus(arrayListOf(R.string.num_billion)).plus(
+                        if (integer % (1000 * 1000 * 1000) > 0) spell(integer % (1000 * 1000 * 1000), decimal) else emptyList())
             }
-            else -> throw IllegalArgumentException("input number is too large to spell!")
+            else -> throw LargeNumberException()
         }
     }
-
 }

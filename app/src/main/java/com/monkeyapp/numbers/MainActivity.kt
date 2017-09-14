@@ -26,11 +26,14 @@ package com.monkeyapp.numbers
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
+import kotlinx.android.synthetic.main.activity_main.*
+import com.monkeyapp.numbers.NumberSpeller.LargeNumberException
 
 class MainActivity : AppCompatActivity() {
+    val composer = NumberComposer()
+    val speller = NumberSpeller()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +42,28 @@ class MainActivity : AppCompatActivity() {
 
     fun onDigitClicked(digitButton: View) {
         if (digitButton is Button) {
-            Log.d("MainActivity", "digit ${digitButton.text} clicked" )
+            try {
+                when (digitButton.text[0]) {
+                    '.', in '0'..'9' -> {
+                        composer.appendDigit(digitButton.text[0])
+                    }
+                    else -> {
+                        composer.deleteDigit()
+                    }
+                }
 
-
-
+                digitTextView.text = composer.number
+                if (composer.number.isBlank()) {
+                    wordTextView.text = ""
+                } else {
+                    wordTextView.text =
+                            speller.spell(composer.integer)
+                                    .flatMap { listOf(getString(it)) }
+                                    .joinToString(separator = " ")
+                }
+            } catch (exception: LargeNumberException) {
+                wordTextView.text = getString(R.string.too_large_to_spell)
+            }
         }
     }
 }
