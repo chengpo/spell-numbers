@@ -26,8 +26,10 @@ package com.monkeyapp.numbers
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import kotlinx.android.synthetic.main.activity_main.*
 import com.monkeyapp.numbers.NumberSpeller.LargeNumberException
 
@@ -41,29 +43,54 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onDigitClicked(digitButton: View) {
-        if (digitButton is Button) {
-            try {
+        try {
+            if (digitButton is ImageButton) {
+                composer.deleteDigit()
+            } else if (digitButton is Button) {
                 when (digitButton.text[0]) {
                     '.', in '0'..'9' -> {
                         composer.appendDigit(digitButton.text[0])
                     }
-                    else -> {
-                        composer.deleteDigit()
-                    }
                 }
-
-                digitTextView.text = composer.number
-                if (composer.number.isBlank()) {
-                    wordTextView.text = ""
-                } else {
-                    wordTextView.text =
-                            speller.spell(composer.integer)
-                                    .flatMap { listOf(getString(it)) }
-                                    .joinToString(separator = " ")
-                }
-            } catch (exception: LargeNumberException) {
-                wordTextView.text = getString(R.string.too_large_to_spell)
             }
+
+            digitTextView.text = composer.number
+            if (composer.number.isBlank()) {
+                wordTextView.text = ""
+            } else {
+                wordTextView.text =
+                        speller.spell(composer.integer)
+                                .flatMap { listOf(getString(it)) }
+                                .joinToString(separator = " ")
+            }
+        } catch (exception: LargeNumberException) {
+            wordTextView.text = getString(R.string.too_large_to_spell)
+        }
+    }
+
+    val BUNDLE_EXTRA_DIGITS : String = "bundle_extra_digits"
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+
+        outState?.putCharSequence(BUNDLE_EXTRA_DIGITS, digitTextView.text)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        var digits: CharSequence? = savedInstanceState?.getCharSequence(BUNDLE_EXTRA_DIGITS)
+
+        digits?.forEach { composer.appendDigit(it) }
+
+        digitTextView.text = digits
+
+        if (composer.number.isBlank()) {
+            wordTextView.text = ""
+        } else {
+            wordTextView.text =
+                    speller.spell(composer.integer)
+                            .flatMap { listOf(getString(it)) }
+                            .joinToString(separator = " ")
         }
     }
 }

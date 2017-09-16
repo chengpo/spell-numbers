@@ -32,7 +32,7 @@ class NumberComposer {
     val number : String
         get() {
             if (isFictional) {
-                if (decimalDigits.isEmpty()) {
+                if (integerDigits.isEmpty() && decimalDigits.isEmpty()) {
                     return "0"
                 }
 

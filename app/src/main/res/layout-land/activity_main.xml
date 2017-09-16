@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     tools:context="com.monkeyapp.numbers.MainActivity">
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="0.5"
         android:layout_margin="5dp">
 
@@ -23,7 +23,6 @@
             android:padding="10dp"
             android:textAllCaps="false"
             android:textAppearance="@style/NumTextAppearance"
-            android:typeface="normal"
             tools:text="123.00"/>
 
         <View
@@ -43,8 +42,8 @@
     </LinearLayout>
 
     <android.support.v7.widget.GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="0.5"
         android:layout_gravity="center"
         app:alignmentMode="alignBounds"
