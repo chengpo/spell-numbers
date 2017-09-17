@@ -11,6 +11,7 @@
     </style>
 
     <style name="ActionBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="titleTextColor">@android:color/white</item>
     </style>
 
     <style name="NumTextAppearance" parent="TextAppearance.AppCompat.Display1">

@@ -27,6 +27,7 @@ package com.monkeyapp.numbers
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
+import android.view.Menu
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
@@ -89,6 +90,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             wordTextView.text = speller.spell(composer.integers, composer.decimals)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return true
     }
 
     private fun NumberSpeller.spell(integers : Long, decimals: Float): String {
