@@ -1,56 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    tools:context="com.monkeyapp.numbers.MainActivity">
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:layout_margin="5dp">
-
-        <TextView
-            android:id="@+id/digitTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:padding="10dp"
-            android:textAllCaps="false"
-            android:textAppearance="@style/NumTextAppearance"
-            android:typeface="normal"
-            tools:text="123.00"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@color/divider"/>
-
-        <TextView
-            android:id="@+id/wordTextView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:textAppearance="@style/WordTextAppearance"
-            tools:text="One Thousands One Hundred Ninty Eight and 00 / 100"/>
-    </LinearLayout>
-
-    <android.support.v7.widget.GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:layout_gravity="center"
-        app:alignmentMode="alignBounds"
-        app:columnCount="3"
-        app:rowOrderPreserved="true"
-        app:useDefaultMargins="false">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <Button
             android:id="@+id/btn_seven"
@@ -161,6 +111,4 @@
             app:layout_gravity="fill"
             app:layout_rowWeight="1"
             app:srcCompat="@drawable/ic_backspace"/>
-
-    </android.support.v7.widget.GridLayout>
-</LinearLayout>
+</merge>

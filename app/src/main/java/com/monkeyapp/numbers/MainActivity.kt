@@ -33,7 +33,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
-import kotlinx.android.synthetic.main.activity_main_content.*
+import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.NumberSpeller.LargeNumberException
 
 class MainActivity : AppCompatActivity() {

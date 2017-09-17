@@ -13,6 +13,6 @@
         android:theme="@style/ActionBarTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <include layout="@layout/activity_main_content"/>
+    <include layout="@layout/content_main"/>
 
 </LinearLayout>
