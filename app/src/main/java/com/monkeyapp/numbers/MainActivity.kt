@@ -26,7 +26,6 @@ package com.monkeyapp.numbers
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
@@ -34,6 +33,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import com.monkeyapp.numbers.NumberSpeller.LargeNumberException
 
 class MainActivity : AppCompatActivity() {
+    private val BUNDLE_EXTRA_DIGITS : String = "bundle_extra_digits"
+
     val composer = NumberComposer()
     val speller = NumberSpeller()
 
@@ -58,17 +59,12 @@ class MainActivity : AppCompatActivity() {
             if (composer.number.isBlank()) {
                 wordTextView.text = ""
             } else {
-                wordTextView.text =
-                        speller.spell(composer.integer)
-                                .flatMap { listOf(getString(it)) }
-                                .joinToString(separator = " ")
+                wordTextView.text = speller.spell(composer.integers, composer.decimals)
             }
         } catch (exception: LargeNumberException) {
             wordTextView.text = getString(R.string.too_large_to_spell)
         }
     }
-
-    val BUNDLE_EXTRA_DIGITS : String = "bundle_extra_digits"
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
@@ -78,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        var digits: CharSequence? = savedInstanceState?.getCharSequence(BUNDLE_EXTRA_DIGITS)
+        val digits: CharSequence? = savedInstanceState?.getCharSequence(BUNDLE_EXTRA_DIGITS)
 
         digits?.forEach { composer.appendDigit(it) }
 
@@ -87,10 +83,17 @@ class MainActivity : AppCompatActivity() {
         if (composer.number.isBlank()) {
             wordTextView.text = ""
         } else {
-            wordTextView.text =
-                    speller.spell(composer.integer)
-                            .flatMap { listOf(getString(it)) }
-                            .joinToString(separator = " ")
+            wordTextView.text = speller.spell(composer.integers, composer.decimals)
         }
+    }
+
+    private fun NumberSpeller.spell(integers : Long, decimals: Float): String {
+        val integerWords = spellInteger(integers)
+                .flatMap { listOf(getString(it)) }
+                .joinToString(separator = " ")
+
+        val decimalWords = spellDecimal(decimals)
+
+        return "$integerWords and $decimalWords"
     }
 }

@@ -41,33 +41,33 @@ class NumberComposer {
                 }
 
                 return integerDigits.joinToString(separator = "") + "." + decimalDigits.joinToString(separator = "")
-            } else {
-                return integerDigits.joinToString(separator = "")
             }
+
+            return integerDigits.joinToString(separator = "")
         }
 
-    val integer : Long
+    val integers: Long
         get() {
-            var _integer = 0L
+            var _integers = 0L
 
             for (digit in integerDigits) {
-                _integer = (_integer * 10) + (digit - '0')
+                _integers = (_integers * 10) + (digit - '0')
             }
 
-            return _integer
+            return _integers
         }
 
-    val decimal : Float
+    val decimals: Float
         get() {
-            var _decimal = 0.0F
+            var _decimals = 0.0F
             var step = 0.1F
 
             for (digit in decimalDigits) {
-                _decimal += (digit - '0') * step
+                _decimals += (digit - '0') * step
                 step *= 0.1F
             }
 
-            return _decimal
+            return _decimals
         }
 
     fun appendDigit(digit : Char) : Boolean {

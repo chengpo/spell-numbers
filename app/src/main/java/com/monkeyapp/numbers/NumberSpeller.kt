@@ -25,7 +25,7 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 class NumberSpeller {
-    class LargeNumberException : IllegalArgumentException("Number is too large to spell")
+    class LargeNumberException : IllegalArgumentException("Number is too large to spellInteger")
 
     val NUM_WORDS: IntArray = intArrayOf(
             R.string.num_zero,
@@ -57,34 +57,35 @@ class NumberSpeller {
             R.string.num_eighty,
             R.string.num_ninety)
 
-    fun spell(integer: Long): List<Int> {
-        return spell(integer, 0.0f)
+    fun spellDecimal(decimals: Float): String {
+        val cents = Math.round(decimals * 100)
+        return  String.format("%02d / 100", cents)
     }
 
-    fun spell(integer: Long, decimal: Float): List<Int> {
+    fun spellInteger(integer: Long): List<Int> {
         when (integer) {
             in 0..19 -> return arrayListOf(NUM_WORDS[integer.toInt()])
             in 20..99 -> {
                 val step = integer / 10 - 2
                 return arrayListOf(NUM_WORDS[20 + step.toInt()]).plus(
-                        if (integer % 10 > 0) spell(integer % 10, decimal) else emptyList())
+                        if (integer % 10 > 0) spellInteger(integer % 10) else emptyList())
             }
             in 100..999 -> {
                 val step = integer / 100
                 return arrayListOf(NUM_WORDS[step.toInt()], R.string.num_hundred).plus(
-                        if (integer % 100 > 0) spell(integer % 100, decimal) else emptyList())
+                        if (integer % 100 > 0) spellInteger(integer % 100) else emptyList())
             }
             in 1000..1000 * 1000 - 1 -> {
-                return spell(integer / 1000, decimal).plus(arrayListOf(R.string.num_thousand)).plus(
-                        if (integer % 1000 > 0) spell(integer % 1000, decimal) else emptyList())
+                return spellInteger(integer / 1000).plus(arrayListOf(R.string.num_thousand)).plus(
+                        if (integer % 1000 > 0) spellInteger(integer % 1000) else emptyList())
             }
             in 1000 * 1000..1000 * 1000 * 1000 - 1 -> {
-                return spell(integer / (1000 * 1000), decimal).plus(arrayListOf(R.string.num_million)).plus(
-                        if (integer % (1000 * 1000) > 0) spell(integer % (1000 * 1000), decimal) else emptyList())
+                return spellInteger(integer / (1000 * 1000)).plus(arrayListOf(R.string.num_million)).plus(
+                        if (integer % (1000 * 1000) > 0) spellInteger(integer % (1000 * 1000)) else emptyList())
             }
             in 1000 * 1000 * 1000..1000 * 1000 * 1000 * 1000L - 1 -> {
-                return spell(integer / (1000 * 1000 * 1000), decimal).plus(arrayListOf(R.string.num_billion)).plus(
-                        if (integer % (1000 * 1000 * 1000) > 0) spell(integer % (1000 * 1000 * 1000), decimal) else emptyList())
+                return spellInteger(integer / (1000 * 1000 * 1000)).plus(arrayListOf(R.string.num_billion)).plus(
+                        if (integer % (1000 * 1000 * 1000) > 0) spellInteger(integer % (1000 * 1000 * 1000)) else emptyList())
             }
             else -> throw LargeNumberException()
         }
