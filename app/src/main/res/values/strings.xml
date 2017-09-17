@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Spell Numbers</string>
+    <string name="action_about">About</string>
+
     <string name="digit_zero">0</string>
     <string name="digit_one">1</string>
     <string name="digit_two">2</string>

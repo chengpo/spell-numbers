@@ -26,10 +26,11 @@ package com.monkeyapp.numbers
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main_content.*
 import com.monkeyapp.numbers.NumberSpeller.LargeNumberException
 
 class MainActivity : AppCompatActivity() {
@@ -41,6 +42,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val myToolbar = findViewById<View>(R.id.my_toolbar) as Toolbar
+        setSupportActionBar(myToolbar)
     }
 
     fun onDigitClicked(digitButton: View) {
