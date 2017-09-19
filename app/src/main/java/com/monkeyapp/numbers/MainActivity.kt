@@ -62,7 +62,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            digitTextView.text = composer.number
             if (composer.number.isBlank()) {
                 wordTextView.text = ""
             } else {
@@ -70,7 +69,10 @@ class MainActivity : AppCompatActivity() {
             }
         } catch (exception: LargeNumberException) {
             wordTextView.text = getString(R.string.too_large_to_spell)
+            composer.deleteDigit()
         }
+
+        digitTextView.text = composer.number
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {

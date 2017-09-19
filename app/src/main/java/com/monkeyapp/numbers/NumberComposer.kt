@@ -104,7 +104,9 @@ class NumberComposer {
             }
             in '0'..'9' -> {
                 if (isFictional) {
-                    fractionDigits.add(digit)
+                    if (fractionDigits.size < 3) {
+                        fractionDigits.add(digit)
+                    }
                 } else {
                     integerDigits.add(digit)
                 }
