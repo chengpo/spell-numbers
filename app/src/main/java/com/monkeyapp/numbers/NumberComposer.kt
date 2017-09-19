@@ -27,9 +27,9 @@ package com.monkeyapp.numbers
 class NumberComposer {
     var integerDigits = mutableListOf<Char>()
     var decimalDigits = mutableListOf<Char>()
-    var isFictional : Boolean = false
+    var isFictional: Boolean = false
 
-    val number : String
+    val number: String
         get() {
             if (isFictional) {
                 if (integerDigits.isEmpty() && decimalDigits.isEmpty()) {
@@ -37,13 +37,36 @@ class NumberComposer {
                 }
 
                 if (integerDigits.isEmpty()) {
-                    return "0." +  decimalDigits.joinToString(separator = "")
+                    return "0." + decimalStr
                 }
 
-                return integerDigits.joinToString(separator = "") + "." + decimalDigits.joinToString(separator = "")
+                return integerStr + "." + decimalStr
             }
 
-            return integerDigits.joinToString(separator = "")
+            return integerStr
+        }
+
+    val decimalStr: String
+        get() {
+            return decimalDigits.joinToString(separator = "")
+        }
+
+    val integerStr: String
+        get() {
+            val integerWithComma = mutableListOf<Char>()
+            var i: Int = 0
+
+            integerDigits.reversed().forEach {
+                if (i > 0 && i % 3 == 0) {
+                    integerWithComma.add(',')
+                }
+
+                i++
+
+                integerWithComma.add(it)
+            }
+
+            return integerWithComma.reversed().joinToString(separator = "")
         }
 
     val integers: Long
@@ -70,11 +93,11 @@ class NumberComposer {
             return _decimals
         }
 
-    fun appendDigit(digit : Char) : Boolean {
+    fun appendDigit(digit: Char): Boolean {
         when (digit) {
             '.' -> {
                 if (isFictional) {
-                   return false
+                    return false
                 }
 
                 isFictional = true
@@ -82,8 +105,7 @@ class NumberComposer {
             in '0'..'9' -> {
                 if (isFictional) {
                     decimalDigits.add(digit)
-                }
-                else {
+                } else {
                     integerDigits.add(digit)
                 }
             }
@@ -92,7 +114,7 @@ class NumberComposer {
         return true
     }
 
-    fun deleteDigit()  {
+    fun deleteDigit() {
         if (isFictional) {
             if (decimalDigits.isEmpty()) {
                 isFictional = false
@@ -103,7 +125,7 @@ class NumberComposer {
                 }
             }
         } else if (integerDigits.isNotEmpty()) {
-                integerDigits.removeAt(integerDigits.size - 1)
+            integerDigits.removeAt(integerDigits.size - 1)
         }
     }
 }
