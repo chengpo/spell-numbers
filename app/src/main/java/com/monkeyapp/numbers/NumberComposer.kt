@@ -26,29 +26,29 @@ package com.monkeyapp.numbers
 
 class NumberComposer {
     var integerDigits = mutableListOf<Char>()
-    var decimalDigits = mutableListOf<Char>()
+    var fractionDigits = mutableListOf<Char>()
     var isFictional: Boolean = false
 
     val number: String
         get() {
             if (isFictional) {
-                if (integerDigits.isEmpty() && decimalDigits.isEmpty()) {
+                if (integerDigits.isEmpty() && fractionDigits.isEmpty()) {
                     return "0"
                 }
 
                 if (integerDigits.isEmpty()) {
-                    return "0." + decimalStr
+                    return "0." + fractionStr
                 }
 
-                return integerStr + "." + decimalStr
+                return integerStr + "." + fractionStr
             }
 
             return integerStr
         }
 
-    val decimalStr: String
+    val fractionStr: String
         get() {
-            return decimalDigits.joinToString(separator = "")
+            return fractionDigits.joinToString(separator = "")
         }
 
     val integerStr: String
@@ -80,17 +80,17 @@ class NumberComposer {
             return _integers
         }
 
-    val decimals: Float
+    val fractions: Float
         get() {
-            var _decimals = 0.0F
+            var _fractions = 0.0F
             var step = 0.1F
 
-            for (digit in decimalDigits) {
-                _decimals += (digit - '0') * step
+            for (digit in fractionDigits) {
+                _fractions += (digit - '0') * step
                 step *= 0.1F
             }
 
-            return _decimals
+            return _fractions
         }
 
     fun appendDigit(digit: Char): Boolean {
@@ -104,7 +104,7 @@ class NumberComposer {
             }
             in '0'..'9' -> {
                 if (isFictional) {
-                    decimalDigits.add(digit)
+                    fractionDigits.add(digit)
                 } else {
                     integerDigits.add(digit)
                 }
@@ -116,11 +116,11 @@ class NumberComposer {
 
     fun deleteDigit() {
         if (isFictional) {
-            if (decimalDigits.isEmpty()) {
+            if (fractionDigits.isEmpty()) {
                 isFictional = false
             } else {
-                decimalDigits.removeAt(decimalDigits.size - 1)
-                if (decimalDigits.isEmpty()) {
+                fractionDigits.removeAt(fractionDigits.size - 1)
+                if (fractionDigits.isEmpty()) {
                     isFictional = false
                 }
             }

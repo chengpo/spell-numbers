@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             if (composer.number.isBlank()) {
                 wordTextView.text = ""
             } else {
-                wordTextView.text = speller.spell(composer.integers, composer.decimals)
+                wordTextView.text = speller.spell(composer.integers, composer.fractions)
             }
         } catch (exception: LargeNumberException) {
             wordTextView.text = getString(R.string.too_large_to_spell)
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         if (composer.number.isBlank()) {
             wordTextView.text = ""
         } else {
-            wordTextView.text = speller.spell(composer.integers, composer.decimals)
+            wordTextView.text = speller.spell(composer.integers, composer.fractions)
         }
     }
 
