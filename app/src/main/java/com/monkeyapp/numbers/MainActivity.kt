@@ -25,14 +25,20 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 import android.content.Intent
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.Snackbar
+import android.support.graphics.drawable.VectorDrawableCompat
+import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.ImageButton
+import android.widget.TextView
 import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.NumberSpeller.LargeNumberException
 
@@ -69,8 +75,11 @@ class MainActivity : AppCompatActivity() {
                 wordTextView.text = speller.spell(composer.integers, composer.fractions)
             }
         } catch (exception: LargeNumberException) {
-            wordTextView.text = getString(R.string.too_large_to_spell)
             composer.deleteDigit()
+
+            Snackbar.make(wordTextView, R.string.too_large_to_spell, Snackbar.LENGTH_LONG)
+                    .setIcon(R.drawable.ic_error, android.R.color.holo_orange_light)
+                    .show()
         }
 
         digitTextView.text = composer.number
@@ -92,7 +101,9 @@ class MainActivity : AppCompatActivity() {
 
         if (composer.number.isBlank()) {
             wordTextView.text = ""
+            btnClean.visibility = View.INVISIBLE
         } else {
+            btnClean.visibility = View.VISIBLE
             wordTextView.text = speller.spell(composer.integers, composer.fractions)
         }
     }
@@ -120,5 +131,24 @@ class MainActivity : AppCompatActivity() {
         val decimalWords = spellDecimal(decimals)
 
         return "$integerWords and $decimalWords"
+    }
+
+    private fun Snackbar.setIcon(drawbleId: Int, tintColorId: Int): Snackbar {
+        var errorIcon = VectorDrawableCompat.create(resources, drawbleId, theme) as Drawable
+        val errorColor = ContextCompat.getColor(context, tintColorId)
+
+        errorIcon = errorIcon.mutate()
+        errorIcon = DrawableCompat.wrap(errorIcon)
+
+        DrawableCompat.setTint(errorIcon, errorColor)
+        DrawableCompat.setTintMode(errorIcon, PorterDuff.Mode.SRC_IN)
+
+        val snackText : TextView = view.findViewById(android.support.design.R.id.snackbar_text)
+
+        view.setBackgroundColor(ContextCompat.getColor(context, R.color.primary_dark))
+        snackText.setCompoundDrawablesWithIntrinsicBounds(errorIcon, null, null, null)
+        snackText.compoundDrawablePadding = resources.getDimensionPixelOffset(R.dimen.snackbar_icon_padding)
+
+        return this
     }
 }
