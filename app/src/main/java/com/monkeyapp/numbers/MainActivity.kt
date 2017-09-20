@@ -52,19 +52,20 @@ class MainActivity : AppCompatActivity() {
 
     fun onDigitClicked(digitButton: View) {
         try {
-            if (digitButton is ImageButton) {
-                composer.deleteDigit()
-            } else if (digitButton is Button) {
-                when (digitButton.text[0]) {
-                    '.', in '0'..'9' -> {
-                        composer.appendDigit(digitButton.text[0])
-                    }
-                }
+            when (digitButton.id) {
+                R.id.btnDel -> composer.deleteDigit()
+                R.id.btnClean -> composer.cleanDigit()
+                else -> if (digitButton is Button)
+                            when (digitButton.text[0]) {
+                                '.', in '0'..'9' -> composer.appendDigit(digitButton.text[0])
+                            }
             }
 
             if (composer.number.isBlank()) {
                 wordTextView.text = ""
+                btnClean.visibility = View.INVISIBLE
             } else {
+                btnClean.visibility = View.VISIBLE
                 wordTextView.text = speller.spell(composer.integers, composer.fractions)
             }
         } catch (exception: LargeNumberException) {

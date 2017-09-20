@@ -116,6 +116,12 @@ class NumberComposer {
         return true
     }
 
+    fun cleanDigit() {
+        isFictional = false
+        integerDigits.clear()
+        fractionDigits.clear()
+    }
+
     fun deleteDigit() {
         if (isFictional) {
             if (fractionDigits.isEmpty()) {
