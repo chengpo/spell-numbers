@@ -23,8 +23,8 @@ SOFTWARE.
 # Number Speller 
 
 A handy tool for converting numbers to words.
-It is useful for writing checks, filling forms.
+Useful for writing checks, filling forms.
 
 You are welcome to install <a href="https://play.google.com/store/apps/details?id=com.monkeyapp.numbers" target="_blank">Spell Numbers on Google Play</a>
 
-<img src="pictures/device-2017-09-17-001315.png" alt="screenshot" width="246"/>
+<img src="pictures/device-2017-09-20-200042.png" alt="screenshot" width="246"/>
