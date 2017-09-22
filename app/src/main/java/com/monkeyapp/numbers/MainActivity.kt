@@ -56,11 +56,17 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(myToolbar)
     }
 
+
+    // TODO: google play ocr service https://codelabs.developers.google.com/codelabs/mobile-vision-ocr/
+    fun onCameraClicked(camera: View) {
+
+    }
+
     fun onDigitClicked(digitButton: View) {
         try {
             when (digitButton.id) {
                 R.id.btnDel -> composer.deleteDigit()
-                R.id.btnClean -> composer.cleanDigit()
+                R.id.digitTextButton -> composer.cleanDigit()
                 else -> if (digitButton is Button)
                             when (digitButton.text[0]) {
                                 '.', in '0'..'9' -> composer.appendDigit(digitButton.text[0])
@@ -69,10 +75,10 @@ class MainActivity : AppCompatActivity() {
 
             if (composer.number.isBlank()) {
                 wordTextView.text = ""
-                btnClean.visibility = View.INVISIBLE
+                digitTextButton.state = DigitTextButton.STATE_CAMERA
             } else {
-                btnClean.visibility = View.VISIBLE
                 wordTextView.text = speller.spell(composer.integers, composer.fractions)
+                digitTextButton.state = DigitTextButton.STATE_CLEAN
             }
         } catch (exception: LargeNumberException) {
             composer.deleteDigit()
@@ -101,10 +107,10 @@ class MainActivity : AppCompatActivity() {
 
         if (composer.number.isBlank()) {
             wordTextView.text = ""
-            btnClean.visibility = View.INVISIBLE
+            digitTextButton.state = DigitTextButton.STATE_CAMERA
         } else {
-            btnClean.visibility = View.VISIBLE
             wordTextView.text = speller.spell(composer.integers, composer.fractions)
+            digitTextButton.state = DigitTextButton.STATE_CLEAN
         }
     }
 

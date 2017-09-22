@@ -13,16 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageButton
-            android:id="@+id/btnClean"
+        <com.monkeyapp.numbers.DigitTextButton
+            android:id="@+id/digitTextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:onClick="onDigitClicked"
             android:tint="@color/primary_text"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/ic_clear"
-            tools:visibility="visible"/>
+            app:srcCompat="@drawable/ic_digit_text_button"/>
 
         <TextView
             android:id="@+id/digitTextView"

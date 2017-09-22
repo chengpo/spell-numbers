@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DigitTextButtonState">
+        <attr name="state_clear" format="boolean"/>
+        <attr name="state_camera" format="boolean"/>
+    </declare-styleable>
+</resources>
