@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.monkeyapp.numbers.ocrcapture">
+
+    <application>
+        <activity
+            android:name=".OcrCaptureActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.monkeyapp.numbers.intent.OCR_CAPTURE"/>
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

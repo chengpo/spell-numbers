@@ -29,7 +29,7 @@ class NumberComposer {
     var fractionDigits = mutableListOf<Char>()
     var isFictional: Boolean = false
 
-    val number: String
+    val digitStr: String
         get() {
             if (isFictional) {
                 if (integerDigits.isEmpty() && fractionDigits.isEmpty()) {

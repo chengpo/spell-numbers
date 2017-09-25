@@ -19,8 +19,7 @@
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:onClick="onDigitClicked"
-            android:tint="@color/primary_text"
-            app:srcCompat="@drawable/ic_digit_text_button"/>
+            android:tint="@color/primary_text"/>
 
         <TextView
             android:id="@+id/digitTextView"

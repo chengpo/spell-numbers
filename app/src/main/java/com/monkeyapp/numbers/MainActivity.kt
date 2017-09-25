@@ -43,10 +43,18 @@ import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.NumberSpeller.LargeNumberException
 
 class MainActivity : AppCompatActivity() {
+    private val INTENT_ACTION_OCR_CAPTURE: String = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
     private val BUNDLE_EXTRA_DIGITS : String = "bundle_extra_digits"
+    private val RC_OCR_CAPTURE = 1000
 
-    val composer = NumberComposer()
-    val speller = NumberSpeller()
+    private val composer = NumberComposer()
+    private val speller = NumberSpeller()
+
+    private val isCameraAvailable: Boolean
+        get() {
+            return  packageManager.queryIntentActivities(
+                    Intent(INTENT_ACTION_OCR_CAPTURE), 0).isNotEmpty()
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,31 +62,25 @@ class MainActivity : AppCompatActivity() {
 
         val myToolbar = findViewById<View>(R.id.my_toolbar) as Toolbar
         setSupportActionBar(myToolbar)
-    }
 
+        digitTextButton.setCameraState()
+    }
 
     // TODO: google play ocr service https://codelabs.developers.google.com/codelabs/mobile-vision-ocr/
-    fun onCameraClicked(camera: View) {
-
-    }
-
-    fun onDigitClicked(digitButton: View) {
+    fun onDigitClicked(button: View) {
         try {
-            when (digitButton.id) {
+            when (button.id) {
                 R.id.btnDel -> composer.deleteDigit()
-                R.id.digitTextButton -> composer.cleanDigit()
-                else -> if (digitButton is Button)
-                            when (digitButton.text[0]) {
-                                '.', in '0'..'9' -> composer.appendDigit(digitButton.text[0])
-                            }
-            }
+                R.id.digitTextButton -> {
+                    if (button is DigitTextButton) {
+                        button.onClicked()
+                    }
 
-            if (composer.number.isBlank()) {
-                wordTextView.text = ""
-                digitTextButton.state = DigitTextButton.STATE_CAMERA
-            } else {
-                wordTextView.text = speller.spell(composer.integers, composer.fractions)
-                digitTextButton.state = DigitTextButton.STATE_CLEAN
+                }
+                else -> if (button is Button)
+                            when (button.text[0]) {
+                                '.', in '0'..'9' -> composer.appendDigit(button.text[0])
+                            }
             }
         } catch (exception: LargeNumberException) {
             composer.deleteDigit()
@@ -88,7 +90,19 @@ class MainActivity : AppCompatActivity() {
                     .show()
         }
 
-        digitTextView.text = composer.number
+        refreshDigitWords()
+    }
+
+    private fun refreshDigitWords() {
+        digitTextView.text = composer.digitStr
+
+        if (digitTextView.text.isNullOrEmpty()) {
+            wordTextView.text = ""
+            digitTextButton.setCameraState()
+        } else {
+            wordTextView.text = speller.spell(composer.integers, composer.fractions)
+            digitTextButton.setCleanState()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -103,15 +117,7 @@ class MainActivity : AppCompatActivity() {
 
         digits?.forEach { composer.appendDigit(it) }
 
-        digitTextView.text = digits
-
-        if (composer.number.isBlank()) {
-            wordTextView.text = ""
-            digitTextButton.state = DigitTextButton.STATE_CAMERA
-        } else {
-            wordTextView.text = speller.spell(composer.integers, composer.fractions)
-            digitTextButton.state = DigitTextButton.STATE_CLEAN
-        }
+        refreshDigitWords()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -120,13 +126,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+        return when (item?.itemId) {
             R.id.action_about -> {
                 val intent = Intent(this, AboutActivity::class.java)
                 startActivity(intent)
+                return true
             }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun NumberSpeller.spell(integers : Long, decimals: Float): String {
@@ -156,5 +163,29 @@ class MainActivity : AppCompatActivity() {
         snackText.compoundDrawablePadding = resources.getDimensionPixelOffset(R.dimen.snackbar_icon_padding)
 
         return this
+    }
+
+    private fun DigitTextButton.onClicked() {
+        when (state) {
+            DigitTextButton.STATE_CLEAN -> composer.cleanDigit()
+            DigitTextButton.STATE_CAMERA -> {
+                val intent = Intent("com.monkeyapp.numbers.OcrCapture")
+                startActivityForResult(intent, RC_OCR_CAPTURE)
+            }
+        }
+    }
+
+    private fun DigitTextButton.setCameraState() {
+        if (isCameraAvailable) {
+            digitTextButton.state = DigitTextButton.STATE_CAMERA
+        } else {
+            digitTextButton.state = DigitTextButton.STATE_CLEAN
+            digitTextButton.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun DigitTextButton.setCleanState() {
+        digitTextButton.state = DigitTextButton.STATE_CLEAN
+        digitTextView.visibility = View.VISIBLE
     }
 }

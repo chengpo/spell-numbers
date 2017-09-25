@@ -59,11 +59,13 @@ class DigitTextButton : ImageButton {
         val digitTextButtonDrawable = StateListDrawable()
 
         val clearDrawable = VectorDrawableCompat.create(resources, R.drawable.ic_clear, context.theme) as Drawable
-        digitTextButtonDrawable.addState(arrayListOf(R.attr.state_clear).toIntArray(),
+        digitTextButtonDrawable.addState(
+                arrayListOf(R.attr.state_clear).toIntArray(),
                 clearDrawable.tintColor(R.color.primary_text))
 
         val cameraDrawable = VectorDrawableCompat.create(resources, R.drawable.ic_camera, context.theme) as Drawable
-        digitTextButtonDrawable.addState(arrayListOf(R.attr.state_camera).toIntArray(),
+        digitTextButtonDrawable.addState(
+                arrayListOf(R.attr.state_camera).toIntArray(),
                 cameraDrawable.tintColor(R.color.primary_text))
 
         setImageDrawable(digitTextButtonDrawable)
