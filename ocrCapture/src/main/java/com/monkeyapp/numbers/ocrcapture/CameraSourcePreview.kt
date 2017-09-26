@@ -50,7 +50,7 @@ class CameraSourcePreview: ViewGroup {
     private var isSurfaceAvailable: Boolean = false
     private var isStartRequested: Boolean = false
 
-    private var overlay: GraphicOverlay? = null
+    private var overlay: OcrGraphicOverlay? = null
 
     private val isPortraitMode: Boolean
         get() {
@@ -82,7 +82,7 @@ class CameraSourcePreview: ViewGroup {
         addView(surfaceView)
     }
 
-    fun start(cameraSource: CameraSource, overlay: GraphicOverlay) {
+    fun start(cameraSource: CameraSource, overlay: OcrGraphicOverlay) {
         this.cameraSource = cameraSource
         this.overlay = overlay
 
@@ -106,22 +106,21 @@ class CameraSourcePreview: ViewGroup {
             if (permissions == PackageManager.PERMISSION_GRANTED) {
 
                 if (isStartRequested and isSurfaceAvailable) {
-                    cameraSource?.start(surfaceView.holder)
-
-                    val size = cameraSource?.previewSize
-                    val width = size?.width ?: DEFAULT_VIEW_WIDTH
-                    val height = size?.height ?: DEFAULT_VIEW_HEIGHT
+                    cameraSource!!.start(surfaceView.holder)
+                    val size = cameraSource!!.previewSize
+                    val width = size.width
+                    val height = size.height
 
                     val min = Math.min(width, height)
                     val max = Math.max(width, height)
 
                     if (isPortraitMode) {
-                        overlay?.setCameraInfo(min, max, cameraSource?.cameraFacing)
+                        overlay!!.setCameraInfo(min, max, cameraSource!!.cameraFacing)
                     } else {
-                        overlay?.setCameraInfo(max, min, cameraSource?.cameraFacing)
+                        overlay!!.setCameraInfo(max, min, cameraSource!!.cameraFacing)
                     }
 
-                    overlay?.clear()
+                    overlay!!.clear()
 
                     isStartRequested = false
                 }

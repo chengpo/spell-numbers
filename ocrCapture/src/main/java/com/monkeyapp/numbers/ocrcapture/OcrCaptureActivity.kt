@@ -33,13 +33,23 @@ import android.support.v7.app.AppCompatActivity
 import android.view.GestureDetector
 import android.view.ScaleGestureDetector
 import com.google.android.gms.vision.text.TextRecognizer
-import android.hardware.Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+import android.util.Log
 import com.google.android.gms.vision.CameraSource
-
+import android.widget.Toast
+import android.content.Intent
+import android.content.IntentFilter
+import android.view.MotionEvent
+import kotlinx.android.synthetic.main.activity_ocr_capture.*
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.CommonStatusCodes
+import java.io.IOException
 
 
 class OcrCaptureActivity: AppCompatActivity() {
+    private val TAG = "OcrCaptureActivity"
     private val RC_HANDLE_CAMERA_PERM = 2
+    private val RC_HANDLE_GMS = 9001
 
     private var scaleGestureDetector: ScaleGestureDetector? = null
     private var gestureDetector: GestureDetector? = null
@@ -56,6 +66,60 @@ class OcrCaptureActivity: AppCompatActivity() {
         } else {
             requestCameraPermission()
         }
+
+        gestureDetector = GestureDetector(this, object: GestureDetector.SimpleOnGestureListener() {
+            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                return onTap(e?.rawX ?: 0f, e?.rawY ?: 0f) ||
+                       super.onSingleTapConfirmed(e)
+            }
+        })
+
+        scaleGestureDetector = ScaleGestureDetector(this,
+                object:ScaleGestureDetector.SimpleOnScaleGestureListener(){
+                    override fun onScaleBegin(detector: ScaleGestureDetector?): Boolean {
+                        return true
+                    }
+
+                    override fun onScaleEnd(detector: ScaleGestureDetector?) {
+                        // FIXME: scale to zoom
+
+                    }
+
+                    override fun onScale(detector: ScaleGestureDetector?): Boolean {
+                        return false
+                    }
+                })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startCameraSource()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        preview.stop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        preview.release()
+    }
+
+    private fun onTap(rawX:Float, rawY:Float): Boolean {
+        val graphc = graphicOverlay.getGraphic(rawX, rawY)
+        val text = graphc?.textBlock
+        if (text?.value != null ) {
+            val data = Intent()
+            data.putExtra("text", text.value)
+            setResult(CommonStatusCodes.SUCCESS, data)
+            finish()
+            return true
+        }
+
+        return false
     }
 
     private fun requestCameraPermission() {
@@ -67,11 +131,30 @@ class OcrCaptureActivity: AppCompatActivity() {
             return
         }
 
+        // show dialog for requesting camera permission rational
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+
+        return scaleGestureDetector!!.onTouchEvent(event) ||
+               gestureDetector!!.onTouchEvent(event) ||
+               super.onTouchEvent(event)
     }
 
     private fun createCameraSource() {
         val textRecognizer = TextRecognizer.Builder(this).build()
+        textRecognizer.setProcessor(OcrDetectorProcessor(graphicOverlay))
+
         if (!textRecognizer.isOperational) {
+            Log.w(TAG,  "Detector dependencies are not yet available.")
+
+            val lowstorageFilter = IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW)
+            val hasLowStorage = registerReceiver(null, lowstorageFilter) != null
+
+            if (hasLowStorage) {
+                Toast.makeText(this, R.string.low_storage_error, Toast.LENGTH_LONG).show()
+                Log.w(TAG, getString(R.string.low_storage_error))
+            }
 
         }
 
@@ -81,5 +164,29 @@ class OcrCaptureActivity: AppCompatActivity() {
                 .setRequestedFps(15.0f)
                 .setAutoFocusEnabled(true)
                 .build()
+    }
+
+    private fun startCameraSource() {
+        // Check that the device has play services available.
+        val code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
+                applicationContext)
+        if (code != ConnectionResult.SUCCESS) {
+            val dlg = GoogleApiAvailability.getInstance().getErrorDialog(this, code, RC_HANDLE_GMS)
+            dlg.show()
+        }
+
+
+        try {
+            if (cameraSource != null) {
+                preview.start(cameraSource!!, graphicOverlay)
+            }
+
+        } catch (e : IOException) {
+            Log.e(TAG, "Get IOException when start camera source")
+            cameraSource?.release()
+        } catch (e : SecurityException) {
+            Log.e(TAG, "Get SecurityException when start camera source")
+            cameraSource?.release()
+        }
     }
 }
