@@ -169,7 +169,8 @@ class MainActivity : AppCompatActivity() {
         when (state) {
             DigitTextButton.STATE_CLEAN -> composer.cleanDigit()
             DigitTextButton.STATE_CAMERA -> {
-                val intent = Intent("com.monkeyapp.numbers.OcrCapture")
+                val intent = Intent()
+                intent.action = INTENT_ACTION_OCR_CAPTURE
                 startActivityForResult(intent, RC_OCR_CAPTURE)
             }
         }

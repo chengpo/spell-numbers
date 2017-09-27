@@ -3,10 +3,10 @@
 
     <application>
         <activity
-            android:name=".OcrCaptureActivity"
-            android:exported="false">
+            android:name=".OcrCaptureActivity">
             <intent-filter>
                 <action android:name="com.monkeyapp.numbers.intent.OCR_CAPTURE"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>

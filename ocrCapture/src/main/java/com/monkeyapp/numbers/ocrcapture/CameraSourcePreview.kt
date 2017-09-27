@@ -29,13 +29,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.support.annotation.RequiresPermission
 import android.support.v4.app.ActivityCompat
 import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.google.android.gms.vision.CameraSource
 import java.io.IOException
 
@@ -58,13 +58,12 @@ class CameraSourcePreview: ViewGroup {
         }
 
     constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     init {
         surfaceView.holder.addCallback(object: SurfaceHolder.Callback {
-            @RequiresPermission(value=Manifest.permission.CAMERA)
             override fun surfaceCreated(holder: SurfaceHolder?) {
                 isSurfaceAvailable = true
 
@@ -164,7 +163,7 @@ class CameraSourcePreview: ViewGroup {
             childXOffset = (childWidth - viewWidth) / 2
         }
 
-        for (i in 1 until childCount) {
+        for (i in 0 until childCount) {
             getChildAt(i).layout(-1 * childXOffset, -1 * childYOffset,
                     childWidth - childXOffset, childHeight - childYOffset)
         }

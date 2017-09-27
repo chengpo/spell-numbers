@@ -143,6 +143,7 @@ class OcrCaptureActivity: AppCompatActivity() {
 
     private fun createCameraSource() {
         val textRecognizer = TextRecognizer.Builder(this).build()
+
         textRecognizer.setProcessor(OcrDetectorProcessor(graphicOverlay))
 
         if (!textRecognizer.isOperational) {
