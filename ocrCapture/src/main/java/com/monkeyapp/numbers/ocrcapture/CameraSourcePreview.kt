@@ -35,7 +35,6 @@ import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import com.google.android.gms.vision.CameraSource
 import java.io.IOException
 
@@ -50,7 +49,7 @@ class CameraSourcePreview: ViewGroup {
     private var isSurfaceAvailable: Boolean = false
     private var isStartRequested: Boolean = false
 
-    private var overlay: OcrGraphicOverlay? = null
+    private lateinit var overlay: OcrGraphicOverlay
 
     private val isPortraitMode: Boolean
         get() {
@@ -58,7 +57,7 @@ class CameraSourcePreview: ViewGroup {
         }
 
     constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
@@ -114,12 +113,12 @@ class CameraSourcePreview: ViewGroup {
                     val max = Math.max(width, height)
 
                     if (isPortraitMode) {
-                        overlay!!.setCameraInfo(min, max, cameraSource!!.cameraFacing)
+                        overlay.setCameraInfo(min, max, cameraSource!!.cameraFacing)
                     } else {
-                        overlay!!.setCameraInfo(max, min, cameraSource!!.cameraFacing)
+                        overlay.setCameraInfo(max, min, cameraSource!!.cameraFacing)
                     }
 
-                    overlay!!.clear()
+                    overlay.clear()
 
                     isStartRequested = false
                 }

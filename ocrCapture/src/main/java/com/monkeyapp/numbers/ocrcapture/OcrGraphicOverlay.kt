@@ -39,7 +39,6 @@ class OcrGraphicOverlay : View {
     var previewHeight = 0
     var facing = CameraSource.CAMERA_FACING_BACK
 
-
     var graphicList = mutableListOf<OcrGraphic>()
 
     constructor(context: Context?) : super(context)

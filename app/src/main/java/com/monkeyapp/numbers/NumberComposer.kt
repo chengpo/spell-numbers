@@ -25,9 +25,9 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 class NumberComposer {
-    var integerDigits = mutableListOf<Char>()
-    var fractionDigits = mutableListOf<Char>()
-    var isFictional: Boolean = false
+    private var integerDigits = mutableListOf<Char>()
+    private var fractionDigits = mutableListOf<Char>()
+    private var isFictional: Boolean = false
 
     val digitStr: String
         get() {

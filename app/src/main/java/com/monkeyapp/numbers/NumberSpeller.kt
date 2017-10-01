@@ -27,7 +27,7 @@ package com.monkeyapp.numbers
 class NumberSpeller {
     class LargeNumberException : IllegalArgumentException("Number is too large to spellInteger")
 
-    val NUM_WORDS: IntArray = intArrayOf(
+    private val NUM_WORDS: IntArray = intArrayOf(
             R.string.num_zero,
             R.string.num_one,
             R.string.num_two,
