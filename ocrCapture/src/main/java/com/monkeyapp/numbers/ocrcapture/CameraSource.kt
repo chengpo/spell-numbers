@@ -27,11 +27,15 @@ package com.monkeyapp.numbers.ocrcapture
 import android.content.Context
 import android.graphics.ImageFormat
 import android.hardware.Camera
+import android.os.SystemClock
 import android.util.Log
 import android.view.Surface
+import android.view.SurfaceHolder
 import android.view.WindowManager
 import com.google.android.gms.common.images.Size
 import com.google.android.gms.vision.Detector
+import com.google.android.gms.vision.Frame
+import java.lang.Exception
 import java.nio.ByteBuffer
 import java.util.*
 
@@ -44,13 +48,19 @@ class CameraSource(val context: Context, val detector: Detector<Any>) {
     var requestedPreviewHeight: Int = 0
     var requestedPreviewFps: Float = 30.0f
 
-
     private var rotation = 0
     private lateinit var previewSize: Size
 
-    private val bytesToByteBuffer = mutableMapOf<ByteArray, ByteBuffer>()
+    private val frameProcessor = FrameProcessor()
+    private var frameProcessorThread: Thread? = null
 
-    private data class SizePair(val preview: Size, val picture: Size? = null)
+    private val cameraLock = Object()
+
+    // Map to convert between a byte array received from the camera,
+    // and its associated byte buffer. We use byte buffers internally
+    // because this is more efficient way to call into native code later
+    // (avoid a potential copy).
+    private val bytesToByteBuffer = mutableMapOf<ByteArray, ByteBuffer>()
 
     private val rearCameraId: Int by lazy {
         val cameraInfo = Camera.CameraInfo()
@@ -90,7 +100,7 @@ class CameraSource(val context: Context, val detector: Detector<Any>) {
                 )
 
                 // set preview fps
-                val fpsRange = selectPreviewFpsRange(_camera!!)
+                val fpsRange = selectPreviewFpsRange(_camera!!, requestedPreviewFps)
                 _camera!!.parameters.setPreviewFpsRange(
                     fpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
                     fpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]
@@ -120,19 +130,53 @@ class CameraSource(val context: Context, val detector: Detector<Any>) {
             return _camera ?: throw IllegalStateException("Failed to find rear camera")
         }
 
-    fun release() {
-        _camera!!.release()
-        _camera = null
-    }
+    fun start(surfaceHolder: SurfaceHolder): CameraSource {
+        synchronized(cameraLock) {
+            if (_camera != null) {
+                return this
+            }
 
-    private inner class CameraPreviewCallback : Camera.PreviewCallback {
-        override fun onPreviewFrame(data: ByteArray?, camera: Camera?) {
-            Log.d(TAG, "receive preview frame")
-            // TODO: mFrameProcessor.setNextFrame(data, camera)
+            camera.setPreviewDisplay(surfaceHolder)
+            camera.startPreview()
+
+            frameProcessorThread = Thread(frameProcessor)
+            frameProcessor.activate = true
+            frameProcessorThread?.start()
         }
+
+        return this
     }
 
-    // TODO: Process frame in worker thread
+    fun stop() {
+        synchronized(cameraLock) {
+            if (_camera == null) {
+                return
+            }
+
+            frameProcessor.activate = false
+            try {
+                frameProcessorThread?.join()
+            } catch (e: InterruptedException) {
+                Log.d(TAG, "Frame processor thread interrupted on stop.")
+            } finally {
+                frameProcessorThread = null
+            }
+
+            bytesToByteBuffer.clear()
+
+            try {
+                _camera!!.stopPreview()
+                _camera!!.setPreviewCallbackWithBuffer(null)
+                _camera!!.setPreviewDisplay(null)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to clear camera preview: " + e)
+            } finally {
+                _camera!!.release()
+                _camera = null
+            }
+        }
+
+    }
 
     private fun createPreviewBuffer(previewSize: Size): ByteArray {
         val bitsPerPixel = ImageFormat.getBitsPerPixel(DEFAULT_PREVIEW_IMAGE_FORMAT)
@@ -201,6 +245,7 @@ class CameraSource(val context: Context, val detector: Detector<Any>) {
         return selectedFpsRange
     }
 
+    private data class SizePair(val preview: Size, val picture: Size? = null)
 
     private fun selectSizePair(camera: Camera): SizePair {
         var sizePairList = getValidPreviewSizeList(camera)
@@ -250,5 +295,108 @@ class CameraSource(val context: Context, val detector: Detector<Any>) {
         }
 
         return _validPreviewSizes
+    }
+
+    /***************************
+     * Frame processing        *
+     ***************************/
+
+    private inner class CameraPreviewCallback : Camera.PreviewCallback {
+        override fun onPreviewFrame(data: ByteArray?, camera: Camera?) {
+            Log.d(TAG, "receive preview frame")
+            frameProcessor.setNextFrame(data!!)
+        }
+    }
+
+    private inner class FrameProcessor : Runnable {
+        private val startTimeMillis = SystemClock.elapsedRealtime()
+
+        private val processorLock = Object()
+
+        private var pendingTimeMillis = 0L
+        private var pendingFrameId = 0
+        private var pendingFrameData: ByteBuffer? = null
+
+        private var _activate = false
+        var activate: Boolean
+            get() {
+                synchronized(processorLock) {
+                    return _activate
+                }
+            }
+
+            set(value) {
+                synchronized(processorLock) {
+                    _activate = value
+                    processorLock.notifyAll()
+                }
+            }
+
+        fun setNextFrame(data:ByteArray) {
+            synchronized(processorLock) {
+                if (pendingFrameData != null) {
+                    // add previous unused frame buffer back to camera
+                    camera.addCallbackBuffer(pendingFrameData!!.array())
+                    pendingFrameData = null
+                }
+
+                if (!bytesToByteBuffer.containsKey(data)) {
+                    Log.d(TAG, "Skipping frame.  Could not find ByteBuffer associated with the image " +
+                               "data from the camera.")
+                    return
+                }
+
+                pendingTimeMillis = SystemClock.elapsedRealtime() - startTimeMillis
+                pendingFrameId++
+                pendingFrameData = bytesToByteBuffer.get(data)
+
+                // notify processor thread if it is waiting on the next frame
+                processorLock.notifyAll()
+            }
+        }
+
+        override fun run() {
+            var outputFrame: Frame? = null
+            var data: ByteBuffer? = null
+
+            while (true) {
+                synchronized(processorLock) {
+                    while (activate && (pendingFrameData == null)) {
+                        try {
+                            processorLock.wait()
+                        } catch (e: InterruptedException) {
+                            Log.d(TAG, "Frame processor worker thread is interrupted")
+                            return
+                        }
+                    }
+
+                    if (!activate) {
+                        Log.d(TAG, "Frame processor worker thread shutdown")
+                        return
+                    }
+
+                    outputFrame = Frame.Builder()
+                            .setImageData(pendingFrameData, previewSize.width,
+                                    previewSize.height, DEFAULT_PREVIEW_IMAGE_FORMAT)
+                            .setId(pendingFrameId)
+                            .setRotation(rotation)
+                            .build()
+
+                    data = pendingFrameData!!
+                    pendingFrameData = null
+                }
+
+                try {
+                    detector.receiveFrame(outputFrame)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Exception thrown from detector receiver", e)
+                } finally {
+                    synchronized(processorLock) {
+                        camera.addCallbackBuffer(data!!.array())
+                    }
+                }
+
+            }
+        }
     }
 }
