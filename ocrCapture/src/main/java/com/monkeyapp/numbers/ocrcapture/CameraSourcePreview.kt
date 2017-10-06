@@ -35,8 +35,8 @@ import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.ViewGroup
-import com.google.android.gms.vision.CameraSource
 import java.io.IOException
+
 
 class CameraSourcePreview: ViewGroup {
     private val TAG = "CameraSourcePreview"
@@ -113,9 +113,9 @@ class CameraSourcePreview: ViewGroup {
                     val max = Math.max(width, height)
 
                     if (isPortraitMode) {
-                        overlay.setCameraInfo(min, max, cameraSource!!.cameraFacing)
+                        overlay.setCameraInfo(min, max)
                     } else {
-                        overlay.setCameraInfo(max, min, cameraSource!!.cameraFacing)
+                        overlay.setCameraInfo(max, min)
                     }
 
                     overlay.clear()

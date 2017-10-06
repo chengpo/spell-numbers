@@ -26,6 +26,7 @@ package com.monkeyapp.numbers.ocrcapture
 
 import android.content.Context
 import android.graphics.ImageFormat
+import android.graphics.YuvImage
 import android.hardware.Camera
 import android.os.SystemClock
 import android.util.Log
@@ -35,21 +36,23 @@ import android.view.WindowManager
 import com.google.android.gms.common.images.Size
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.Frame
+import com.google.android.gms.vision.text.TextBlock
 import java.lang.Exception
 import java.nio.ByteBuffer
 import java.util.*
 
-class CameraSource(val context: Context, val detector: Detector<Any>) {
+class CameraSource(private val context: Context,
+                   private val detector: Detector<TextBlock>,
+                   private val requestedPreviewWidth:Int = 800,
+                   private val requestedPreviewHeight:Int = 640,
+                   private val requestedPreviewFps:Float = 30.0f) {
+
     private val TAG = "CameraSource"
     private val ASPECT_RATIO_TOLERANCE = 0.01f
     private val DEFAULT_PREVIEW_IMAGE_FORMAT = ImageFormat.NV21
 
-    var requestedPreviewWidth: Int = 0
-    var requestedPreviewHeight: Int = 0
-    var requestedPreviewFps: Float = 30.0f
-
     private var rotation = 0
-    private lateinit var previewSize: Size
+    var previewSize = Size(requestedPreviewWidth, requestedPreviewHeight)
 
     private val frameProcessor = FrameProcessor()
     private var frameProcessorThread: Thread? = null
@@ -175,7 +178,13 @@ class CameraSource(val context: Context, val detector: Detector<Any>) {
                 _camera = null
             }
         }
+    }
 
+    fun release() {
+        synchronized(cameraLock) {
+            stop()
+            detector.release()
+        }
     }
 
     private fun createPreviewBuffer(previewSize: Size): ByteArray {
@@ -211,12 +220,13 @@ class CameraSource(val context: Context, val detector: Detector<Any>) {
 
         if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             angle = (cameraInfo.orientation + degrees) % 360
-            displayAngle = (360 - angle)
+            displayAngle = (360 - angle) % 360  // compensate for it being mirrored
         } else {
-            angle = (cameraInfo.orientation - degrees + 369) % 360
+            angle = (cameraInfo.orientation - degrees + 360) % 360
             displayAngle = angle
         }
 
+        // This corresponds to the rotation constants in {@link Frame}
         this.rotation = angle / 90
 
         camera.setDisplayOrientation(displayAngle)
@@ -374,6 +384,10 @@ class CameraSource(val context: Context, val detector: Detector<Any>) {
                         Log.d(TAG, "Frame processor worker thread shutdown")
                         return
                     }
+
+                    // TODO: NV21 to bitmap
+                    //val img = YuvImage(pendingFrameData!!.array(), DEFAULT_PREVIEW_IMAGE_FORMAT,
+                    //        previewSize.width, previewSize.height, null)
 
                     outputFrame = Frame.Builder()
                             .setImageData(pendingFrameData, previewSize.width,

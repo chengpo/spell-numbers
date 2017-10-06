@@ -28,8 +28,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.View
-import com.google.android.gms.vision.CameraSource
-
 
 class OcrGraphicOverlay : View {
     var widthScaleFactor = 1.0f
@@ -37,7 +35,6 @@ class OcrGraphicOverlay : View {
 
     var previewWidth = 0
     var previewHeight = 0
-    var facing = CameraSource.CAMERA_FACING_BACK
 
     var graphicList = mutableListOf<OcrGraphic>()
 
@@ -46,11 +43,10 @@ class OcrGraphicOverlay : View {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    fun setCameraInfo(previewWidth: Int, previewHeight: Int, facing: Int) {
+    fun setCameraInfo(previewWidth: Int, previewHeight: Int) {
         synchronized(this) {
             this.previewWidth = previewWidth
             this.previewHeight = previewHeight
-            this.facing = facing
         }
 
         postInvalidate()

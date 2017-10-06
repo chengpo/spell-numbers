@@ -34,7 +34,6 @@ import android.view.GestureDetector
 import android.view.ScaleGestureDetector
 import com.google.android.gms.vision.text.TextRecognizer
 import android.util.Log
-import com.google.android.gms.vision.CameraSource
 import android.widget.Toast
 import android.content.Intent
 import android.content.IntentFilter
@@ -44,7 +43,6 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.CommonStatusCodes
 import java.io.IOException
-
 
 class OcrCaptureActivity: AppCompatActivity() {
     private val TAG = "OcrCaptureActivity"
@@ -143,7 +141,6 @@ class OcrCaptureActivity: AppCompatActivity() {
 
     private fun createCameraSource() {
         val textRecognizer = TextRecognizer.Builder(this).build()
-
         textRecognizer.setProcessor(OcrDetectorProcessor(graphicOverlay))
 
         if (!textRecognizer.isOperational) {
@@ -159,12 +156,14 @@ class OcrCaptureActivity: AppCompatActivity() {
 
         }
 
-        cameraSource = CameraSource.Builder(applicationContext, textRecognizer)
+        /*cameraSource = CameraSource.Builder(applicationContext, textRecognizer)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setRequestedPreviewSize(400, 320)
                 .setRequestedFps(15.0f)
                 .setAutoFocusEnabled(true)
-                .build()
+                .build()*/
+
+        cameraSource = CameraSource(this, textRecognizer)
     }
 
     private fun startCameraSource() {
@@ -176,7 +175,6 @@ class OcrCaptureActivity: AppCompatActivity() {
             dlg.show()
         }
 
-
         try {
             if (cameraSource != null) {
                 preview.start(cameraSource!!, graphicOverlay)
@@ -184,10 +182,10 @@ class OcrCaptureActivity: AppCompatActivity() {
 
         } catch (e : IOException) {
             Log.e(TAG, "Get IOException when start camera source")
-            cameraSource?.release()
+            cameraSource?.stop()
         } catch (e : SecurityException) {
             Log.e(TAG, "Get SecurityException when start camera source")
-            cameraSource?.release()
+            cameraSource?.stop()
         }
     }
 }
