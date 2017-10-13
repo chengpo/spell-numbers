@@ -26,11 +26,14 @@ package com.monkeyapp.numbers.ocrcapture
 
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.Log
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.text.TextBlock
 
 
 class OcrDetectorProcessor(val overlay: OcrGraphicOverlay): Detector.Processor<TextBlock> {
+    private val TAG = "OcrDetectorProcessor"
+
     val rectPaint = Paint()
     val textPaint = Paint()
 
@@ -44,6 +47,8 @@ class OcrDetectorProcessor(val overlay: OcrGraphicOverlay): Detector.Processor<T
     }
 
     override fun receiveDetections(detections: Detector.Detections<TextBlock>?) {
+        Log.d(TAG, "receive ${detections?.detectedItems?.size()} text blocks")
+
         overlay.clear()
 
         val items = detections?.detectedItems
@@ -51,9 +56,11 @@ class OcrDetectorProcessor(val overlay: OcrGraphicOverlay): Detector.Processor<T
 
         for (i in 0 until size) {
             val textBlock = items!!.get(i)
-            val graphic = OcrGraphic(overlay, textBlock, rectPaint, textPaint)
+            if (textBlock != null) {
+                val graphic = OcrGraphic(overlay, textBlock, rectPaint, textPaint)
 
-            overlay.add(graphic)
+                overlay.add(graphic)
+            }
         }
     }
 

@@ -26,7 +26,6 @@ package com.monkeyapp.numbers.ocrcapture
 
 import android.content.Context
 import android.graphics.ImageFormat
-import android.graphics.YuvImage
 import android.hardware.Camera
 import android.os.SystemClock
 import android.util.Log
@@ -39,13 +38,12 @@ import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.text.TextBlock
 import java.lang.Exception
 import java.nio.ByteBuffer
-import java.util.*
 
 class CameraSource(private val context: Context,
                    private val detector: Detector<TextBlock>,
                    private val requestedPreviewWidth:Int = 800,
                    private val requestedPreviewHeight:Int = 640,
-                   private val requestedPreviewFps:Float = 30.0f) {
+                   private val requestedPreviewFps:Float = 15.0f) {
 
     private val TAG = "CameraSource"
     private val ASPECT_RATIO_TOLERANCE = 0.01f
@@ -59,11 +57,6 @@ class CameraSource(private val context: Context,
 
     private val cameraLock = Object()
 
-    // Map to convert between a byte array received from the camera,
-    // and its associated byte buffer. We use byte buffers internally
-    // because this is more efficient way to call into native code later
-    // (avoid a potential copy).
-    private val bytesToByteBuffer = mutableMapOf<ByteArray, ByteBuffer>()
 
     private val rearCameraId: Int by lazy {
         val cameraInfo = Camera.CameraInfo()
@@ -165,8 +158,6 @@ class CameraSource(private val context: Context,
                 frameProcessorThread = null
             }
 
-            bytesToByteBuffer.clear()
-
             try {
                 _camera!!.stopPreview()
                 _camera!!.setPreviewCallbackWithBuffer(null)
@@ -192,14 +183,7 @@ class CameraSource(private val context: Context,
         val sizeInBits = previewSize.height * previewSize.width * bitsPerPixel
         val bufferSize = (Math.ceil(sizeInBits / 8.0) + 1).toInt()
 
-        val byteArray = ByteArray(bufferSize)
-        val buffer = ByteBuffer.wrap(byteArray)
-        if (buffer.hasArray() && Arrays.equals(buffer.array(), byteArray)) {
-            bytesToByteBuffer.put(byteArray, buffer)
-            return byteArray
-        }
-
-        throw IllegalStateException("Failed to create valid buffer for camera source.")
+        return ByteArray(bufferSize)
     }
 
     private fun setRotation(camera: Camera, parameters: Camera.Parameters, cameraId: Int) {
@@ -347,18 +331,14 @@ class CameraSource(private val context: Context,
                 if (pendingFrameData != null) {
                     // add previous unused frame buffer back to camera
                     camera.addCallbackBuffer(pendingFrameData!!.array())
-                    pendingFrameData = null
-                }
-
-                if (!bytesToByteBuffer.containsKey(data)) {
-                    Log.d(TAG, "Skipping frame.  Could not find ByteBuffer associated with the image " +
-                               "data from the camera.")
-                    return
                 }
 
                 pendingTimeMillis = SystemClock.elapsedRealtime() - startTimeMillis
                 pendingFrameId++
-                pendingFrameData = bytesToByteBuffer.get(data)
+                pendingFrameData = ByteBuffer.wrap(data)
+                if (!pendingFrameData!!.hasArray() || pendingFrameData!!.array() != data) {
+                    throw IllegalStateException("failed to create valid buffer for camera")
+                }
 
                 // notify processor thread if it is waiting on the next frame
                 processorLock.notifyAll()

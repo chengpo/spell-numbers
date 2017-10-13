@@ -36,6 +36,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.ViewGroup
 import java.io.IOException
+import com.google.android.gms.vision.CameraSource
 
 
 class CameraSourcePreview: ViewGroup {
