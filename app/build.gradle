@@ -8,7 +8,6 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "com.monkeyapp.numbers"
         minSdkVersion 15

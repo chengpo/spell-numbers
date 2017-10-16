@@ -297,7 +297,7 @@ class CameraSource(private val context: Context,
 
     private inner class CameraPreviewCallback : Camera.PreviewCallback {
         override fun onPreviewFrame(data: ByteArray?, camera: Camera?) {
-            Log.d(TAG, "receive preview frame")
+            Log.v(TAG, "receive preview frame")
             frameProcessor.setNextFrame(data!!)
         }
     }

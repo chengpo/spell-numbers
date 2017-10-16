@@ -4,8 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
-
 
     defaultConfig {
         minSdkVersion 15
@@ -34,7 +32,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile 'com.google.android.gms:play-services-vision:11.4.0'
+    compile 'com.google.android.gms:play-services-vision:11.4.2'
 
 }
 repositories {

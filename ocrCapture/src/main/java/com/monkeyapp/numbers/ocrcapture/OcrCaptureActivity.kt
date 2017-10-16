@@ -33,7 +33,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.GestureDetector
 import android.view.ScaleGestureDetector
 import com.google.android.gms.vision.text.TextRecognizer
-import com.google.android.gms.vision.CameraSource
 import android.util.Log
 import android.widget.Toast
 import android.content.Intent
@@ -108,8 +107,8 @@ class OcrCaptureActivity: AppCompatActivity() {
     }
 
     private fun onTap(rawX:Float, rawY:Float): Boolean {
-        val graphc = graphicOverlay.getGraphic(rawX, rawY)
-        val text = graphc?.textBlock
+        val graphic = graphicOverlay.getGraphic(rawX, rawY)
+        val text = graphic?.textBlock
         if (text?.value != null ) {
             val data = Intent()
             data.putExtra("text", text.value)
@@ -158,14 +157,14 @@ class OcrCaptureActivity: AppCompatActivity() {
         }
 
 
-        cameraSource = CameraSource.Builder(applicationContext, textRecognizer)
+        /*cameraSource = CameraSource.Builder(applicationContext, textRecognizer)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setRequestedPreviewSize(800, 640)
                 .setRequestedFps(15.0f)
                 .setAutoFocusEnabled(true)
-                .build()
+                .build()*/
 
-        //cameraSource = CameraSource(this, textRecognizer)
+        cameraSource = CameraSource(this, textRecognizer)
     }
 
     private fun startCameraSource() {
