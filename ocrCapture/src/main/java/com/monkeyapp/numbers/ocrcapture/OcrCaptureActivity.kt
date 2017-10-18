@@ -155,8 +155,6 @@ class OcrCaptureActivity: AppCompatActivity() {
             }
 
         }
-
-
         /*cameraSource = CameraSource.Builder(applicationContext, textRecognizer)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setRequestedPreviewSize(800, 640)
@@ -164,7 +162,8 @@ class OcrCaptureActivity: AppCompatActivity() {
                 .setAutoFocusEnabled(true)
                 .build()*/
 
-        cameraSource = CameraSource(this, textRecognizer)
+        cameraSource = CameraSource(applicationContext, textRecognizer)
+        cameraSource!!.debugView = debugView
     }
 
     private fun startCameraSource() {

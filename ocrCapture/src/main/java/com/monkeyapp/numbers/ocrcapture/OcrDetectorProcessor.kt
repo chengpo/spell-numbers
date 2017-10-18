@@ -47,7 +47,7 @@ class OcrDetectorProcessor(val overlay: OcrGraphicOverlay): Detector.Processor<T
     }
 
     override fun receiveDetections(detections: Detector.Detections<TextBlock>?) {
-        Log.d(TAG, "receive ${detections?.detectedItems?.size()} text blocks")
+        Log.v(TAG, "receive ${detections?.detectedItems?.size()} text blocks")
 
         overlay.clear()
 

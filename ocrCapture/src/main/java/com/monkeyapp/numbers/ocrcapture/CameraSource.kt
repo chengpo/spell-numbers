@@ -25,19 +25,24 @@ SOFTWARE.
 package com.monkeyapp.numbers.ocrcapture
 
 import android.content.Context
-import android.graphics.ImageFormat
+import android.graphics.*
 import android.hardware.Camera
+import android.media.Image
 import android.os.SystemClock
+import android.renderscript.*
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.WindowManager
+import android.widget.ImageView
 import com.google.android.gms.common.images.Size
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.text.TextBlock
+import java.io.ByteArrayOutputStream
 import java.lang.Exception
 import java.nio.ByteBuffer
+import java.util.*
 
 class CameraSource(private val context: Context,
                    private val detector: Detector<TextBlock>,
@@ -46,17 +51,18 @@ class CameraSource(private val context: Context,
                    private val requestedPreviewFps:Float = 15.0f) {
 
     private val TAG = "CameraSource"
-    private val ASPECT_RATIO_TOLERANCE = 0.01f
     private val DEFAULT_PREVIEW_IMAGE_FORMAT = ImageFormat.NV21
 
     private var rotation = 0
+
     var previewSize = Size(requestedPreviewWidth, requestedPreviewHeight)
+
+    var debugView:ImageView? = null
 
     private val frameProcessor = FrameProcessor()
     private var frameProcessorThread: Thread? = null
 
     private val cameraLock = Object()
-
 
     private val rearCameraId: Int by lazy {
         val cameraInfo = Camera.CameraInfo()
@@ -79,21 +85,15 @@ class CameraSource(private val context: Context,
             if (_camera == null && rearCameraId != -1) {
                 _camera = Camera.open(rearCameraId)
 
-                val sizePair = selectSizePair(_camera!!)
-                this.previewSize = sizePair.preview
-
-                // set picture size
-                if (sizePair.picture != null) {
-                    _camera!!.parameters.setPictureSize(
-                                             sizePair.picture.width,
-                                             sizePair.picture.height)
-                }
+                this.previewSize = selectBestPreviewSize(_camera!!)
 
                 // set preview size
                 _camera!!.parameters.setPreviewSize(
-                        sizePair.preview.width,
-                        sizePair.preview.height
+                        this.previewSize.width,
+                        this.previewSize.height
                 )
+
+                Log.d(TAG, "Preview Size(${this.previewSize.width}, ${this.previewSize.height})")
 
                 // set preview fps
                 val fpsRange = selectPreviewFpsRange(_camera!!, requestedPreviewFps)
@@ -101,6 +101,9 @@ class CameraSource(private val context: Context,
                     fpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
                     fpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]
                 )
+
+                Log.d(TAG, "FPS range ${fpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX]} - ${fpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]} ")
+
                 _camera!!.parameters.previewFormat = DEFAULT_PREVIEW_IMAGE_FORMAT
 
                 // set rotation
@@ -239,16 +242,13 @@ class CameraSource(private val context: Context,
         return selectedFpsRange
     }
 
-    private data class SizePair(val preview: Size, val picture: Size? = null)
-
-    private fun selectSizePair(camera: Camera): SizePair {
-        var sizePairList = getValidPreviewSizeList(camera)
-        var bestMatch = sizePairList[0]
+    private fun selectBestPreviewSize(camera: Camera): Size {
+        var bestMatch:Camera.Size = camera.parameters.supportedPreviewSizes[0]
         var minDiff = Int.MAX_VALUE
 
-        sizePairList.forEach {
-            val diff = Math.abs(it.preview.width - requestedPreviewWidth) +
-                    Math.abs(it.preview.height - requestedPreviewHeight)
+        camera.parameters.supportedPreviewSizes.forEach {
+            val diff = Math.abs(it.width - requestedPreviewWidth) +
+                    Math.abs(it.height - requestedPreviewHeight)
 
             if (diff < minDiff) {
                 bestMatch = it
@@ -256,39 +256,7 @@ class CameraSource(private val context: Context,
             }
         }
 
-        return bestMatch
-    }
-
-    private fun getValidPreviewSizeList(camera: Camera): List<SizePair> {
-        val supportedPreviewSizes = camera.parameters.supportedPreviewSizes
-        val supportedPictureSizes = camera.parameters.supportedPictureSizes
-
-        val _validPreviewSizes = mutableListOf<SizePair>()
-
-        for (previewSize in supportedPreviewSizes) {
-            val previewRatio = previewSize.width.toFloat() / previewSize.height.toFloat()
-
-            for (pictureSize in supportedPictureSizes) {
-                val pictureRatio = pictureSize.width.toFloat() / pictureSize.height.toFloat()
-                if (Math.abs(previewRatio - pictureRatio) < ASPECT_RATIO_TOLERANCE) {
-                    _validPreviewSizes.add(
-                            SizePair(Size(previewSize.width, previewSize.height),
-                                    Size(pictureSize.width, pictureSize.height)))
-
-                    break
-                }
-            }
-        }
-
-        if (_validPreviewSizes.isEmpty()) {
-            Log.w(TAG, "No preview sizes have a corresponding same-aspect-ratio picture size")
-
-            supportedPreviewSizes.forEach {
-                _validPreviewSizes.add(SizePair(Size(it.width, it.height)))
-            }
-        }
-
-        return _validPreviewSizes
+        return Size(bestMatch.width, bestMatch.height)
     }
 
     /***************************
@@ -365,16 +333,18 @@ class CameraSource(private val context: Context,
                         return
                     }
 
-                    // TODO: NV21 to bitmap
-                    //val img = YuvImage(pendingFrameData!!.array(), DEFAULT_PREVIEW_IMAGE_FORMAT,
-                    //        previewSize.width, previewSize.height, null)
-
                     outputFrame = Frame.Builder()
                             .setImageData(pendingFrameData, previewSize.width,
                                     previewSize.height, DEFAULT_PREVIEW_IMAGE_FORMAT)
                             .setId(pendingFrameId)
                             .setRotation(rotation)
                             .build()
+
+                    val bitmap = rsNV21ToRGB(pendingFrameData!!.array(), previewSize.width, previewSize.height)
+                    debugView?.post {
+                        debugView?.setImageBitmap(bitmap)
+                        Log.d(TAG, "bitmap size (${bitmap.width}, ${bitmap.height})")
+                    }
 
                     data = pendingFrameData!!
                     pendingFrameData = null
@@ -393,4 +363,26 @@ class CameraSource(private val context: Context,
             }
         }
     }
+
+    private fun rsNV21ToRGB(nv21: ByteArray, width:Int, height:Int): Bitmap {
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        val rs = RenderScript.create(context)
+        val yuvToRgbSc = ScriptIntrinsicYuvToRGB.create(rs, Element.U8_4(rs))
+
+        val yuvType = Type.Builder(rs, Element.U8(rs)).setX(nv21.size)
+        val _in = Allocation.createTyped(rs, yuvType.create(), Allocation.USAGE_SCRIPT)
+
+        val rgbaType = Type.Builder(rs, Element.RGBA_8888(rs)).setX(width).setY(height)
+        val _out = Allocation.createTyped(rs, rgbaType.create(), Allocation.USAGE_SCRIPT)
+
+        _in.copyFrom(nv21)
+
+        yuvToRgbSc.setInput(_in)
+        yuvToRgbSc.forEach(_out)
+
+        _out.copyTo(bitmap)
+        return bitmap
+    }
+
 }
