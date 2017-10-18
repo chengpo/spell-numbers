@@ -27,7 +27,6 @@ package com.monkeyapp.numbers.ocrcapture
 import android.content.Context
 import android.graphics.*
 import android.hardware.Camera
-import android.media.Image
 import android.os.SystemClock
 import android.renderscript.*
 import android.util.Log
@@ -39,10 +38,8 @@ import com.google.android.gms.common.images.Size
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.text.TextBlock
-import java.io.ByteArrayOutputStream
 import java.lang.Exception
 import java.nio.ByteBuffer
-import java.util.*
 
 class CameraSource(private val context: Context,
                    private val detector: Detector<TextBlock>,
@@ -85,39 +82,39 @@ class CameraSource(private val context: Context,
             if (_camera == null && rearCameraId != -1) {
                 _camera = Camera.open(rearCameraId)
 
+                val parameters = _camera!!.parameters
+
                 this.previewSize = selectBestPreviewSize(_camera!!)
 
                 // set preview size
-                _camera!!.parameters.setPreviewSize(
-                        this.previewSize.width,
-                        this.previewSize.height
-                )
-
+                parameters.setPreviewSize(this.previewSize.width, this.previewSize.height)
                 Log.d(TAG, "Preview Size(${this.previewSize.width}, ${this.previewSize.height})")
 
                 // set preview fps
                 val fpsRange = selectPreviewFpsRange(_camera!!, requestedPreviewFps)
-                _camera!!.parameters.setPreviewFpsRange(
+                parameters.setPreviewFpsRange(
                     fpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
                     fpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]
                 )
 
                 Log.d(TAG, "FPS range ${fpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX]} - ${fpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]} ")
 
-                _camera!!.parameters.previewFormat = DEFAULT_PREVIEW_IMAGE_FORMAT
+                parameters.previewFormat = DEFAULT_PREVIEW_IMAGE_FORMAT
 
                 // set rotation
-                setRotation(_camera!!, _camera!!.parameters, rearCameraId)
+                parameters.setRotation(selectRotation(_camera!!, rearCameraId))
 
                 // set focus mode
                 if (_camera!!.parameters.supportedFocusModes.contains(
                                     Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                    _camera!!.parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+                    parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
                 } else {
-                    _camera!!.parameters.focusMode = Camera.Parameters.FOCUS_MODE_AUTO
+                    parameters.focusMode = Camera.Parameters.FOCUS_MODE_AUTO
                 }
 
-                Log.i(TAG, "Camera focus mode = " + _camera!!.parameters.focusMode)
+                Log.i(TAG, "Camera focus mode = " + parameters.focusMode)
+
+                _camera!!.parameters = parameters
 
                 // set the needed four frame buffers
                 _camera!!.setPreviewCallback(CameraPreviewCallback())
@@ -189,7 +186,7 @@ class CameraSource(private val context: Context,
         return ByteArray(bufferSize)
     }
 
-    private fun setRotation(camera: Camera, parameters: Camera.Parameters, cameraId: Int) {
+    private fun selectRotation(camera: Camera, cameraId: Int): Int {
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val degrees = when (windowManager.defaultDisplay.rotation) {
             Surface.ROTATION_0 -> 0
@@ -217,7 +214,10 @@ class CameraSource(private val context: Context,
         this.rotation = angle / 90
 
         camera.setDisplayOrientation(displayAngle)
-        parameters.setRotation(angle)
+
+        Log.d(TAG, "display orientation $displayAngle, camera rotation $angle)")
+
+        return angle
     }
 
     private fun selectPreviewFpsRange(camera: Camera, requestedFps: Float = 30.0f): IntArray {
@@ -265,7 +265,10 @@ class CameraSource(private val context: Context,
 
     private inner class CameraPreviewCallback : Camera.PreviewCallback {
         override fun onPreviewFrame(data: ByteArray?, camera: Camera?) {
-            Log.v(TAG, "receive preview frame")
+            /*Log.v(TAG, "receive preview frame: " +
+                       "preview size (${camera!!.parameters.previewSize.width}, ${camera!!.parameters.previewSize.height})" +
+                       "format ${camera!!.parameters.previewFormat}")*/
+
             frameProcessor.setNextFrame(data!!)
         }
     }
@@ -340,14 +343,15 @@ class CameraSource(private val context: Context,
                             .setRotation(rotation)
                             .build()
 
-                    val bitmap = rsNV21ToRGB(pendingFrameData!!.array(), previewSize.width, previewSize.height)
-                    debugView?.post {
-                        debugView?.setImageBitmap(bitmap)
-                        Log.d(TAG, "bitmap size (${bitmap.width}, ${bitmap.height})")
-                    }
-
                     data = pendingFrameData!!
                     pendingFrameData = null
+
+
+                    val bitmap = rsNV21ToRGB(data!!.array(), previewSize.width, previewSize.height)
+                    debugView?.post {
+                        debugView?.setImageBitmap(bitmap)
+                        Log.v(TAG, "bitmap size (${bitmap.width}, ${bitmap.height})")
+                    }
                 }
 
                 try {
