@@ -84,9 +84,10 @@ class CameraSource(private val context: Context,
 
                 val parameters = _camera!!.parameters
 
-                this.previewSize = selectBestPreviewSize(_camera!!)
+                parameters.previewFormat = DEFAULT_PREVIEW_IMAGE_FORMAT
 
                 // set preview size
+                this.previewSize = selectBestPreviewSize(_camera!!)
                 parameters.setPreviewSize(this.previewSize.width, this.previewSize.height)
                 Log.d(TAG, "Preview Size(${this.previewSize.width}, ${this.previewSize.height})")
 
@@ -96,13 +97,11 @@ class CameraSource(private val context: Context,
                     fpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
                     fpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]
                 )
-
                 Log.d(TAG, "FPS range ${fpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX]} - ${fpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]} ")
 
-                parameters.previewFormat = DEFAULT_PREVIEW_IMAGE_FORMAT
-
                 // set rotation
-                parameters.setRotation(selectRotation(_camera!!, rearCameraId))
+                this.rotation = selectRotation(_camera!!, rearCameraId)
+                parameters.setRotation(this.rotation)
 
                 // set focus mode
                 if (_camera!!.parameters.supportedFocusModes.contains(
@@ -111,7 +110,6 @@ class CameraSource(private val context: Context,
                 } else {
                     parameters.focusMode = Camera.Parameters.FOCUS_MODE_AUTO
                 }
-
                 Log.i(TAG, "Camera focus mode = " + parameters.focusMode)
 
                 _camera!!.parameters = parameters
@@ -192,8 +190,7 @@ class CameraSource(private val context: Context,
             Surface.ROTATION_0 -> 0
             Surface.ROTATION_90 -> 90
             Surface.ROTATION_180 -> 180
-            Surface.ROTATION_270 -> 270
-            else -> 0
+            else -> 270
         }
 
         val cameraInfo = Camera.CameraInfo()
@@ -210,13 +207,9 @@ class CameraSource(private val context: Context,
             displayAngle = angle
         }
 
-        // This corresponds to the rotation constants in {@link Frame}
-        this.rotation = angle / 90
-
         camera.setDisplayOrientation(displayAngle)
 
         Log.d(TAG, "display orientation $displayAngle, camera rotation $angle)")
-
         return angle
     }
 
@@ -231,7 +224,7 @@ class CameraSource(private val context: Context,
                 .forEach {
                     val deltaMin = requestedFpsScaled - it[Camera.Parameters.PREVIEW_FPS_MIN_INDEX]
                     val deltaMax = requestedFpsScaled - it[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]
-                    var diff = Math.abs(deltaMin) + Math.abs(deltaMax)
+                    val diff = Math.abs(deltaMin) + Math.abs(deltaMax)
                     if (diff < minDiff) {
                         selectedFpsRange = it
                         minDiff = diff
@@ -336,13 +329,6 @@ class CameraSource(private val context: Context,
                         return
                     }
 
-                    outputFrame = Frame.Builder()
-                            .setImageData(pendingFrameData, previewSize.width,
-                                    previewSize.height, DEFAULT_PREVIEW_IMAGE_FORMAT)
-                            .setId(pendingFrameId)
-                            .setRotation(rotation)
-                            .build()
-
                     data = pendingFrameData!!
                     pendingFrameData = null
 
@@ -352,6 +338,19 @@ class CameraSource(private val context: Context,
                         debugView?.setImageBitmap(bitmap)
                         Log.v(TAG, "bitmap size (${bitmap.width}, ${bitmap.height})")
                     }
+
+                    outputFrame = Frame.Builder()
+                            .setBitmap(bitmap)
+                            .setId(pendingFrameId)
+                            .setRotation(0)
+                            .build()
+
+                    /*outputFrame = Frame.Builder()
+                           .setImageData(data, previewSize.width,
+                                   previewSize.height, DEFAULT_PREVIEW_IMAGE_FORMAT)
+                           .setId(pendingFrameId)
+                           .setRotation(rotation / 90)
+                           .build()*/
                 }
 
                 try {
@@ -386,7 +385,11 @@ class CameraSource(private val context: Context,
         yuvToRgbSc.forEach(_out)
 
         _out.copyTo(bitmap)
-        return bitmap
+
+        val matrix = Matrix()
+        matrix.postRotate(rotation.toFloat())
+
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
 }
