@@ -49,6 +49,8 @@
             android:padding="10dp"
             android:textAppearance="@style/WordTextAppearance"
             android:textIsSelectable="true"
+            android:lineSpacingMultiplier="1.2"
+            android:lineSpacingExtra="4dp"
             tools:text="One Thousands One Hundred Ninty Eight and 00 / 100"/>
         </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>

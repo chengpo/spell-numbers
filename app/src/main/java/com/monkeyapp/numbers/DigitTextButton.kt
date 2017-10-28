@@ -84,20 +84,16 @@ class DigitTextButton : ImageButton {
     }
 
     override fun onCreateDrawableState(extraSpace: Int): IntArray {
-        when (state) {
+        return when (state) {
             STATE_CLEAN -> {
                 val drawableState = super.onCreateDrawableState(extraSpace + 1)
                 View.mergeDrawableStates(drawableState, STATE_CLEAN_ID.toIntArray())
-                return drawableState
             }
-
             STATE_CAMERA -> {
                 val drawableState = super.onCreateDrawableState(extraSpace + 1)
                 View.mergeDrawableStates(drawableState, STATE_CAMERA_ID.toIntArray())
-                return drawableState
             }
-
-            else -> return super.onCreateDrawableState(extraSpace)
+            else -> super.onCreateDrawableState(extraSpace)
         }
     }
 }

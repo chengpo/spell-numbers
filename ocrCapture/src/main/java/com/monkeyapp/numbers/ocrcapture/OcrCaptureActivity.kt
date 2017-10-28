@@ -139,6 +139,10 @@ class OcrCaptureActivity: AppCompatActivity() {
                super.onTouchEvent(event)
     }
 
+    /**
+     * Create camera source for OCR
+     * @see <a href="https://codelabs.developers.google.com/codelabs/mobile-vision-ocr/">Google Play ocr service</a>
+     */
     private fun createCameraSource() {
         val textRecognizer = TextRecognizer.Builder(this).build()
         textRecognizer.setProcessor(OcrDetectorProcessor(graphicOverlay))

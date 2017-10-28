@@ -43,8 +43,8 @@ import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.NumberSpeller.LargeNumberException
 
 class MainActivity : AppCompatActivity() {
-    private val INTENT_ACTION_OCR_CAPTURE: String = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
-    private val BUNDLE_EXTRA_DIGITS : String = "bundle_extra_digits"
+    private val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
+    private val BUNDLE_EXTRA_DIGITS = "bundle_extra_digits"
     private val RC_OCR_CAPTURE = 1000
 
     private val composer = NumberComposer()
@@ -65,8 +65,7 @@ class MainActivity : AppCompatActivity() {
 
         digitTextButton.setCameraState()
     }
-
-    // TODO: google play ocr service https://codelabs.developers.google.com/codelabs/mobile-vision-ocr/
+    
     fun onDigitClicked(button: View) {
         try {
             when (button.id) {
@@ -82,15 +81,17 @@ class MainActivity : AppCompatActivity() {
                                 '.', in '0'..'9' -> composer.appendDigit(button.text[0])
                             }
             }
-        } catch (exception: LargeNumberException) {
-            composer.deleteDigit()
 
+            refreshDigitWords()
+        } catch (exception: LargeNumberException) {
             Snackbar.make(wordTextView, R.string.too_large_to_spell, Snackbar.LENGTH_LONG)
                     .setIcon(R.drawable.ic_error, android.R.color.holo_orange_light)
                     .show()
-        }
 
-        refreshDigitWords()
+            // revoke the last digit
+            composer.deleteDigit()
+            refreshDigitWords()
+        }
     }
 
     private fun refreshDigitWords() {
