@@ -28,33 +28,27 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.support.v4.app.ActivityCompat
 import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.ViewGroup
+import com.google.android.gms.common.images.Size
 import java.io.IOException
-
 
 class CameraSourcePreview: ViewGroup {
     private val TAG = "CameraSourcePreview"
     private val DEFAULT_VIEW_WIDTH = 320
     private val DEFAULT_VIEW_HEIGHT = 240
+    private val DEFAULT_VIEW_SIZE = Size(DEFAULT_VIEW_WIDTH, DEFAULT_VIEW_HEIGHT)
 
     private val surfaceView = SurfaceView(context)
+    private val ocrGraphicOverlay = OcrOverlayView(context)
 
     private var cameraSource: CameraSource? = null
     private var isSurfaceAvailable: Boolean = false
     private var isStartRequested: Boolean = false
-
-    private lateinit var overlay: OcrGraphicOverlay
-
-    private val isPortraitMode: Boolean
-        get() {
-            return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-        }
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -78,23 +72,17 @@ class CameraSourcePreview: ViewGroup {
         })
 
         addView(surfaceView)
+        addView(ocrGraphicOverlay)
     }
 
-    fun start(cameraSource: CameraSource, overlay: OcrGraphicOverlay) {
-        this.cameraSource = cameraSource
-        this.overlay = overlay
+    fun setCameraSource(_cameraSource: CameraSource?) {
+        if (_cameraSource == null) {
+            return
+        }
 
-        this.isStartRequested = true
+        cameraSource = _cameraSource
+        isStartRequested = true
         startIfReady()
-    }
-
-    fun stop() {
-        cameraSource?.stop()
-    }
-
-    fun release() {
-        cameraSource?.release()
-        cameraSource = null
     }
 
     @SuppressLint("MissingPermission")
@@ -102,40 +90,25 @@ class CameraSourcePreview: ViewGroup {
         try {
             val permissions = ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
             if (permissions == PackageManager.PERMISSION_GRANTED) {
-
                 if (isStartRequested and isSurfaceAvailable) {
                     cameraSource!!.start(surfaceView.holder)
-                    val size = cameraSource!!.previewSize
-                    val width = size.width
-                    val height = size.height
-
-                    val min = Math.min(width, height)
-                    val max = Math.max(width, height)
-
-                    if (isPortraitMode) {
-                        overlay.setCameraInfo(min, max)
-                    } else {
-                        overlay.setCameraInfo(max, min)
-                    }
-
-                    overlay.clear()
-
                     isStartRequested = false
                 }
             }
         } catch (e: IOException) {
-            Log.e(TAG, "Failed to start camera due to IOException")
+            Log.e(TAG, "Failed to setCameraSource camera due to IOException")
         } catch (e: SecurityException) {
-            Log.e(TAG, "Failed to start camera due to SecurityException")
+            Log.e(TAG, "Failed to setCameraSource camera due to SecurityException")
         }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        val size = cameraSource?.previewSize
-        var previewWidth = size?.width ?: DEFAULT_VIEW_WIDTH
-        var previewHeight = size?.height ?: DEFAULT_VIEW_HEIGHT
+        val size = cameraSource?.previewSize ?: DEFAULT_VIEW_SIZE
 
-        if (isPortraitMode) {
+        var previewWidth = size.width
+        var previewHeight = size.height
+
+        if (isPortraitMode()) {
             val tmp = previewWidth
             previewWidth = previewHeight
             previewHeight = tmp
@@ -149,22 +122,27 @@ class CameraSourcePreview: ViewGroup {
 
         val childWidth: Int
         val childHeight: Int
-        var childXOffset = 0
-        var childYOffset = 0
+        val childXOffset: Int
+        val childYOffset: Int
 
         if (widthRatio > heightRatio) {
             childWidth = viewWidth
             childHeight= (previewHeight * widthRatio).toInt()
+            childXOffset = 0
             childYOffset = (childHeight - viewHeight) / 2
         } else {
             childWidth = (previewWidth * heightRatio).toInt()
             childHeight = viewHeight
             childXOffset = (childWidth - viewWidth) / 2
+            childYOffset = 0
         }
 
         for (i in 0 until childCount) {
-            getChildAt(i).layout(-1 * childXOffset, -1 * childYOffset,
-                    childWidth - childXOffset, childHeight - childYOffset)
+            getChildAt(i)
+                    .layout(-1 * childXOffset,
+                            -1 * childYOffset,
+                            childWidth - childXOffset,
+                            childHeight - childYOffset)
         }
 
         startIfReady()

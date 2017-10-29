@@ -30,28 +30,27 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
-import android.view.GestureDetector
 import android.view.ScaleGestureDetector
 import com.google.android.gms.vision.text.TextRecognizer
 import android.util.Log
 import android.widget.Toast
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
 import android.view.MotionEvent
 import kotlinx.android.synthetic.main.activity_ocr_capture.*
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.CommonStatusCodes
-import java.io.IOException
+import com.google.android.gms.vision.Detector
+import com.google.android.gms.vision.Frame
+import com.google.android.gms.vision.text.TextBlock
 
 class OcrCaptureActivity: AppCompatActivity() {
     private val TAG = "OcrCaptureActivity"
-    private val RC_HANDLE_CAMERA_PERM = 2
-    private val RC_HANDLE_GMS = 9001
 
-    private var scaleGestureDetector: ScaleGestureDetector? = null
-    private var gestureDetector: GestureDetector? = null
+    private lateinit var scaleGestureDetector: ScaleGestureDetector
     private var cameraSource: CameraSource? = null
+    private var textRecognizer: Detector<TextBlock>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,13 +63,6 @@ class OcrCaptureActivity: AppCompatActivity() {
         } else {
             requestCameraPermission()
         }
-
-        gestureDetector = GestureDetector(this, object: GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                return onTap(e?.rawX ?: 0f, e?.rawY ?: 0f) ||
-                       super.onSingleTapConfirmed(e)
-            }
-        })
 
         scaleGestureDetector = ScaleGestureDetector(this,
                 object:ScaleGestureDetector.SimpleOnScaleGestureListener(){
@@ -91,33 +83,33 @@ class OcrCaptureActivity: AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        startCameraSource()
+
+        // Check that the device has play services available.
+        val code = GoogleApiAvailability
+                .getInstance()
+                .isGooglePlayServicesAvailable(applicationContext)
+
+        if (code != ConnectionResult.SUCCESS) {
+             GoogleApiAvailability
+                     .getInstance()
+                     .getErrorDialog(this, code, /*RC_HANDLE_GMS*/9001)
+                     .show()
+        }
+
+        cameraSourcePreview.setCameraSource(cameraSource)
     }
 
     override fun onPause() {
         super.onPause()
 
-        preview.stop()
+        cameraSource?.stop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        preview.release()
-    }
-
-    private fun onTap(rawX:Float, rawY:Float): Boolean {
-        val graphic = graphicOverlay.getGraphic(rawX, rawY)
-        val text = graphic?.textBlock
-        if (text?.value != null ) {
-            val data = Intent()
-            data.putExtra("text", text.value)
-            setResult(CommonStatusCodes.SUCCESS, data)
-            finish()
-            return true
-        }
-
-        return false
+        cameraSource?.release()
+        textRecognizer?.release()
     }
 
     private fun requestCameraPermission() {
@@ -125,7 +117,7 @@ class OcrCaptureActivity: AppCompatActivity() {
 
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.CAMERA)) {
-            ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM)
+            ActivityCompat.requestPermissions(this, permissions, /*RC_HANDLE_CAMERA_PERM*/2)
             return
         }
 
@@ -133,63 +125,66 @@ class OcrCaptureActivity: AppCompatActivity() {
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-
-        return scaleGestureDetector!!.onTouchEvent(event) ||
-               gestureDetector!!.onTouchEvent(event) ||
+        return scaleGestureDetector.onTouchEvent(event) ||
                super.onTouchEvent(event)
     }
 
     /**
      * Create camera source for OCR
-     * @see <a href="https://codelabs.developers.google.com/codelabs/mobile-vision-ocr/">Google Play ocr service</a>
+     * @see <a href="https://codelabs.developers.google.com/codelabs/mobile-vision-ocr/">Google Play Mobile Vision OCR</a>
      */
     private fun createCameraSource() {
-        val textRecognizer = TextRecognizer.Builder(this).build()
-        textRecognizer.setProcessor(OcrDetectorProcessor(graphicOverlay))
+        textRecognizer = TextRecognizer.Builder(this).build()
+        textRecognizer!!.setProcessor(OcrDetectorProcessor())
 
-        if (!textRecognizer.isOperational) {
-            Log.w(TAG,  "Detector dependencies are not yet available.")
+        if (!textRecognizer!!.isOperational) {
+            Log.e(TAG, "Text recognizer dependencies are not yet available.")
 
-            val lowstorageFilter = IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW)
-            val hasLowStorage = registerReceiver(null, lowstorageFilter) != null
+            val lowStorageFilter = IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW)
+            val hasLowStorage = registerReceiver(null, lowStorageFilter) != null
 
             if (hasLowStorage) {
                 Toast.makeText(this, R.string.low_storage_error, Toast.LENGTH_LONG).show()
-                Log.w(TAG, getString(R.string.low_storage_error))
+                Log.e(TAG, getString(R.string.low_storage_error))
             }
-
         }
-        /*cameraSource = CameraSource.Builder(applicationContext, textRecognizer)
-                .setFacing(CameraSource.CAMERA_FACING_BACK)
-                .setRequestedPreviewSize(800, 640)
-                .setRequestedFps(15.0f)
-                .setAutoFocusEnabled(true)
-                .build()*/
 
-        cameraSource = CameraSource(applicationContext, textRecognizer)
-        cameraSource!!.debugView = debugView
+        cameraSource = CameraSource(applicationContext, object: CameraSource.Callback {
+            override fun onReceiveFrameBitmap(bitmap: Bitmap, frameId: Int) {
+                val outputFrame = Frame.Builder()
+                        .setBitmap(bitmap)
+                        .setId(frameId)
+                        .setRotation(0)
+                        .build()
+
+                debugView?.post {
+                    debugView?.setImageBitmap(bitmap)
+                    Log.v(TAG, "bitmap size (${bitmap.width}, ${bitmap.height})")
+                }
+
+                textRecognizer!!.detect(outputFrame)
+            }
+        })
     }
 
-    private fun startCameraSource() {
-        // Check that the device has play services available.
-        val code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
-                applicationContext)
-        if (code != ConnectionResult.SUCCESS) {
-            val dlg = GoogleApiAvailability.getInstance().getErrorDialog(this, code, RC_HANDLE_GMS)
-            dlg.show()
+    inner class OcrDetectorProcessor : Detector.Processor<TextBlock> {
+        override fun release() {
         }
 
-        try {
-            if (cameraSource != null) {
-                preview.start(cameraSource!!, graphicOverlay)
-            }
+        override fun receiveDetections(detections: Detector.Detections<TextBlock>?) {
+            /*
+            val items = detections?.detectedItems
+            val size = items?.size() ?: 0
 
-        } catch (e : IOException) {
-            Log.e(TAG, "Get IOException when start camera source")
-            cameraSource?.stop()
-        } catch (e : SecurityException) {
-            Log.e(TAG, "Get SecurityException when start camera source")
-            cameraSource?.stop()
+            for (i in 0 until size) {
+                val textBlock = items!!.get(i)
+                if (textBlock != null) {
+                    val graphic = OcrGraphic(overlay, textBlock, rectPaint, textPaint)
+
+                  //  overlay.add(graphic)
+                }
+            }
+             */
         }
     }
 }

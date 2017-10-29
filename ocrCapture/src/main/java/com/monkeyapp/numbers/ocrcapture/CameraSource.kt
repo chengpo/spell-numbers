@@ -33,34 +33,30 @@ import android.util.Log
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.WindowManager
-import android.widget.ImageView
 import com.google.android.gms.common.images.Size
-import com.google.android.gms.vision.Detector
-import com.google.android.gms.vision.Frame
-import com.google.android.gms.vision.text.TextBlock
 import java.lang.Exception
 import java.nio.ByteBuffer
 
 class CameraSource(private val context: Context,
-                   private val detector: Detector<TextBlock>,
+                   private val callback:CameraSource.Callback,
                    private val requestedPreviewWidth:Int = 800,
                    private val requestedPreviewHeight:Int = 640,
                    private val requestedPreviewFps:Float = 15.0f) {
 
+    interface Callback {
+        fun onReceiveFrameBitmap(bitmap: Bitmap, frameId:Int)
+    }
+
     private val TAG = "CameraSource"
     private val DEFAULT_PREVIEW_IMAGE_FORMAT = ImageFormat.NV21
 
-    private var rotation = 0
-
     var previewSize = Size(requestedPreviewWidth, requestedPreviewHeight)
 
-    var debugView:ImageView? = null
-
+    private var rotation = 0
     private val frameProcessor = FrameProcessor()
     private var frameProcessorThread: Thread? = null
 
     private val cameraLock = Object()
-
     private val rearCameraId: Int by lazy {
         val cameraInfo = Camera.CameraInfo()
         var cameraId = -1
@@ -172,7 +168,6 @@ class CameraSource(private val context: Context,
     fun release() {
         synchronized(cameraLock) {
             stop()
-            detector.release()
         }
     }
 
@@ -310,8 +305,8 @@ class CameraSource(private val context: Context,
         }
 
         override fun run() {
-            var outputFrame: Frame? = null
             var data: ByteBuffer? = null
+            var frameId = 0
 
             while (true) {
                 synchronized(processorLock) {
@@ -330,21 +325,9 @@ class CameraSource(private val context: Context,
                     }
 
                     data = pendingFrameData!!
+                    frameId = pendingFrameId
+
                     pendingFrameData = null
-
-
-                    val bitmap = rsNV21ToRGB(data!!.array(), previewSize.width, previewSize.height)
-                    debugView?.post {
-                        debugView?.setImageBitmap(bitmap)
-                        Log.v(TAG, "bitmap size (${bitmap.width}, ${bitmap.height})")
-                    }
-
-                    outputFrame = Frame.Builder()
-                            .setBitmap(bitmap)
-                            .setId(pendingFrameId)
-                            .setRotation(0)
-                            .build()
-
                     /*outputFrame = Frame.Builder()
                            .setImageData(data, previewSize.width,
                                    previewSize.height, DEFAULT_PREVIEW_IMAGE_FORMAT)
@@ -354,7 +337,8 @@ class CameraSource(private val context: Context,
                 }
 
                 try {
-                    detector.receiveFrame(outputFrame)
+                    val bitmap = rsNV21ToRGB(data!!.array(), previewSize.width, previewSize.height)
+                    callback.onReceiveFrameBitmap(bitmap, frameId)
                 } catch (e: Exception) {
                     Log.e(TAG, "Exception thrown from detector receiver", e)
                 } finally {
@@ -362,7 +346,6 @@ class CameraSource(private val context: Context,
                         camera.addCallbackBuffer(data!!.array())
                     }
                 }
-
             }
         }
     }

@@ -30,7 +30,7 @@ import android.graphics.RectF
 import com.google.android.gms.vision.text.TextBlock
 
 
-class OcrGraphic(val overlay: OcrGraphicOverlay,
+class OcrGraphic(val overlay: OcrOverlayView,
                  val textBlock: TextBlock,
                  val rectPaint: Paint,
                  val textPaint: Paint) {
