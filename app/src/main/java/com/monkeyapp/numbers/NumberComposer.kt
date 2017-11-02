@@ -25,11 +25,11 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 class NumberComposer {
-    var integerDigits = mutableListOf<Char>()
-    var fractionDigits = mutableListOf<Char>()
-    var isFictional: Boolean = false
+    private var integerDigits = mutableListOf<Char>()
+    private var fractionDigits = mutableListOf<Char>()
+    private var isFictional: Boolean = false
 
-    val number: String
+    val digitStr: String
         get() {
             if (isFictional) {
                 if (integerDigits.isEmpty() && fractionDigits.isEmpty()) {
@@ -37,24 +37,24 @@ class NumberComposer {
                 }
 
                 if (integerDigits.isEmpty()) {
-                    return "0." + fractionStr
+                    return "0.$fractionStr"
                 }
 
-                return integerStr + "." + fractionStr
+                return "$integerStr.$fractionStr"
             }
 
             return integerStr
         }
 
-    val fractionStr: String
+    private val fractionStr: String
         get() {
             return fractionDigits.joinToString(separator = "")
         }
 
-    val integerStr: String
+    private val integerStr: String
         get() {
             val integerWithComma = mutableListOf<Char>()
-            var i: Int = 0
+            var i = 0
 
             integerDigits.reversed().forEach {
                 if (i > 0 && i % 3 == 0) {

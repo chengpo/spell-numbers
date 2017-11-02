@@ -24,6 +24,7 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
@@ -43,10 +44,18 @@ import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.NumberSpeller.LargeNumberException
 
 class MainActivity : AppCompatActivity() {
-    private val BUNDLE_EXTRA_DIGITS : String = "bundle_extra_digits"
+    private val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
+    private val BUNDLE_EXTRA_DIGITS = "bundle_extra_digits"
+    private val RC_OCR_CAPTURE = 1000
 
-    val composer = NumberComposer()
-    val speller = NumberSpeller()
+    private val composer = NumberComposer()
+    private val speller = NumberSpeller()
+
+    private val isCameraAvailable: Boolean
+        get() {
+            return  packageManager.queryIntentActivities(
+                    Intent(INTENT_ACTION_OCR_CAPTURE), 0).isNotEmpty()
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,35 +63,48 @@ class MainActivity : AppCompatActivity() {
 
         val myToolbar = findViewById<View>(R.id.my_toolbar) as Toolbar
         setSupportActionBar(myToolbar)
-    }
 
-    fun onDigitClicked(digitButton: View) {
+        digitTextButton.setCameraState()
+    }
+    
+    fun onDigitClicked(button: View) {
         try {
-            when (digitButton.id) {
+            when (button.id) {
                 R.id.btnDel -> composer.deleteDigit()
-                R.id.btnClean -> composer.cleanDigit()
-                else -> if (digitButton is Button)
-                            when (digitButton.text[0]) {
-                                '.', in '0'..'9' -> composer.appendDigit(digitButton.text[0])
+                R.id.digitTextButton -> {
+                    if (button is DigitTextButton) {
+                        button.onClicked()
+                    }
+
+                }
+                else -> if (button is Button)
+                            when (button.text[0]) {
+                                '.', in '0'..'9' -> composer.appendDigit(button.text[0])
                             }
             }
 
-            if (composer.number.isBlank()) {
-                wordTextView.text = ""
-                btnClean.visibility = View.INVISIBLE
-            } else {
-                btnClean.visibility = View.VISIBLE
-                wordTextView.text = speller.spell(composer.integers, composer.fractions)
-            }
+            refreshDigitWords()
         } catch (exception: LargeNumberException) {
-            composer.deleteDigit()
-
             Snackbar.make(wordTextView, R.string.too_large_to_spell, Snackbar.LENGTH_LONG)
                     .setIcon(R.drawable.ic_error, android.R.color.holo_orange_light)
                     .show()
-        }
 
-        digitTextView.text = composer.number
+            // revoke the last digit
+            composer.deleteDigit()
+            refreshDigitWords()
+        }
+    }
+
+    private fun refreshDigitWords() {
+        digitTextView.text = composer.digitStr
+
+        if (digitTextView.text.isNullOrEmpty()) {
+            wordTextView.text = ""
+            digitTextButton.setCameraState()
+        } else {
+            wordTextView.text = speller.spell(composer.integers, composer.fractions)
+            digitTextButton.setCleanState()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -97,15 +119,7 @@ class MainActivity : AppCompatActivity() {
 
         digits?.forEach { composer.appendDigit(it) }
 
-        digitTextView.text = digits
-
-        if (composer.number.isBlank()) {
-            wordTextView.text = ""
-            btnClean.visibility = View.INVISIBLE
-        } else {
-            btnClean.visibility = View.VISIBLE
-            wordTextView.text = speller.spell(composer.integers, composer.fractions)
-        }
+        refreshDigitWords()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -114,13 +128,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+        return when (item?.itemId) {
             R.id.action_about -> {
                 val intent = Intent(this, AboutActivity::class.java)
                 startActivity(intent)
+                return true
             }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
+            val number = data?.getStringExtra("number") ?: ""
+
+            if (number.isNotBlank()) {
+                composer.cleanDigit()
+                number.forEach { composer.appendDigit(it) }
+                refreshDigitWords()
+            }
+
+        }
     }
 
     private fun NumberSpeller.spell(integers : Long, decimals: Float): String {
@@ -150,5 +179,30 @@ class MainActivity : AppCompatActivity() {
         snackText.compoundDrawablePadding = resources.getDimensionPixelOffset(R.dimen.snackbar_icon_padding)
 
         return this
+    }
+
+    private fun DigitTextButton.onClicked() {
+        when (state) {
+            DigitTextButton.STATE_CLEAN -> composer.cleanDigit()
+            DigitTextButton.STATE_CAMERA -> {
+                val intent = Intent()
+                intent.action = INTENT_ACTION_OCR_CAPTURE
+                startActivityForResult(intent, RC_OCR_CAPTURE)
+            }
+        }
+    }
+
+    private fun DigitTextButton.setCameraState() {
+        if (isCameraAvailable) {
+            digitTextButton.state = DigitTextButton.STATE_CAMERA
+        } else {
+            digitTextButton.state = DigitTextButton.STATE_CLEAN
+            digitTextButton.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun DigitTextButton.setCleanState() {
+        digitTextButton.state = DigitTextButton.STATE_CLEAN
+        digitTextView.visibility = View.VISIBLE
     }
 }

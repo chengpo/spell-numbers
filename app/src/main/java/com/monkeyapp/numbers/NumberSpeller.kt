@@ -27,7 +27,7 @@ package com.monkeyapp.numbers
 class NumberSpeller {
     class LargeNumberException : IllegalArgumentException("Number is too large to spellInteger")
 
-    val NUM_WORDS: IntArray = intArrayOf(
+    private val NUM_WORDS: IntArray = intArrayOf(
             R.string.num_zero,
             R.string.num_one,
             R.string.num_two,
@@ -75,15 +75,15 @@ class NumberSpeller {
                 return arrayListOf(NUM_WORDS[step.toInt()], R.string.num_hundred).plus(
                         if (integer % 100 > 0) spellInteger(integer % 100) else emptyList())
             }
-            in 1000..1000 * 1000 - 1 -> {
+            in 1000 until 1000 * 1000 -> {
                 return spellInteger(integer / 1000).plus(arrayListOf(R.string.num_thousand)).plus(
                         if (integer % 1000 > 0) spellInteger(integer % 1000) else emptyList())
             }
-            in 1000 * 1000..1000 * 1000 * 1000 - 1 -> {
+            in 1000 * 1000 until 1000 * 1000 * 1000 -> {
                 return spellInteger(integer / (1000 * 1000)).plus(arrayListOf(R.string.num_million)).plus(
                         if (integer % (1000 * 1000) > 0) spellInteger(integer % (1000 * 1000)) else emptyList())
             }
-            in 1000 * 1000 * 1000..1000 * 1000 * 1000 * 1000L - 1 -> {
+            in 1000 * 1000 * 1000 until 1000 * 1000 * 1000 * 1000L-> {
                 return spellInteger(integer / (1000 * 1000 * 1000)).plus(arrayListOf(R.string.num_billion)).plus(
                         if (integer % (1000 * 1000 * 1000) > 0) spellInteger(integer % (1000 * 1000 * 1000)) else emptyList())
             }

@@ -13,16 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageButton
-            android:id="@+id/btnClean"
+        <com.monkeyapp.numbers.DigitTextButton
+            android:id="@+id/digitTextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:onClick="onDigitClicked"
-            android:tint="@color/primary_text"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/ic_clear"
-            tools:visibility="visible"/>
+            android:tint="@color/primary_text"/>
 
         <TextView
             android:id="@+id/digitTextView"
@@ -52,6 +49,8 @@
             android:padding="10dp"
             android:textAppearance="@style/WordTextAppearance"
             android:textIsSelectable="true"
+            android:lineSpacingMultiplier="1.2"
+            android:lineSpacingExtra="4dp"
             tools:text="One Thousands One Hundred Ninty Eight and 00 / 100"/>
         </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>

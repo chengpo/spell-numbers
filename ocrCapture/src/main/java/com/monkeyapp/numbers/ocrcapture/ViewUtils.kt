@@ -22,25 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+package com.monkeyapp.numbers.ocrcapture
 
-package com.monkeyapp.numbers
+import android.content.res.Configuration
+import android.view.View
 
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-
-import kotlinx.android.synthetic.main.activity_about.*
-import kotlinx.android.synthetic.main.content_about.*
-
-class AboutActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
-        setSupportActionBar(toolbar)
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        appVersionView.text = getString(R.string.version, BuildConfig.VERSION_NAME)
-    }
-
+fun View.isPortraitMode(): Boolean {
+    return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 }
