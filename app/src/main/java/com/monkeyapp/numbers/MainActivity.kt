@@ -24,6 +24,7 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
@@ -134,6 +135,20 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
+            val number = data?.getStringExtra("number") ?: ""
+
+            if (number.isNotBlank()) {
+                composer.cleanDigit()
+                number.forEach { composer.appendDigit(it) }
+                refreshDigitWords()
+            }
+
         }
     }
 

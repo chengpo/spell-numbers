@@ -26,6 +26,7 @@ SOFTWARE.
 package com.monkeyapp.numbers.ocrcapture
 
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
@@ -44,6 +45,7 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.text.TextBlock
+import java.util.regex.Pattern
 
 class OcrCaptureActivity: AppCompatActivity() {
     private val TAG = "OcrCaptureActivity"
@@ -170,6 +172,9 @@ class OcrCaptureActivity: AppCompatActivity() {
     }
 
     inner class OcrDetectorProcessor : Detector.Processor<TextBlock> {
+        private val numberPattern = Pattern.compile("(\\d+[\\s,.-]\\d+)")
+        private val textBlockMap = mutableMapOf<String, Int>()
+
         override fun release() {
             Log.v("OcrDetectorProcessor", "Released")
         }
@@ -181,7 +186,24 @@ class OcrCaptureActivity: AppCompatActivity() {
             for (i in 0 until size) {
                 val textBlock = items!!.get(i)
                 if (textBlock != null) {
-                    Log.v("OcrDetectorProcessor", "Detect text: ${textBlock.value}")
+                    val matcher = numberPattern.matcher(textBlock.value)
+                    while (matcher.find()) {
+                        val number = matcher.group()
+                        if (number.isNotBlank()) {
+                            Log.v("OcrDetectorProcessor", "Detect number: ${matcher.group()}")
+
+                            val count = textBlockMap[number]
+                            val total = if (count != null) count + 1 else 1
+                            textBlockMap.put(number, total)
+
+                            if (total >= 5) {
+                                val data = Intent()
+                                data.putExtra("number", number)
+                                setResult(Activity.RESULT_OK, data)
+                                finish()
+                            }
+                        }
+                    }
                 }
             }
         }
