@@ -17,6 +17,16 @@
 
     </com.monkeyapp.numbers.ocrcapture.CameraSourcePreview>
 
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-5dp"
+        android:layout_gravity="top"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:indeterminateTint="#009688"
+        android:indeterminate="true"
+        android:scaleY="1.5"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
