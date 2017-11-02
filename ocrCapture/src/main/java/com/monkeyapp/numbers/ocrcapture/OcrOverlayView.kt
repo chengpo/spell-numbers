@@ -34,8 +34,10 @@ class OcrOverlayView : View {
     val widthScaleFactor = 1.0f
     val heightScaleFactor = 1.0f
 
-    val captureRectWidthFactor = 0.7f
-    val captureRectHeightFactor = 0.1f
+    companion object {
+        val captureRectWidthFactor = 0.7f
+        val captureRectHeightFactor = 0.1f
+    }
 
     private val captureRect = RectF()
     private val viewRect = RectF()

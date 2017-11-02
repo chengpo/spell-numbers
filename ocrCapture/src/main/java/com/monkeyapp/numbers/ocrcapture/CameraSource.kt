@@ -305,9 +305,6 @@ class CameraSource(private val context: Context,
         }
 
         override fun run() {
-            var data: ByteBuffer? = null
-            var frameId = 0
-
             while (true) {
                 synchronized(processorLock) {
                     while (activate && (pendingFrameData == null)) {
@@ -324,28 +321,26 @@ class CameraSource(private val context: Context,
                         return
                     }
 
-                    data = pendingFrameData!!
-                    frameId = pendingFrameId
-
-                    pendingFrameData = null
                     /*outputFrame = Frame.Builder()
                            .setImageData(data, previewSize.width,
                                    previewSize.height, DEFAULT_PREVIEW_IMAGE_FORMAT)
                            .setId(pendingFrameId)
                            .setRotation(rotation / 90)
                            .build()*/
-                }
 
-                try {
-                    val bitmap = rsNV21ToRGB(data!!.array(), previewSize.width, previewSize.height)
-                    callback.onReceiveFrameBitmap(bitmap, frameId)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Exception thrown from detector receiver", e)
-                } finally {
-                    synchronized(processorLock) {
-                        camera.addCallbackBuffer(data!!.array())
+                    try {
+                        val bitmap = rsNV21ToRGB(pendingFrameData!!.array(), previewSize.width, previewSize.height)
+
+                        callback.onReceiveFrameBitmap(bitmap, pendingFrameId)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Exception thrown from detector receiver", e)
+                    } finally {
+                        camera.addCallbackBuffer(pendingFrameData!!.array())
+                        pendingFrameData = null
                     }
                 }
+
+
             }
         }
     }

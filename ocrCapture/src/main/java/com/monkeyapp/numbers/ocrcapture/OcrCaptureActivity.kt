@@ -150,41 +150,43 @@ class OcrCaptureActivity: AppCompatActivity() {
         }
 
         cameraSource = CameraSource(applicationContext, object: CameraSource.Callback {
-            override fun onReceiveFrameBitmap(bitmap: Bitmap, frameId: Int) {
+            override fun onReceiveFrameBitmap(bitmap: Bitmap, frameId:Int) {
+                // crop frame bitmap from camera
+                val height = bitmap.height * OcrOverlayView.captureRectHeightFactor
+                val width = bitmap.width * OcrOverlayView.captureRectWidthFactor
+                val x = (bitmap.width - width) / 2
+                val y = (bitmap.height - height) / 2
+
+                val croppedBitmap = Bitmap.createBitmap(bitmap,
+                                                        x.toInt(), y.toInt(),
+                                                        width.toInt(), height.toInt(), null, true)
+
                 val outputFrame = Frame.Builder()
-                        .setBitmap(bitmap)
+                        .setBitmap(croppedBitmap)
                         .setId(frameId)
                         .setRotation(0)
                         .build()
 
-                debugView?.post {
-                    debugView?.setImageBitmap(bitmap)
-                    Log.v(TAG, "bitmap size (${bitmap.width}, ${bitmap.height})")
-                }
-
-                textRecognizer!!.detect(outputFrame)
+                textRecognizer!!.receiveFrame(outputFrame)
             }
         })
     }
 
     inner class OcrDetectorProcessor : Detector.Processor<TextBlock> {
         override fun release() {
+            Log.v("OcrDetectorProcessor", "Released")
         }
 
         override fun receiveDetections(detections: Detector.Detections<TextBlock>?) {
-            /*
             val items = detections?.detectedItems
             val size = items?.size() ?: 0
 
             for (i in 0 until size) {
                 val textBlock = items!!.get(i)
                 if (textBlock != null) {
-                    val graphic = OcrGraphic(overlay, textBlock, rectPaint, textPaint)
-
-                  //  overlay.add(graphic)
+                    Log.v("OcrDetectorProcessor", "Detect text: ${textBlock.value}")
                 }
             }
-             */
         }
     }
 }
