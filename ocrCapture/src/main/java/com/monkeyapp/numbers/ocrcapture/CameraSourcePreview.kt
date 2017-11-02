@@ -44,7 +44,6 @@ class CameraSourcePreview: ViewGroup {
     private val DEFAULT_VIEW_SIZE = Size(DEFAULT_VIEW_WIDTH, DEFAULT_VIEW_HEIGHT)
 
     private val surfaceView = SurfaceView(context)
-    private val ocrGraphicOverlay = OcrOverlayView(context)
 
     private var cameraSource: CameraSource? = null
     private var isSurfaceAvailable: Boolean = false
@@ -72,7 +71,6 @@ class CameraSourcePreview: ViewGroup {
         })
 
         addView(surfaceView)
-        addView(ocrGraphicOverlay)
     }
 
     fun setCameraSource(_cameraSource: CameraSource?) {

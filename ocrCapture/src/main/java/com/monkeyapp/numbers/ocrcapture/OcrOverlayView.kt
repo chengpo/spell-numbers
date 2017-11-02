@@ -31,15 +31,10 @@ import android.util.AttributeSet
 import android.view.View
 
 class OcrOverlayView : View {
-    val widthScaleFactor = 1.0f
-    val heightScaleFactor = 1.0f
+    private val captureRectWidthFactor = 0.7f
+    private val captureRectHeightFactor = 0.1f
 
-    companion object {
-        val captureRectWidthFactor = 0.7f
-        val captureRectHeightFactor = 0.1f
-    }
-
-    private val captureRect = RectF()
+    private var captureRect = RectF()
     private val viewRect = RectF()
     private val rectPaint = Paint()
     private val shadowPaint = Paint()
@@ -58,22 +53,31 @@ class OcrOverlayView : View {
         shadowPaint.style = Paint.Style.FILL
     }
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-
-        val viewWidth = (right - left).toFloat()
-        val viewHeight = (bottom - top).toFloat()
+    fun translateCaptureRect(viewWidth:Int, viewHeight:Int): RectF {
 
         val captureRectWidth = viewWidth * captureRectWidthFactor
         val captureRectHeight = viewHeight * captureRectHeightFactor
 
         val rectLeft = (viewWidth - captureRectWidth) / 2F
-        val rectTop = (viewHeight - captureRectHeight) / 2F
+        val rectTop = if (isPortraitMode())
+                        (viewHeight/2 - captureRectHeight) / 2F
+                      else
+                        (viewHeight - captureRectHeight) / 2F
+
         val rectRight = rectLeft + captureRectWidth
         val rectBottom = rectTop + captureRectHeight
 
-        captureRect.set(rectLeft, rectTop, rectRight, rectBottom)
-        viewRect.set(0F, 0F, viewWidth, viewHeight)
+        return RectF(rectLeft, rectTop, rectRight, rectBottom)
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+
+        val viewWidth = right - left
+        val viewHeight = bottom - top
+
+        captureRect = translateCaptureRect(viewWidth, viewHeight)
+        viewRect.set(0F, 0F, viewWidth.toFloat(), viewHeight.toFloat())
     }
 
     override fun onDraw(canvas: Canvas?) {

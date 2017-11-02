@@ -144,22 +144,19 @@ class OcrCaptureActivity: AppCompatActivity() {
             val hasLowStorage = registerReceiver(null, lowStorageFilter) != null
 
             if (hasLowStorage) {
-                Toast.makeText(this, R.string.low_storage_error, Toast.LENGTH_LONG).show()
-                Log.e(TAG, getString(R.string.low_storage_error))
+                Toast.makeText(this, R.string.ocr_low_storage_error, Toast.LENGTH_LONG).show()
+                Log.e(TAG, getString(R.string.ocr_low_storage_error))
             }
         }
 
         cameraSource = CameraSource(applicationContext, object: CameraSource.Callback {
             override fun onReceiveFrameBitmap(bitmap: Bitmap, frameId:Int) {
                 // crop frame bitmap from camera
-                val height = bitmap.height * OcrOverlayView.captureRectHeightFactor
-                val width = bitmap.width * OcrOverlayView.captureRectWidthFactor
-                val x = (bitmap.width - width) / 2
-                val y = (bitmap.height - height) / 2
+                val cropRect = ocrOverlayView.translateCaptureRect(bitmap.width, bitmap.height)
 
                 val croppedBitmap = Bitmap.createBitmap(bitmap,
-                                                        x.toInt(), y.toInt(),
-                                                        width.toInt(), height.toInt(), null, true)
+                                                        cropRect.left.toInt(), cropRect.top.toInt(),
+                                                        cropRect.width().toInt(), cropRect.height().toInt(), null, true)
 
                 val outputFrame = Frame.Builder()
                         .setBitmap(croppedBitmap)

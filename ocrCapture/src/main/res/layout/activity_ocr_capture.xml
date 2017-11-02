@@ -10,5 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.monkeyapp.numbers.ocrcapture.OcrOverlayView
+            android:id="@+id/ocrOverlayView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
     </com.monkeyapp.numbers.ocrcapture.CameraSourcePreview>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="30dp"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+        android:text="@string/ocr_keep_numbers_within_box"/>
 </FrameLayout>
