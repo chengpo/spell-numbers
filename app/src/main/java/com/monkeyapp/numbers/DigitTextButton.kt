@@ -49,9 +49,27 @@ class DigitTextButton : ImageButton {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
+    var isCameraAvailable = false
+
     var state : Int = STATE_CAMERA
         set(value) {
-            field = value
+            when(value) {
+                STATE_CAMERA -> {
+                    if (isCameraAvailable) {
+                        field = STATE_CAMERA
+
+                    } else {
+                        // hide button when camera is not available
+                        visibility = View.INVISIBLE
+                        field = STATE_CLEAN
+                    }
+                }
+                STATE_CLEAN -> {
+                    visibility = View.VISIBLE
+                    field = STATE_CLEAN
+                }
+            }
+
             refreshDrawableState()
         }
 

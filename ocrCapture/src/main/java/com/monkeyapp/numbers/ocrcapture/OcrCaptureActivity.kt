@@ -48,7 +48,7 @@ import com.google.android.gms.vision.text.TextBlock
 import java.util.regex.Pattern
 
 class OcrCaptureActivity: AppCompatActivity() {
-    private val TAG = "OcrCaptureActivity"
+    private val RC_HANDLE_CAMERA_PERM = 200
 
     private lateinit var scaleGestureDetector: ScaleGestureDetector
     private var cameraSource: CameraSource? = null
@@ -116,14 +116,19 @@ class OcrCaptureActivity: AppCompatActivity() {
 
     private fun requestCameraPermission() {
         val permissions = arrayOf(Manifest.permission.CAMERA)
+        ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM)
+    }
 
-        if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.CAMERA)) {
-            ActivityCompat.requestPermissions(this, permissions, /*RC_HANDLE_CAMERA_PERM*/2)
-            return
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == RC_HANDLE_CAMERA_PERM &&
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            createCameraSource()
+        } else {
+            finish()
         }
-
-        // show dialog for requesting camera permission rational
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -140,14 +145,14 @@ class OcrCaptureActivity: AppCompatActivity() {
         textRecognizer!!.setProcessor(OcrDetectorProcessor())
 
         if (!textRecognizer!!.isOperational) {
-            Log.e(TAG, "Text recognizer dependencies are not yet available.")
+            Log.e("OcrCaptureActivity", "Text recognizer dependencies are not yet available.")
 
             val lowStorageFilter = IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW)
             val hasLowStorage = registerReceiver(null, lowStorageFilter) != null
 
             if (hasLowStorage) {
                 Toast.makeText(this, R.string.ocr_low_storage_error, Toast.LENGTH_LONG).show()
-                Log.e(TAG, getString(R.string.ocr_low_storage_error))
+                Log.e("OcrCaptureActivity", getString(R.string.ocr_low_storage_error))
             }
         }
 

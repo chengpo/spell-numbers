@@ -55,4 +55,6 @@
     <string name="num_billion">Billion</string>
 
     <string name="too_large_to_spell">Oops, the number is too large to spell!</string>
+    <string name="rate_spell_numbers">Would you mind rate Spell Numbers?</string>
+    <string name="rate_sure">Sure</string>
 </resources>

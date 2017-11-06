@@ -57,7 +57,7 @@ class NumberSpeller {
             R.string.num_eighty,
             R.string.num_ninety)
 
-    fun spellDecimal(decimals: Float): String {
+    fun spellFractions(decimals: Float): String {
         val cents = Math.round(decimals * 100)
         return  String.format("%02d / 100", cents)
     }

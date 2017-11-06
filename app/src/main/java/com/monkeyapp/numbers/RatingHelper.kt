@@ -22,24 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-
 package com.monkeyapp.numbers
 
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.support.design.widget.Snackbar
+import kotlinx.android.synthetic.main.content_number_word.*
 
-import kotlinx.android.synthetic.main.activity_about.*
-import kotlinx.android.synthetic.main.content_about.*
+// TODO ask for rating
+fun MainActivity.rateApp() {
+    Snackbar.make(wordTextView, R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE)
+            .setAction(R.string.rate_sure,  {
+                    // TODO goto google play
 
-class AboutActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
-        setSupportActionBar(toolbar)
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        appVersionView.text = getString(R.string.version, BuildConfig.VERSION_NAME)
-    }
+            })
+            .show()
 }
