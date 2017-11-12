@@ -38,6 +38,7 @@ import android.widget.Toast
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.graphics.RectF
 import android.view.MotionEvent
 import kotlinx.android.synthetic.main.activity_ocr_capture.*
 import com.google.android.gms.common.GoogleApiAvailability
@@ -53,6 +54,7 @@ class OcrCaptureActivity: AppCompatActivity() {
     private lateinit var scaleGestureDetector: ScaleGestureDetector
     private var cameraSource: CameraSource? = null
     private var textRecognizer: Detector<TextBlock>? = null
+    private var scaleHelper: ScaleHelper = ScaleHelper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -159,7 +161,7 @@ class OcrCaptureActivity: AppCompatActivity() {
         cameraSource = CameraSource(applicationContext, object: CameraSource.Callback {
             override fun onReceiveFrameBitmap(bitmap: Bitmap, frameId:Int) {
                 // crop frame bitmap from camera
-                val cropRect = ocrOverlayView.translateCaptureRect(bitmap.width, bitmap.height)
+                val cropRect = ocrOverlayView.calculateCaptureRect(bitmap.width, bitmap.height)
 
                 val croppedBitmap = Bitmap.createBitmap(bitmap,
                                                         cropRect.left.toInt(), cropRect.top.toInt(),
@@ -171,13 +173,30 @@ class OcrCaptureActivity: AppCompatActivity() {
                         .setRotation(0)
                         .build()
 
+                scaleHelper = ScaleHelper(bitmap.width, bitmap.height,
+                                          ocrOverlayView.width, ocrOverlayView.height)
+
                 textRecognizer!!.receiveFrame(outputFrame)
             }
         })
     }
 
+    private class ScaleHelper(frameWidth:Int = 1, frameHeight:Int = 1,
+                              viewWidth:Int = 1, viewHeight: Int = 1) {
+        private val scaleX = viewWidth / frameWidth.toFloat()
+        private val scaleY = viewHeight / frameHeight.toFloat()
+
+        fun transX(x:Float): Float {
+            return x * scaleX
+        }
+
+        fun transY(y:Float): Float {
+            return y * scaleY
+        }
+    }
+
     inner class OcrDetectorProcessor : Detector.Processor<TextBlock> {
-        private val numberPattern = Pattern.compile("(\\d+[\\s,.-]\\d+)")
+        private val numberPattern = Pattern.compile("(\\d+[\\s,.-]?\\d+)")
         private val textBlockMap = mutableMapOf<String, Int>()
 
         override fun release() {
@@ -187,6 +206,11 @@ class OcrCaptureActivity: AppCompatActivity() {
         override fun receiveDetections(detections: Detector.Detections<TextBlock>?) {
             val items = detections?.detectedItems
             val size = items?.size() ?: 0
+            val ocrGraphics = mutableListOf<OcrGraphic>()
+
+            if (textBlockMap.size > 100) {
+                textBlockMap.clear()
+            }
 
             for (i in 0 until size) {
                 val textBlock = items!!.get(i)
@@ -201,6 +225,16 @@ class OcrCaptureActivity: AppCompatActivity() {
                             val total = if (count != null) count + 1 else 1
                             textBlockMap.put(number, total)
 
+                            var rect = RectF(textBlock.boundingBox)
+                            rect.left = scaleHelper.transX(rect.left)
+                            rect.top = scaleHelper.transY(rect.top)
+                            rect.right = scaleHelper.transX(rect.right)
+                            rect.bottom = scaleHelper.transX(rect.bottom)
+
+                            rect = ocrOverlayView.posInCaptureRect(rect)
+
+                            ocrGraphics.add(OcrGraphic(rect))
+
                             if (total >= 5) {
                                 val data = Intent()
                                 data.putExtra("number", number)
@@ -211,6 +245,8 @@ class OcrCaptureActivity: AppCompatActivity() {
                     }
                 }
             }
+
+            ocrOverlayView.ocrGraphicList = ocrGraphics
         }
     }
 }

@@ -34,10 +34,22 @@ class OcrOverlayView : View {
     private val captureRectWidthFactor = 0.7f
     private val captureRectHeightFactor = 0.1f
 
-    private var captureRect = RectF()
     private val viewRect = RectF()
     private val rectPaint = Paint()
     private val shadowPaint = Paint()
+    private val ocrGraphicPaint = Paint()
+
+    private var captureRect = RectF()
+    var ocrGraphicList: List<OcrGraphic> = emptyList()
+        set(ocrGraphics) {
+            synchronized(this) {
+                field = ocrGraphics
+            }
+
+            post({
+                invalidate()
+            })
+        }
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -47,13 +59,17 @@ class OcrOverlayView : View {
     init {
         rectPaint.color = Color.WHITE
         rectPaint.style = Paint.Style.STROKE
-        rectPaint.strokeWidth = 4.0f
+        rectPaint.strokeWidth = 6.0f
 
-        shadowPaint.color = ContextCompat.getColor(context, R.color.ocr_graphic_overlay_bg)
+        shadowPaint.color = ContextCompat.getColor(context, R.color.ocr_overlay_view_bg)
         shadowPaint.style = Paint.Style.FILL
+
+        ocrGraphicPaint.color = ContextCompat.getColor(context, R.color.ocr_graphic_outline)
+        ocrGraphicPaint.style = Paint.Style.STROKE
+        ocrGraphicPaint.strokeWidth = 6.0f
     }
 
-    fun translateCaptureRect(viewWidth:Int, viewHeight:Int): RectF {
+    fun calculateCaptureRect(viewWidth:Int, viewHeight:Int): RectF {
 
         val captureRectWidth = viewWidth * captureRectWidthFactor
         val captureRectHeight = viewHeight * captureRectHeightFactor
@@ -70,25 +86,41 @@ class OcrOverlayView : View {
         return RectF(rectLeft, rectTop, rectRight, rectBottom)
     }
 
+    fun posInCaptureRect(rect:RectF): RectF {
+        rect.offset(captureRect.left, captureRect.top)
+        return rect
+    }
+
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
 
         val viewWidth = right - left
         val viewHeight = bottom - top
 
-        captureRect = translateCaptureRect(viewWidth, viewHeight)
+        captureRect = calculateCaptureRect(viewWidth, viewHeight)
         viewRect.set(0F, 0F, viewWidth.toFloat(), viewHeight.toFloat())
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas!!)
-        canvas.save()
 
+        // draw the capture rectangle
         canvas.drawRect(captureRect, rectPaint)
 
+        // draw shadow background outsize of the capture rectangle
+        canvas.save()
         canvas.clipRect(captureRect, Region.Op.DIFFERENCE)
         canvas.drawRect(viewRect, shadowPaint)
-
         canvas.restore()
+
+        // draw captured text outlines
+        var ocrGraphics = emptyList<OcrGraphic>()
+        synchronized(this) {
+            ocrGraphics = ocrGraphicList
+        }
+
+        ocrGraphics.forEach({
+            it.draw(canvas, ocrGraphicPaint)
+        })
     }
 }
