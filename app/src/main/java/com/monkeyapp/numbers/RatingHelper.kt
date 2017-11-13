@@ -24,15 +24,37 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
+import android.content.ActivityNotFoundException
 import android.support.design.widget.Snackbar
 import kotlinx.android.synthetic.main.content_number_word.*
+import android.content.Intent
+import android.net.Uri
 
-// TODO ask for rating
+
+const val SP_RATE_APP = "SP_RATE_APP"
+const val SP_KEY_IS_RATED = "SP_KEY_IS_RATED"
+
 fun MainActivity.rateApp() {
-    Snackbar.make(wordTextView, R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE)
-            .setAction(R.string.rate_sure,  {
-                    // TODO goto google play
+    val pkgInfo = packageManager.getPackageInfo(packageName, 0)
 
-            })
-            .show()
+    val installedMoreThanTwoDays = System.currentTimeMillis() - pkgInfo.firstInstallTime > 2 * 24 * 60 * 60 * 1000
+    val isRated = getSharedPreferences(SP_RATE_APP, 0).getBoolean(SP_KEY_IS_RATED, false)
+
+    if (installedMoreThanTwoDays && !isRated) {
+        Snackbar.make(wordTextView, R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.rate_sure, {
+                    try {
+                        startActivity(
+                                Intent(Intent.ACTION_VIEW,
+                                       Uri.parse("market://details?id=$packageName")))
+                    } catch (e: ActivityNotFoundException) {
+                        startActivity(
+                                Intent(Intent.ACTION_VIEW,
+                                       Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+                    }
+
+                    getSharedPreferences(SP_RATE_APP, 0).edit().putBoolean(SP_KEY_IS_RATED, true).apply()
+                })
+                .show()
+    }
 }

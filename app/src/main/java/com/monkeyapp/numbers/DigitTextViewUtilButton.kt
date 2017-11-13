@@ -35,7 +35,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageButton
 
-class DigitTextButton : ImageButton {
+class DigitTextViewUtilButton : ImageButton {
     private val STATE_CLEAN_ID = arrayListOf(R.attr.state_clear)
     private val STATE_CAMERA_ID = arrayListOf(R.attr.state_camera)
 

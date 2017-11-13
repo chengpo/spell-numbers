@@ -58,8 +58,9 @@ class MainActivity : AppCompatActivity() {
                                                     Intent(INTENT_ACTION_OCR_CAPTURE), 0)
                                             .isNotEmpty()
 
-        digitTextButton.state = DigitTextButton.STATE_CAMERA
+        digitTextButton.state = DigitTextViewUtilButton.STATE_CAMERA
 
+        rateApp()
     }
     
     fun onDigitClicked(button: View) {
@@ -67,10 +68,10 @@ class MainActivity : AppCompatActivity() {
             when (button.id) {
                 R.id.btnDel -> composer.deleteDigit()
                 R.id.digitTextButton -> {
-                    if (button is DigitTextButton) {
+                    if (button is DigitTextViewUtilButton) {
                         when (button.state) {
-                            DigitTextButton.STATE_CLEAN -> composer.cleanDigit()
-                            DigitTextButton.STATE_CAMERA -> {
+                            DigitTextViewUtilButton.STATE_CLEAN -> composer.cleanDigit()
+                            DigitTextViewUtilButton.STATE_CAMERA -> {
                                 val intent = Intent()
                                 intent.action = INTENT_ACTION_OCR_CAPTURE
                                 startActivityForResult(intent, RC_OCR_CAPTURE)
@@ -102,10 +103,10 @@ class MainActivity : AppCompatActivity() {
 
         if (digitTextView.text.isNullOrEmpty()) {
             wordTextView.text = ""
-            digitTextButton.state = DigitTextButton.STATE_CAMERA
+            digitTextButton.state = DigitTextViewUtilButton.STATE_CAMERA
         } else {
             wordTextView.text = spellNumbers()
-            digitTextButton.state = DigitTextButton.STATE_CLEAN
+            digitTextButton.state = DigitTextViewUtilButton.STATE_CLEAN
         }
     }
 
