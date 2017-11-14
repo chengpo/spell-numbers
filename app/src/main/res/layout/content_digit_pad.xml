@@ -5,7 +5,7 @@
         <Button
             android:id="@+id/btnSeven"
             style="@style/DigitButtonStyle"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:text="@string/digit_seven"
             app:layout_columnWeight="1"
             app:layout_gravity="fill"
@@ -13,7 +13,7 @@
 
         <Button
             android:id="@+id/btnEight"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:text="@string/digit_eight"
             style="@style/DigitButtonStyle"
             app:layout_columnWeight="1"
@@ -22,7 +22,7 @@
 
         <Button
             android:id="@+id/btnNine"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:text="@string/digit_nine"
             style="@style/DigitButtonStyle"
             app:layout_columnWeight="1"
@@ -31,7 +31,7 @@
 
         <Button
             android:id="@+id/btnFour"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:text="@string/digit_four"
             style="@style/DigitButtonStyle"
             app:layout_columnWeight="1"
@@ -40,7 +40,7 @@
 
         <Button
             android:id="@+id/btnFive"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:text="@string/digit_five"
             style="@style/DigitButtonStyle"
             app:layout_columnWeight="1"
@@ -49,7 +49,7 @@
 
         <Button
             android:id="@+id/btnSix"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:text="@string/digit_six"
             style="@style/DigitButtonStyle"
             app:layout_columnWeight="1"
@@ -58,7 +58,7 @@
 
         <Button
             android:id="@+id/btnOne"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:text="@string/digit_one"
             style="@style/DigitButtonStyle"
             app:layout_columnWeight="1"
@@ -67,7 +67,7 @@
 
         <Button
             android:id="@+id/btnTwo"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:text="@string/digit_two"
             style="@style/DigitButtonStyle"
             app:layout_columnWeight="1"
@@ -76,7 +76,7 @@
 
         <Button
             android:id="@+id/btnThree"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:text="@string/digit_three"
             style="@style/DigitButtonStyle"
             app:layout_columnWeight="1"
@@ -85,7 +85,7 @@
 
         <Button
             android:id="@+id/btnDot"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:text="@string/dot"
             style="@style/DigitButtonStyle"
             app:layout_columnWeight="1"
@@ -94,7 +94,7 @@
 
         <Button
             android:id="@+id/btnZero"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:text="@string/digit_zero"
             style="@style/DigitButtonStyle"
             app:layout_columnWeight="1"
@@ -104,7 +104,7 @@
         <ImageButton
             android:id="@+id/btnDel"
             style="@style/DigitButtonStyle"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:text="@string/del"
             android:tint="@color/primary_text"
             app:layout_columnWeight="1"

@@ -22,10 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers.ocrcapture
 
-import android.content.res.Configuration
-import android.view.View
+package com.monkeyapp.numbers.helper
 
-fun View.isPortraitMode(): Boolean =
-        resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+import android.support.design.widget.Snackbar
+import android.support.graphics.drawable.VectorDrawableCompat
+import android.support.v4.content.ContextCompat
+import android.widget.TextView
+import com.monkeyapp.numbers.R
+
+fun Snackbar.setIcon(drawbleId: Int, tintColorId: Int): Snackbar {
+    val errorDrawable = VectorDrawableCompat.create(context.resources, drawbleId, context.theme)!!
+
+    errorDrawable.tintColor(ContextCompat.getColor(context, tintColorId))
+    val snackText : TextView = view.findViewById(android.support.design.R.id.snackbar_text)
+
+    view.setBackgroundColor(ContextCompat.getColor(context, R.color.primary_dark))
+    snackText.setCompoundDrawablesWithIntrinsicBounds(errorDrawable, null, null, null)
+    snackText.compoundDrawablePadding = context.resources.getDimensionPixelOffset(R.dimen.snackbar_icon_padding)
+
+    return this
+}

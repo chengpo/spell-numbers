@@ -36,6 +36,8 @@ import android.view.View
 import android.widget.Button
 import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.NumberSpeller.LargeNumberException
+import com.monkeyapp.numbers.helper.rateApp
+import com.monkeyapp.numbers.helper.setIcon
 
 class MainActivity : AppCompatActivity() {
     private val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
@@ -45,7 +47,6 @@ class MainActivity : AppCompatActivity() {
     private val composer = NumberComposer()
     private val speller = NumberSpeller()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -53,25 +54,25 @@ class MainActivity : AppCompatActivity() {
         val myToolbar = findViewById<View>(R.id.my_toolbar) as Toolbar
         setSupportActionBar(myToolbar)
 
-        digitTextButton.isCameraAvailable = packageManager
+        omniButton.isCameraAvailable = packageManager
                                             .queryIntentActivities(
                                                     Intent(INTENT_ACTION_OCR_CAPTURE), 0)
                                             .isNotEmpty()
 
-        digitTextButton.state = DigitTextViewUtilButton.STATE_CAMERA
+        omniButton.state = OmniButton.STATE_CAMERA
 
         rateApp()
     }
     
-    fun onDigitClicked(button: View) {
+    fun onButtonClicked(button: View) {
         try {
             when (button.id) {
                 R.id.btnDel -> composer.deleteDigit()
-                R.id.digitTextButton -> {
-                    if (button is DigitTextViewUtilButton) {
+                R.id.omniButton -> {
+                    if (button is OmniButton) {
                         when (button.state) {
-                            DigitTextViewUtilButton.STATE_CLEAN -> composer.cleanDigit()
-                            DigitTextViewUtilButton.STATE_CAMERA -> {
+                            OmniButton.STATE_CLEAN -> composer.cleanDigit()
+                            OmniButton.STATE_CAMERA -> {
                                 val intent = Intent()
                                 intent.action = INTENT_ACTION_OCR_CAPTURE
                                 startActivityForResult(intent, RC_OCR_CAPTURE)
@@ -103,10 +104,10 @@ class MainActivity : AppCompatActivity() {
 
         if (digitTextView.text.isNullOrEmpty()) {
             wordTextView.text = ""
-            digitTextButton.state = DigitTextViewUtilButton.STATE_CAMERA
+            omniButton.state = OmniButton.STATE_CAMERA
         } else {
             wordTextView.text = spellNumbers()
-            digitTextButton.state = DigitTextViewUtilButton.STATE_CLEAN
+            omniButton.state = OmniButton.STATE_CLEAN
         }
     }
 
@@ -161,7 +162,6 @@ class MainActivity : AppCompatActivity() {
                 number.forEach { composer.appendDigit(it) }
                 refreshDigitWords()
             }
-
         }
     }
 }

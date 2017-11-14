@@ -22,32 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-
-package com.monkeyapp.numbers
+package com.monkeyapp.numbers.helper
 
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
-import android.support.design.widget.Snackbar
-import android.support.graphics.drawable.VectorDrawableCompat
-import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
-import android.widget.TextView
 
-fun Snackbar.setIcon(drawbleId: Int, tintColorId: Int): Snackbar {
-    var errorIcon = VectorDrawableCompat.create(context.resources, drawbleId, context.theme) as Drawable
-    val errorColor = ContextCompat.getColor(context, tintColorId)
+fun Drawable.tintColor(tintColor: Int): Drawable {
+    val drawable = DrawableCompat.wrap(mutate())
 
-    errorIcon = errorIcon.mutate()
-    errorIcon = DrawableCompat.wrap(errorIcon)
+    DrawableCompat.setTint(drawable, tintColor)
+    DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN)
 
-    DrawableCompat.setTint(errorIcon, errorColor)
-    DrawableCompat.setTintMode(errorIcon, PorterDuff.Mode.SRC_IN)
-
-    val snackText : TextView = view.findViewById(android.support.design.R.id.snackbar_text)
-
-    view.setBackgroundColor(ContextCompat.getColor(context, R.color.primary_dark))
-    snackText.setCompoundDrawablesWithIntrinsicBounds(errorIcon, null, null, null)
-    snackText.compoundDrawablePadding = context.resources.getDimensionPixelOffset(R.dimen.snackbar_icon_padding)
-
-    return this
+    return drawable
 }

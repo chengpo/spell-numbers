@@ -46,6 +46,7 @@ class OcrOverlayView : View {
                 field = ocrGraphics
             }
 
+            // run on main thread
             post({
                 invalidate()
             })
@@ -70,7 +71,6 @@ class OcrOverlayView : View {
     }
 
     fun calculateCaptureRect(viewWidth:Int, viewHeight:Int): RectF {
-
         val captureRectWidth = viewWidth * captureRectWidthFactor
         val captureRectHeight = viewHeight * captureRectHeightFactor
 

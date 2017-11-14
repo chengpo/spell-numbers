@@ -13,12 +13,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.monkeyapp.numbers.DigitTextViewUtilButton
-            android:id="@+id/digitTextButton"
+        <com.monkeyapp.numbers.OmniButton
+            android:id="@+id/omniButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:onClick="onDigitClicked"
+            android:onClick="onButtonClicked"
             android:tint="@color/primary_text"/>
 
         <TextView

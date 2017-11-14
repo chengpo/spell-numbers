@@ -25,24 +25,22 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 import android.content.Context
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.StateListDrawable
 import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageButton
+import com.monkeyapp.numbers.helper.tintColor
 
-class DigitTextViewUtilButton : ImageButton {
-    private val STATE_CLEAN_ID = arrayListOf(R.attr.state_clear)
-    private val STATE_CAMERA_ID = arrayListOf(R.attr.state_camera)
-
+class OmniButton : ImageButton {
     companion object {
         val STATE_CLEAN = 1
         val STATE_CAMERA = 2
     }
+
+    private val clearStateId = arrayListOf(R.attr.state_clear)
+    private val cameraStateId = arrayListOf(R.attr.state_camera)
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -76,40 +74,28 @@ class DigitTextViewUtilButton : ImageButton {
     init {
         val digitTextButtonDrawable = StateListDrawable()
 
-        val clearDrawable = VectorDrawableCompat.create(resources, R.drawable.ic_clear, context.theme) as Drawable
+        val clearDrawable = VectorDrawableCompat.create(resources, R.drawable.ic_clear, context.theme)!!
         digitTextButtonDrawable.addState(
                 arrayListOf(R.attr.state_clear).toIntArray(),
-                clearDrawable.tintColor(R.color.primary_text))
+                clearDrawable.tintColor(ContextCompat.getColor(context, R.color.primary_text)))
 
-        val cameraDrawable = VectorDrawableCompat.create(resources, R.drawable.ic_camera, context.theme) as Drawable
+        val cameraDrawable = VectorDrawableCompat.create(resources, R.drawable.ic_camera, context.theme)!!
         digitTextButtonDrawable.addState(
                 arrayListOf(R.attr.state_camera).toIntArray(),
-                cameraDrawable.tintColor(R.color.primary_text))
+                cameraDrawable.tintColor(ContextCompat.getColor(context, R.color.primary_text)))
 
         setImageDrawable(digitTextButtonDrawable)
-    }
-
-    private fun Drawable.tintColor(tintColorId: Int): Drawable {
-        val tintColor = ContextCompat.getColor(context, tintColorId)
-
-        var drawable = mutate()
-        drawable = DrawableCompat.wrap(drawable)
-
-        DrawableCompat.setTint(drawable, tintColor)
-        DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN)
-
-        return drawable
     }
 
     override fun onCreateDrawableState(extraSpace: Int): IntArray {
         return when (state) {
             STATE_CLEAN -> {
                 val drawableState = super.onCreateDrawableState(extraSpace + 1)
-                View.mergeDrawableStates(drawableState, STATE_CLEAN_ID.toIntArray())
+                View.mergeDrawableStates(drawableState, clearStateId.toIntArray())
             }
             STATE_CAMERA -> {
                 val drawableState = super.onCreateDrawableState(extraSpace + 1)
-                View.mergeDrawableStates(drawableState, STATE_CAMERA_ID.toIntArray())
+                View.mergeDrawableStates(drawableState, cameraStateId.toIntArray())
             }
             else -> super.onCreateDrawableState(extraSpace)
         }

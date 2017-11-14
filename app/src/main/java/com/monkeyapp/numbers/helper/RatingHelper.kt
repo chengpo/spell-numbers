@@ -22,39 +22,56 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers
+package com.monkeyapp.numbers.helper
 
 import android.content.ActivityNotFoundException
 import android.support.design.widget.Snackbar
 import kotlinx.android.synthetic.main.content_number_word.*
 import android.content.Intent
 import android.net.Uri
-
+import android.support.v7.app.AppCompatActivity
+import com.monkeyapp.numbers.R
 
 const val SP_RATE_APP = "SP_RATE_APP"
 const val SP_KEY_IS_RATED = "SP_KEY_IS_RATED"
+const val SP_KEY_LAST_PROMPT_TIME = "SP_KEY_LAST_PROMPT_TIME"
 
-fun MainActivity.rateApp() {
+fun AppCompatActivity.rateApp() {
     val pkgInfo = packageManager.getPackageInfo(packageName, 0)
 
-    val installedMoreThanTwoDays = System.currentTimeMillis() - pkgInfo.firstInstallTime > 2 * 24 * 60 * 60 * 1000
+    val lastPromptTime = getSharedPreferences(SP_RATE_APP, 0).getLong(SP_KEY_LAST_PROMPT_TIME, pkgInfo.firstInstallTime)
+
+    val shouldPrompt = System.currentTimeMillis() - lastPromptTime > 2 * 24 * 60 * 60 * 1000
     val isRated = getSharedPreferences(SP_RATE_APP, 0).getBoolean(SP_KEY_IS_RATED, false)
 
-    if (installedMoreThanTwoDays && !isRated) {
+    if (shouldPrompt && !isRated) {
         Snackbar.make(wordTextView, R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.rate_sure, {
                     try {
                         startActivity(
                                 Intent(Intent.ACTION_VIEW,
-                                       Uri.parse("market://details?id=$packageName")))
+                                       Uri.parse("market://details?id=com.monkeyapp.numbers")))
                     } catch (e: ActivityNotFoundException) {
                         startActivity(
                                 Intent(Intent.ACTION_VIEW,
-                                       Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+                                       Uri.parse("https://play.google.com/store/apps/details?id=com.monkeyapp.numbers")))
                     }
 
-                    getSharedPreferences(SP_RATE_APP, 0).edit().putBoolean(SP_KEY_IS_RATED, true).apply()
+                    getSharedPreferences(SP_RATE_APP, 0)
+                            .edit()
+                            .putBoolean(SP_KEY_IS_RATED, true)
+                            .apply()
                 })
+                .addCallback(object :Snackbar.Callback() {
+                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                        super.onDismissed(transientBottomBar, event)
+                        getSharedPreferences(SP_RATE_APP, 0)
+                                .edit()
+                                .putLong(SP_KEY_LAST_PROMPT_TIME, System.currentTimeMillis())
+                                .apply()
+                    }
+                })
+                .setIcon(R.drawable.ic_rate_app, R.color.accent)
                 .show()
     }
 }
