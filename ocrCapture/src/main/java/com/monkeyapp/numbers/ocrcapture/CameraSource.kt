@@ -42,13 +42,14 @@ class CameraSource(private val context: Context,
                    private val requestedPreviewWidth:Int = 800,
                    private val requestedPreviewHeight:Int = 640,
                    private val requestedPreviewFps:Float = 15.0f) {
+    companion object {
+        private const val TAG = "CameraSource"
+        private const val DEFAULT_PREVIEW_IMAGE_FORMAT = ImageFormat.NV21
+    }
 
     interface Callback {
         fun onReceiveFrameBitmap(bitmap: Bitmap, frameId:Int)
     }
-
-    private val TAG = "CameraSource"
-    private val DEFAULT_PREVIEW_IMAGE_FORMAT = ImageFormat.NV21
 
     var previewSize = Size(requestedPreviewWidth, requestedPreviewHeight)
 
@@ -369,5 +370,4 @@ class CameraSource(private val context: Context,
 
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
-
 }

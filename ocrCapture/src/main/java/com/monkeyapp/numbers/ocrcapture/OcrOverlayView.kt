@@ -31,8 +31,10 @@ import android.util.AttributeSet
 import android.view.View
 
 class OcrOverlayView : View {
-    private val captureRectWidthFactor = 0.7f
-    private val captureRectHeightFactor = 0.1f
+    companion object {
+        private const val CAPTURE_RECT_WIDTH_FACTOR = 0.7f
+        private const val CAPTURE_RECT_HEIGHT_FACTOR = 0.1f
+    }
 
     private val viewRect = RectF()
     private val rectPaint = Paint()
@@ -71,8 +73,8 @@ class OcrOverlayView : View {
     }
 
     fun calculateCaptureRect(viewWidth:Int, viewHeight:Int): RectF {
-        val captureRectWidth = viewWidth * captureRectWidthFactor
-        val captureRectHeight = viewHeight * captureRectHeightFactor
+        val captureRectWidth = viewWidth * CAPTURE_RECT_WIDTH_FACTOR
+        val captureRectHeight = viewHeight * CAPTURE_RECT_HEIGHT_FACTOR
 
         val rectLeft = (viewWidth - captureRectWidth) / 2F
         val rectTop = if (isPortraitMode())

@@ -48,8 +48,10 @@ import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.text.TextBlock
 import java.util.regex.Pattern
 
-class OcrCaptureActivity: AppCompatActivity() {
-    private val RC_HANDLE_CAMERA_PERM = 200
+class OcrCaptureActivity : AppCompatActivity() {
+    companion object {
+        private const val RC_HANDLE_CAMERA_PERM = 200
+    }
 
     private lateinit var scaleGestureDetector: ScaleGestureDetector
     private var cameraSource: CameraSource? = null

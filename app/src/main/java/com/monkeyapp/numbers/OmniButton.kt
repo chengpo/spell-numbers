@@ -34,13 +34,24 @@ import android.widget.ImageButton
 import com.monkeyapp.numbers.helper.tintColor
 
 class OmniButton : ImageButton {
-    companion object {
-        val STATE_CLEAN = 1
-        val STATE_CAMERA = 2
-    }
+    sealed class State {
+        object Clean : State() {
+            override fun getDrawableStates(): IntArray =
+                    arrayListOf(R.attr.state_clean).toIntArray()
+        }
 
-    private val clearStateId = arrayListOf(R.attr.state_clear)
-    private val cameraStateId = arrayListOf(R.attr.state_camera)
+        object Camera : State() {
+            override fun getDrawableStates(): IntArray =
+                    arrayListOf(R.attr.state_camera).toIntArray()
+        }
+
+        object None : State() {
+            override fun getDrawableStates(): IntArray =
+                    emptyArray<Int>().toIntArray()
+        }
+
+        abstract fun getDrawableStates(): IntArray
+    }
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -49,22 +60,23 @@ class OmniButton : ImageButton {
 
     var isCameraAvailable = false
 
-    var state : Int = STATE_CAMERA
+    var state : State = State.None
         set(value) {
             when(value) {
-                STATE_CAMERA -> {
+                State.Camera -> {
                     if (isCameraAvailable) {
-                        field = STATE_CAMERA
+                        visibility = View.VISIBLE
+                        field = State.Camera
 
                     } else {
                         // hide button when camera is not available
                         visibility = View.INVISIBLE
-                        field = STATE_CLEAN
+                        field = State.Clean
                     }
                 }
-                STATE_CLEAN -> {
+                State.Clean -> {
                     visibility = View.VISIBLE
-                    field = STATE_CLEAN
+                    field = State.Clean
                 }
             }
 
@@ -72,32 +84,29 @@ class OmniButton : ImageButton {
         }
 
     init {
-        val digitTextButtonDrawable = StateListDrawable()
+        val omniButtonDrawable = StateListDrawable()
 
         val clearDrawable = VectorDrawableCompat.create(resources, R.drawable.ic_clear, context.theme)!!
-        digitTextButtonDrawable.addState(
-                arrayListOf(R.attr.state_clear).toIntArray(),
+        omniButtonDrawable.addState(
+                arrayListOf(R.attr.state_clean).toIntArray(),
                 clearDrawable.tintColor(ContextCompat.getColor(context, R.color.primary_text)))
 
         val cameraDrawable = VectorDrawableCompat.create(resources, R.drawable.ic_camera, context.theme)!!
-        digitTextButtonDrawable.addState(
+        omniButtonDrawable.addState(
                 arrayListOf(R.attr.state_camera).toIntArray(),
                 cameraDrawable.tintColor(ContextCompat.getColor(context, R.color.primary_text)))
 
-        setImageDrawable(digitTextButtonDrawable)
+        setImageDrawable(omniButtonDrawable)
     }
 
-    override fun onCreateDrawableState(extraSpace: Int): IntArray {
-        return when (state) {
-            STATE_CLEAN -> {
+    override fun onCreateDrawableState(extraSpace: Int): IntArray = when(state) {
+            State.Clean, State.Camera -> {
                 val drawableState = super.onCreateDrawableState(extraSpace + 1)
-                View.mergeDrawableStates(drawableState, clearStateId.toIntArray())
+                View.mergeDrawableStates(drawableState, state.getDrawableStates())
             }
-            STATE_CAMERA -> {
-                val drawableState = super.onCreateDrawableState(extraSpace + 1)
-                View.mergeDrawableStates(drawableState, cameraStateId.toIntArray())
+            else ->  {
+                visibility = View.INVISIBLE
+                super.onCreateDrawableState(extraSpace)
             }
-            else -> super.onCreateDrawableState(extraSpace)
         }
-    }
 }

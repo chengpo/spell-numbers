@@ -32,9 +32,9 @@ import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import com.monkeyapp.numbers.R
 
-const val SP_RATE_APP = "SP_RATE_APP"
-const val SP_KEY_IS_RATED = "SP_KEY_IS_RATED"
-const val SP_KEY_LAST_PROMPT_TIME = "SP_KEY_LAST_PROMPT_TIME"
+private const val SP_RATE_APP = "SP_RATE_APP"
+private const val SP_KEY_IS_RATED = "SP_KEY_IS_RATED"
+private const val SP_KEY_LAST_PROMPT_TIME = "SP_KEY_LAST_PROMPT_TIME"
 
 fun AppCompatActivity.rateApp() {
     val pkgInfo = packageManager.getPackageInfo(packageName, 0)

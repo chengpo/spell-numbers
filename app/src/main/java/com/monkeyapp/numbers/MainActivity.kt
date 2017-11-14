@@ -40,9 +40,11 @@ import com.monkeyapp.numbers.helper.rateApp
 import com.monkeyapp.numbers.helper.setIcon
 
 class MainActivity : AppCompatActivity() {
-    private val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
-    private val BUNDLE_EXTRA_DIGITS = "bundle_extra_digits"
-    private val RC_OCR_CAPTURE = 1000
+    companion object {
+        private const val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
+        private const val BUNDLE_EXTRA_DIGITS = "bundle_extra_digits"
+        private const val RC_OCR_CAPTURE = 1000
+    }
 
     private val composer = NumberComposer()
     private val speller = NumberSpeller()
@@ -59,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                                                     Intent(INTENT_ACTION_OCR_CAPTURE), 0)
                                             .isNotEmpty()
 
-        omniButton.state = OmniButton.STATE_CAMERA
+        omniButton.state = OmniButton.State.Camera
 
         rateApp()
     }
@@ -71,8 +73,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.omniButton -> {
                     if (button is OmniButton) {
                         when (button.state) {
-                            OmniButton.STATE_CLEAN -> composer.cleanDigit()
-                            OmniButton.STATE_CAMERA -> {
+                            OmniButton.State.Clean -> composer.cleanDigit()
+                            OmniButton.State.Camera -> {
                                 val intent = Intent()
                                 intent.action = INTENT_ACTION_OCR_CAPTURE
                                 startActivityForResult(intent, RC_OCR_CAPTURE)
@@ -104,10 +106,10 @@ class MainActivity : AppCompatActivity() {
 
         if (digitTextView.text.isNullOrEmpty()) {
             wordTextView.text = ""
-            omniButton.state = OmniButton.STATE_CAMERA
+            omniButton.state = OmniButton.State.Camera
         } else {
             wordTextView.text = spellNumbers()
-            omniButton.state = OmniButton.STATE_CLEAN
+            omniButton.state = OmniButton.State.Clean
         }
     }
 
@@ -141,16 +143,16 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.action_about -> {
-                val intent = Intent(this, AboutActivity::class.java)
-                startActivity(intent)
-                return true
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean =
+            when (item?.itemId) {
+                R.id.action_about -> {
+                    val intent = Intent(this, AboutActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
             }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
