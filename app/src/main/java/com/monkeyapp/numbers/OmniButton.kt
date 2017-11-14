@@ -60,7 +60,7 @@ class OmniButton : ImageButton {
 
     var isCameraAvailable = false
 
-    var state : State = State.None
+    var state: State = State.None
         set(value) {
             when(value) {
                 State.Camera -> {

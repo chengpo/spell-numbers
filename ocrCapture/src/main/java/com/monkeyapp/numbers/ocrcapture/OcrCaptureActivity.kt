@@ -78,7 +78,6 @@ class OcrCaptureActivity : AppCompatActivity() {
 
                     override fun onScaleEnd(detector: ScaleGestureDetector?) {
                         // FIXME: scale to zoom
-
                     }
 
                     override fun onScale(detector: ScaleGestureDetector?): Boolean {
@@ -118,27 +117,27 @@ class OcrCaptureActivity : AppCompatActivity() {
         textRecognizer?.release()
     }
 
-    private fun requestCameraPermission() {
-        val permissions = arrayOf(Manifest.permission.CAMERA)
-        ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM)
-    }
+    private fun requestCameraPermission() =
+        ActivityCompat.requestPermissions(this,
+                                    arrayOf(Manifest.permission.CAMERA),
+                                    RC_HANDLE_CAMERA_PERM)
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == RC_HANDLE_CAMERA_PERM &&
-            grantResults.isNotEmpty() &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            createCameraSource()
-        } else {
-            finish()
+        if (requestCode == RC_HANDLE_CAMERA_PERM) {
+            if (grantResults.isNotEmpty() &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                createCameraSource()
+            } else {
+                finish()
+            }
         }
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        return scaleGestureDetector.onTouchEvent(event) ||
-               super.onTouchEvent(event)
-    }
+    override fun onTouchEvent(event: MotionEvent?) =
+            scaleGestureDetector.onTouchEvent(event) || super.onTouchEvent(event)
+
 
     /**
      * Create camera source for OCR
@@ -146,9 +145,10 @@ class OcrCaptureActivity : AppCompatActivity() {
      */
     private fun createCameraSource() {
         textRecognizer = TextRecognizer.Builder(this).build()
-        textRecognizer!!.setProcessor(OcrDetectorProcessor())
+        textRecognizer?.setProcessor(OcrDetectorProcessor())
 
-        if (!textRecognizer!!.isOperational) {
+        val isOperational = textRecognizer?.isOperational ?: false
+        if (!isOperational) {
             Log.e("OcrCaptureActivity", "Text recognizer dependencies are not yet available.")
 
             val lowStorageFilter = IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW)
@@ -178,7 +178,7 @@ class OcrCaptureActivity : AppCompatActivity() {
                 scaleHelper = ScaleHelper(bitmap.width, bitmap.height,
                                           ocrOverlayView.width, ocrOverlayView.height)
 
-                textRecognizer!!.receiveFrame(outputFrame)
+                textRecognizer?.receiveFrame(outputFrame)
             }
         })
     }
@@ -188,13 +188,8 @@ class OcrCaptureActivity : AppCompatActivity() {
         private val scaleX = viewWidth / frameWidth.toFloat()
         private val scaleY = viewHeight / frameHeight.toFloat()
 
-        fun transX(x:Float): Float {
-            return x * scaleX
-        }
-
-        fun transY(y:Float): Float {
-            return y * scaleY
-        }
+        fun transX(x:Float) = x * scaleX
+        fun transY(y:Float) = y * scaleY
     }
 
     inner class OcrDetectorProcessor : Detector.Processor<TextBlock> {

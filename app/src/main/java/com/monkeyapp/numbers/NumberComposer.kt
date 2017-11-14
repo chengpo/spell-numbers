@@ -47,9 +47,7 @@ class NumberComposer {
         }
 
     private val fractionStr: String
-        get() {
-            return fractionDigits.joinToString(separator = "")
-        }
+        get() = fractionDigits.joinToString(separator = "")
 
     private val integerStr: String
         get() {

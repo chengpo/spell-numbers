@@ -27,5 +27,5 @@ package com.monkeyapp.numbers.ocrcapture
 import android.content.res.Configuration
 import android.view.View
 
-fun View.isPortraitMode(): Boolean =
+fun View.isPortraitMode() =
         resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
