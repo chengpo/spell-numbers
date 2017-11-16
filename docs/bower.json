@@ -1,0 +1,20 @@
+{
+  "name": "spell-numbers",
+  "homepage": "https://chengpo.github.io/number-speller/",
+  "authors": [
+    "po_cheng"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}
