@@ -28,7 +28,7 @@ import android.content.Context
 import android.graphics.*
 import android.hardware.Camera
 import android.os.SystemClock
-import android.support.v8.renderscript.*;
+import android.support.v8.renderscript.*
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceHolder

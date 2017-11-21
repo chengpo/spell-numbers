@@ -104,25 +104,27 @@ class OcrOverlayView : View {
     }
 
     override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas!!)
+        super.onDraw(canvas)
 
-        // draw the capture rectangle
-        canvas.drawRect(captureRect, rectPaint)
+        canvas?.run {
+            // draw the capture rectangle
+            drawRect(captureRect, rectPaint)
 
-        // draw shadow background outsize of the capture rectangle
-        canvas.save()
-        canvas.clipRect(captureRect, Region.Op.DIFFERENCE)
-        canvas.drawRect(viewRect, shadowPaint)
-        canvas.restore()
+            // draw shadow background outsize of the capture rectangle
+            save()
+            clipRect(captureRect, Region.Op.DIFFERENCE)
+            drawRect(viewRect, shadowPaint)
+            restore()
 
-        // draw captured text outlines
-        var ocrGraphics = emptyList<OcrGraphic>()
-        synchronized(this) {
-            ocrGraphics = ocrGraphicList
+            // draw captured text outlines
+            var ocrGraphics = emptyList<OcrGraphic>()
+            synchronized(this) {
+                ocrGraphics = ocrGraphicList
+            }
+
+            ocrGraphics.forEach({
+                it.draw(canvas, ocrGraphicPaint)
+            })
         }
-
-        ocrGraphics.forEach({
-            it.draw(canvas, ocrGraphicPaint)
-        })
     }
 }
