@@ -2,10 +2,13 @@
 
 <img src="/pictures/web_hi_res_512.png" alt="Spell Numbers logo" height="128" width="128"> </img>
 
-**Spell Numbers** converts numbers to words.
+**Spell Numbers** converts numbers to words.<br>
 It is a handy tool for writing checks, filling forms.
 
+<a href='https://play.google.com/store/apps/details?id=com.monkeyapp.numbers&utm_source=github&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
+
 ## Technology Behind
+
 Spell Numbers is based on following technologies:
 - Kotlin Anko library 
 - Vector Images
@@ -13,8 +16,7 @@ Spell Numbers is based on following technologies:
 - Renderscript
 
 
-## App
-You are welcome to install <a href="https://play.google.com/store/apps/details?id=com.monkeyapp.numbers" target="_blank">Spell Numbers on Google Play</a>
+## Screenshot
 
 <img src="pictures/device-2017-09-20-200042.png" alt="screenshot" width="246"/>
 
