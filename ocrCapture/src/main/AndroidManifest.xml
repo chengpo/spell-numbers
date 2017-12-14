@@ -2,8 +2,8 @@
           package="com.monkeyapp.numbers.ocrcapture">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
     <meta-data
         android:name="com.google.android.gms.vision.DEPENDENCIES"
