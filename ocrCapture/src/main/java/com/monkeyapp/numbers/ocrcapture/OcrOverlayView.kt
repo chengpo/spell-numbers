@@ -88,7 +88,7 @@ class OcrOverlayView : View {
         return RectF(rectLeft, rectTop, rectRight, rectBottom)
     }
 
-    fun posInCaptureRect(rect:RectF): RectF {
+    fun offsetToCaptureRect(rect:RectF): RectF {
         rect.offset(captureRect.left, captureRect.top)
         return rect
     }
@@ -106,15 +106,17 @@ class OcrOverlayView : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        canvas?.run {
+        canvas?.let {
+            theCanvas ->
+
             // draw the capture rectangle
-            drawRect(captureRect, rectPaint)
+            theCanvas.drawRect(captureRect, rectPaint)
 
             // draw shadow background outsize of the capture rectangle
-            save()
-            clipRect(captureRect, Region.Op.DIFFERENCE)
-            drawRect(viewRect, shadowPaint)
-            restore()
+            theCanvas.save()
+            theCanvas.clipRect(captureRect, Region.Op.DIFFERENCE)
+            theCanvas.drawRect(viewRect, shadowPaint)
+            theCanvas.restore()
 
             // draw captured text outlines
             var ocrGraphics = emptyList<OcrGraphic>()
@@ -123,7 +125,7 @@ class OcrOverlayView : View {
             }
 
             ocrGraphics.forEach({
-                it.draw(canvas, ocrGraphicPaint)
+                it.draw(theCanvas, ocrGraphicPaint)
             })
         }
     }

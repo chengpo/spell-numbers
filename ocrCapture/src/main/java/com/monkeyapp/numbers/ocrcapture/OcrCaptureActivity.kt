@@ -228,7 +228,7 @@ class OcrCaptureActivity : AppCompatActivity() {
                             rect.right = scaleHelper.transX(rect.right)
                             rect.bottom = scaleHelper.transX(rect.bottom)
 
-                            rect = ocrOverlayView.posInCaptureRect(rect)
+                            rect = ocrOverlayView.offsetToCaptureRect(rect)
 
                             ocrGraphics.add(OcrGraphic(rect))
 

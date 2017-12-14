@@ -79,42 +79,47 @@ class CameraSource(private val context: Context,
             if (_camera == null && rearCameraId != -1) {
                 _camera = Camera.open(rearCameraId)
 
-                val parameters = _camera!!.parameters
+                _camera?.let {
+                    theCamera ->
+                    val theParams = theCamera.parameters
 
-                parameters.previewFormat = DEFAULT_PREVIEW_IMAGE_FORMAT
+                    theParams.previewFormat = DEFAULT_PREVIEW_IMAGE_FORMAT
 
-                // set preview size
-                this.previewSize = selectBestPreviewSize(_camera!!)
-                parameters.setPreviewSize(this.previewSize.width, this.previewSize.height)
-                Log.d(TAG, "Preview Size(${this.previewSize.width}, ${this.previewSize.height})")
+                    // set preview size
+                    previewSize = selectBestPreviewSize(theCamera)
+                    theParams.setPreviewSize(previewSize.width, previewSize.height)
+                    Log.d(TAG, "Preview Size(${previewSize.width}, ${previewSize.height})")
 
-                // set preview fps
-                val fpsRange = selectPreviewFpsRange(_camera!!, requestedPreviewFps)
-                parameters.setPreviewFpsRange(
-                    fpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
-                    fpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]
-                )
-                Log.d(TAG, "FPS range ${fpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX]} - ${fpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]} ")
+                    // set preview fps
+                    val fpsRange = selectPreviewFpsRange(theCamera, requestedPreviewFps)
+                    theParams.setPreviewFpsRange(
+                            fpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
+                            fpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]
+                    )
+                    Log.d(TAG, "FPS range ${fpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX]} - ${fpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]} ")
 
-                // set rotation
-                this.rotation = selectRotation(_camera!!, rearCameraId)
-                parameters.setRotation(this.rotation)
+                    // set rotation
+                    rotation = selectRotation(theCamera, rearCameraId)
+                    theParams.setRotation(rotation)
 
-                // set focus mode
-                if (_camera!!.parameters.supportedFocusModes.contains(
-                                    Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                    parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-                } else {
-                    parameters.focusMode = Camera.Parameters.FOCUS_MODE_AUTO
-                }
-                Log.i(TAG, "Camera focus mode = " + parameters.focusMode)
+                    // set focus mode
+                    if (theCamera.parameters.supportedFocusModes.contains(
+                            Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                        theParams.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+                    } else if (theCamera.parameters.supportedFocusModes.contains(
+                            Camera.Parameters.FOCUS_MODE_AUTO)){
+                        theParams.focusMode = Camera.Parameters.FOCUS_MODE_AUTO
+                    }
 
-                _camera!!.parameters = parameters
+                    Log.i(TAG, "Camera focus mode = " + theParams.focusMode)
 
-                // set the needed four frame buffers
-                _camera!!.setPreviewCallback(CameraPreviewCallback())
-                for (i in 1..4) {
-                    _camera!!.addCallbackBuffer(createPreviewBuffer(this.previewSize))
+                    theCamera.parameters = theParams
+
+                    // set the needed four frame buffers
+                    theCamera.setPreviewCallback(CameraPreviewCallback())
+                    for (i in 1..4) {
+                        theCamera.addCallbackBuffer(createPreviewBuffer(previewSize))
+                    }
                 }
             }
 
@@ -153,15 +158,17 @@ class CameraSource(private val context: Context,
                 frameProcessorThread = null
             }
 
-            try {
-                _camera!!.stopPreview()
-                _camera!!.setPreviewCallbackWithBuffer(null)
-                _camera!!.setPreviewDisplay(null)
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to clear camera preview: " + e)
-            } finally {
-                _camera!!.release()
-                _camera = null
+            _camera?.run {
+                try {
+                    stopPreview()
+                    setPreviewCallbackWithBuffer(null)
+                    setPreviewDisplay(null)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to clear camera preview: " + e)
+                } finally {
+                    release()
+                    _camera = null
+                }
             }
         }
     }
@@ -321,13 +328,6 @@ class CameraSource(private val context: Context,
                         Log.d(TAG, "Frame processor worker thread shutdown")
                         return
                     }
-
-                    /*outputFrame = Frame.Builder()
-                           .setImageData(data, previewSize.width,
-                                   previewSize.height, DEFAULT_PREVIEW_IMAGE_FORMAT)
-                           .setId(pendingFrameId)
-                           .setRotation(rotation / 90)
-                           .build()*/
 
                     try {
                         val bitmap = rsNV21ToRGB(pendingFrameData!!.array(), previewSize.width, previewSize.height)

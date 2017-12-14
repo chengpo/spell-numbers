@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val myToolbar = findViewById<View>(R.id.my_toolbar) as Toolbar
+        val myToolbar = findViewById(R.id.my_toolbar) as Toolbar
         setSupportActionBar(myToolbar)
 
         omniButton.isCameraAvailable = packageManager
