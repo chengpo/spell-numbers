@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers
+package com.monkeyapp.numbers.translators
 
 class NumberComposer {
     private var integerDigits = mutableListOf<Char>()
@@ -78,7 +78,7 @@ class NumberComposer {
             return _integers
         }
 
-    val fractions: Float
+    val decimals: Float
         get() {
             var _fractions = 0.0F
             var step = 0.1F
@@ -114,24 +114,32 @@ class NumberComposer {
         return true
     }
 
-    fun cleanDigit() {
+    fun resetDigit() {
         isFictional = false
         integerDigits.clear()
         fractionDigits.clear()
     }
 
-    fun deleteDigit() {
+    fun deleteDigit(): Boolean {
         if (isFictional) {
             if (fractionDigits.isEmpty()) {
                 isFictional = false
-            } else {
-                fractionDigits.removeAt(fractionDigits.size - 1)
-                if (fractionDigits.isEmpty()) {
-                    isFictional = false
-                }
+                return false
             }
-        } else if (integerDigits.isNotEmpty()) {
-            integerDigits.removeAt(integerDigits.size - 1)
+
+            fractionDigits.removeAt(fractionDigits.size - 1)
+            if (fractionDigits.isEmpty()) {
+                isFictional = false
+            }
+
+            return true
         }
+
+        if (integerDigits.isEmpty()) {
+            return false
+        }
+
+        integerDigits.removeAt(integerDigits.size - 1)
+        return true
     }
 }

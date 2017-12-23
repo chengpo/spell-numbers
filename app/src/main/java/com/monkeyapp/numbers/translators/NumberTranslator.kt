@@ -20,19 +20,38 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
+*/
 
-package com.monkeyapp.numbers.helper
+package com.monkeyapp.numbers.translators
 
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
-import android.support.v4.graphics.drawable.DrawableCompat
+class NumberTranslator(private val observer: NumberObserver,
+                       private val speller: NumberSpeller) {
+    private val composer = NumberComposer()
 
-fun Drawable.tintColor(tintColor: Int): Drawable {
-    val drawable = DrawableCompat.wrap(mutate())
+    fun appendDigit(digit: Char) {
+        if (composer.appendDigit(digit)) {
+            notifyNumberUpdated()
+        }
+    }
 
-    DrawableCompat.setTint(drawable, tintColor)
-    DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN)
+    fun deleteDigit() {
+        if (composer.deleteDigit()) {
+            notifyNumberUpdated()
+        }
+    }
 
-    return drawable
+    fun resetDigit() {
+        composer.resetDigit()
+        notifyNumberUpdated()
+    }
+
+    private fun notifyNumberUpdated() {
+        if (composer.digitStr.isEmpty()) {
+            observer.onNumberUpdated("","")
+        } else {
+            observer.onNumberUpdated(composer.digitStr,
+                                    speller.spellNumber(composer.integers,
+                                                        composer.decimals))
+        }
+    }
 }

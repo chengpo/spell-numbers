@@ -23,7 +23,7 @@ SOFTWARE.
  */
 
 
-package com.monkeyapp.numbers.helper
+package com.monkeyapp.numbers.helpers
 
 import android.support.design.widget.Snackbar
 import android.support.graphics.drawable.VectorDrawableCompat

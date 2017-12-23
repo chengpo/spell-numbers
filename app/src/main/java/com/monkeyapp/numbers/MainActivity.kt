@@ -35,19 +35,21 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import kotlinx.android.synthetic.main.content_number_word.*
-import com.monkeyapp.numbers.NumberSpeller.LargeNumberException
-import com.monkeyapp.numbers.helper.rateApp
-import com.monkeyapp.numbers.helper.setIcon
+import com.monkeyapp.numbers.translators.EnglishNumberSpeller.LargeNumberException
+import com.monkeyapp.numbers.helpers.rateApp
+import com.monkeyapp.numbers.helpers.setIcon
+import com.monkeyapp.numbers.translators.NumberObserver
+import com.monkeyapp.numbers.translators.TranslatorFactory
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : NumberObserver, AppCompatActivity() {
     companion object {
         private const val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
         private const val BUNDLE_EXTRA_DIGITS = "bundle_extra_digits"
         private const val RC_OCR_CAPTURE = 1000
     }
 
-    private val composer = NumberComposer()
-    private val speller = NumberSpeller()
+    private val translator = TranslatorFactory()
+                                .getEnglishTranslator(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,11 +71,11 @@ class MainActivity : AppCompatActivity() {
     fun onButtonClicked(button: View) {
         try {
             when (button.id) {
-                R.id.btnDel -> composer.deleteDigit()
+                R.id.btnDel -> translator.deleteDigit()
                 R.id.omniButton -> {
                     if (button is OmniButton) {
                         when (button.state) {
-                            OmniButton.State.Clean -> composer.cleanDigit()
+                            OmniButton.State.Clean -> translator.resetDigit()
                             OmniButton.State.Camera -> {
                                 val intent = Intent()
                                 intent.action = INTENT_ACTION_OCR_CAPTURE
@@ -85,42 +87,27 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> if (button is Button)
                             when (button.text[0]) {
-                                '.', in '0'..'9' -> composer.appendDigit(button.text[0])
+                                '.', in '0'..'9' -> translator.appendDigit(button.text[0])
                             }
             }
 
-            refreshDigitWords()
         } catch (exception: LargeNumberException) {
             Snackbar.make(wordTextView, R.string.too_large_to_spell, Snackbar.LENGTH_LONG)
                     .setIcon(R.drawable.ic_error, R.color.accent)
                     .show()
 
             // revoke the last digit
-            composer.deleteDigit()
-            refreshDigitWords()
+            translator.deleteDigit()
         }
     }
 
-    private fun refreshDigitWords() {
-        digitTextView.text = composer.digitStr
+    override fun onNumberUpdated(digitStr:String, numberStr: String) {
+        digitTextView.text = digitStr
+        wordTextView.text = numberStr
 
-        if (digitTextView.text.isNullOrEmpty()) {
-            wordTextView.text = ""
-            omniButton.state = OmniButton.State.Camera
-        } else {
-            wordTextView.text = spellNumbers()
-            omniButton.state = OmniButton.State.Clean
-        }
-    }
-
-    private fun spellNumbers(): String {
-        val integerWords = speller.spellInteger(composer.integers)
-                .flatMap { listOf(getString(it)) }
-                .joinToString(separator = " ")
-
-        val fractionWords = speller.spellFractions(composer.fractions)
-
-        return "$integerWords and $fractionWords"
+        omniButton.state = if (digitStr.isEmpty())
+                                OmniButton.State.Camera
+                           else OmniButton.State.Clean
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -133,9 +120,7 @@ class MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         val digits: CharSequence? = savedInstanceState?.getCharSequence(BUNDLE_EXTRA_DIGITS)
 
-        digits?.forEach { composer.appendDigit(it) }
-
-        refreshDigitWords()
+        digits?.forEach { translator.appendDigit(it) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -153,16 +138,14 @@ class MainActivity : AppCompatActivity() {
                 else -> super.onOptionsItemSelected(item)
             }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
             val number = data?.getStringExtra("number") ?: ""
 
             if (number.isNotBlank()) {
-                composer.cleanDigit()
-                number.forEach { composer.appendDigit(it) }
-                refreshDigitWords()
+                translator.resetDigit()
+                number.forEach { translator.appendDigit(it) }
             }
         }
     }
