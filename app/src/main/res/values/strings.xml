@@ -19,41 +19,6 @@
     <string name="dot">.</string>
     <string name="del">Del</string>
 
-    <string name="num_zero">Zero</string>
-    <string name="num_one">One</string>
-    <string name="num_two">Two</string>
-    <string name="num_three">Three</string>
-    <string name="num_four">Four</string>
-    <string name="num_five">Five</string>
-    <string name="num_six">Six</string>
-    <string name="num_seven">Seven</string>
-    <string name="num_eight">Eight</string>
-    <string name="num_nine">Nine</string>
-    <string name="num_ten">Ten</string>
-    <string name="num_eleven">Eleven</string>
-    <string name="num_twelve">Twelve</string>
-    <string name="num_thirteen">Thirteen</string>
-    <string name="num_fourteen">Fourteen</string>
-    <string name="num_fifteen">Fifteen</string>
-    <string name="num_sixteen">Sixteen</string>
-    <string name="num_seventeen">Seventeen</string>
-    <string name="num_eighteen">Eighteen</string>
-    <string name="num_nineteen">Nineteen</string>
-
-    <string name="num_twenty">Twenty</string>
-    <string name="num_thirty">Thirty</string>
-    <string name="num_forty">Forty</string>
-    <string name="num_fifty">Fifty</string>
-    <string name="num_sixty">Sixty</string>
-    <string name="num_seventy">Seventy</string>
-    <string name="num_eighty">Eighty</string>
-    <string name="num_ninety">Ninety</string>
-
-    <string name="num_hundred">Hundred</string>
-    <string name="num_thousand">Thousand</string>
-    <string name="num_million">Million</string>
-    <string name="num_billion">Billion</string>
-
     <string name="too_large_to_spell">Oops, the number is too large to spell!</string>
     <string name="rate_spell_numbers">Would you mind rate Spell Numbers?</string>
     <string name="rate_sure">Sure</string>
