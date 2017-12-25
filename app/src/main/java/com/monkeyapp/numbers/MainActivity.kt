@@ -25,6 +25,8 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -38,32 +40,48 @@ import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.translators.EnglishNumberSpeller.LargeNumberException
 import com.monkeyapp.numbers.helpers.rateApp
 import com.monkeyapp.numbers.helpers.setIcon
-import com.monkeyapp.numbers.translators.NumberObserver
-import com.monkeyapp.numbers.translators.TranslatorFactory
 
-class MainActivity : NumberObserver, AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     companion object {
         private const val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
         private const val BUNDLE_EXTRA_DIGITS = "bundle_extra_digits"
         private const val RC_OCR_CAPTURE = 1000
     }
 
-    private val translator = TranslatorFactory()
-                                .getEnglishTranslator(this)
+    private var mainViewModel: MainViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val myToolbar = findViewById(R.id.my_toolbar) as Toolbar
+        val myToolbar = findViewById<Toolbar>(R.id.my_toolbar)
         setSupportActionBar(myToolbar)
 
-        omniButton.isCameraAvailable = packageManager
+        omniButton.isCameraAvailable = applicationContext
+                                            .packageManager
                                             .queryIntentActivities(
                                                     Intent(INTENT_ACTION_OCR_CAPTURE), 0)
                                             .isNotEmpty()
 
         omniButton.state = OmniButton.State.Camera
+
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+
+        mainViewModel?.digitStr?.observe(this, object : Observer<String> {
+            override fun onChanged(digits: String?) {
+                digits?.let {
+                    digitTextView.text = digits
+                    omniButton.state = if (digits.isEmpty()) OmniButton.State.Camera
+                                                        else OmniButton.State.Clean
+                }
+            }
+        })
+
+        mainViewModel?.numberStr?.observe(this, object : Observer<String> {
+            override fun onChanged(numbers: String?) {
+                wordTextView.text = numbers
+            }
+        })
 
         rateApp()
     }
@@ -71,11 +89,11 @@ class MainActivity : NumberObserver, AppCompatActivity() {
     fun onButtonClicked(button: View) {
         try {
             when (button.id) {
-                R.id.btnDel -> translator.deleteDigit()
+                R.id.btnDel -> mainViewModel?.deleteDigit()
                 R.id.omniButton -> {
                     if (button is OmniButton) {
                         when (button.state) {
-                            OmniButton.State.Clean -> translator.resetDigit()
+                            OmniButton.State.Clean -> mainViewModel?.resetDigit()
                             OmniButton.State.Camera -> {
                                 val intent = Intent()
                                 intent.action = INTENT_ACTION_OCR_CAPTURE
@@ -87,7 +105,7 @@ class MainActivity : NumberObserver, AppCompatActivity() {
                 }
                 else -> if (button is Button)
                             when (button.text[0]) {
-                                '.', in '0'..'9' -> translator.appendDigit(button.text[0])
+                                '.', in '0'..'9' -> mainViewModel?.appendDigit(button.text[0])
                             }
             }
 
@@ -97,17 +115,8 @@ class MainActivity : NumberObserver, AppCompatActivity() {
                     .show()
 
             // revoke the last digit
-            translator.deleteDigit()
+            mainViewModel?.deleteDigit()
         }
-    }
-
-    override fun onNumberUpdated(digitStr:String, numberStr: String) {
-        digitTextView.text = digitStr
-        wordTextView.text = numberStr
-
-        omniButton.state = if (digitStr.isEmpty())
-                                OmniButton.State.Camera
-                           else OmniButton.State.Clean
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -120,7 +129,10 @@ class MainActivity : NumberObserver, AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         val digits: CharSequence? = savedInstanceState?.getCharSequence(BUNDLE_EXTRA_DIGITS)
 
-        digits?.forEach { translator.appendDigit(it) }
+        if (digits.toString() != mainViewModel?.digitStr?.value) {
+            mainViewModel?.resetDigit()
+            digits?.forEach { mainViewModel?.appendDigit(it) }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -144,8 +156,8 @@ class MainActivity : NumberObserver, AppCompatActivity() {
             val number = data?.getStringExtra("number") ?: ""
 
             if (number.isNotBlank()) {
-                translator.resetDigit()
-                number.forEach { translator.appendDigit(it) }
+                mainViewModel?.resetDigit()
+                number.forEach { mainViewModel?.appendDigit(it) }
             }
         }
     }
