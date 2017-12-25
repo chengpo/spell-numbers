@@ -16,6 +16,7 @@ Spell Numbers is based on following technologies:
 - Vector Images
 - Google Mobile Vision Text Recognition API
 - Renderscript
+- Android Architecture Components - ViewModel and LiveData
 
 
 ## Screenshot
