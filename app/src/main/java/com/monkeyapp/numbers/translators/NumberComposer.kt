@@ -26,28 +26,28 @@ package com.monkeyapp.numbers.translators
 
 class NumberComposer {
     private var integerDigits = mutableListOf<Char>()
-    private var fractionDigits = mutableListOf<Char>()
-    private var isFictional: Boolean = false
+    private var decimalDigits = mutableListOf<Char>()
+    private var hasDecimal: Boolean = false
 
     val digitStr: String
         get() {
-            if (isFictional) {
-                if (integerDigits.isEmpty() && fractionDigits.isEmpty()) {
+            if (hasDecimal) {
+                if (integerDigits.isEmpty() && decimalDigits.isEmpty()) {
                     return "0"
                 }
 
                 if (integerDigits.isEmpty()) {
-                    return "0.$fractionStr"
+                    return "0.$decimalStr"
                 }
 
-                return "$integerStr.$fractionStr"
+                return "$integerStr.$decimalStr"
             }
 
             return integerStr
         }
 
-    private val fractionStr: String
-        get() = fractionDigits.joinToString(separator = "")
+    private val decimalStr: String
+        get() = decimalDigits.joinToString(separator = "")
 
     private val integerStr: String
         get() {
@@ -83,7 +83,7 @@ class NumberComposer {
             var _fractions = 0.0F
             var step = 0.1F
 
-            for (digit in fractionDigits) {
+            for (digit in decimalDigits) {
                 _fractions += (digit - '0') * step
                 step *= 0.1F
             }
@@ -94,16 +94,16 @@ class NumberComposer {
     fun appendDigit(digit: Char): Boolean {
         when (digit) {
             '.' -> {
-                if (isFictional) {
+                if (hasDecimal) {
                     return false
                 }
 
-                isFictional = true
+                hasDecimal = true
             }
             in '0'..'9' -> {
-                if (isFictional) {
-                    if (fractionDigits.size < 3) {
-                        fractionDigits.add(digit)
+                if (hasDecimal) {
+                    if (decimalDigits.size < 3) {
+                        decimalDigits.add(digit)
                     }
                 } else {
                     integerDigits.add(digit)
@@ -115,21 +115,21 @@ class NumberComposer {
     }
 
     fun resetDigit() {
-        isFictional = false
+        hasDecimal = false
         integerDigits.clear()
-        fractionDigits.clear()
+        decimalDigits.clear()
     }
 
     fun deleteDigit(): Boolean {
-        if (isFictional) {
-            if (fractionDigits.isEmpty()) {
-                isFictional = false
+        if (hasDecimal) {
+            if (decimalDigits.isEmpty()) {
+                hasDecimal = false
                 return false
             }
 
-            fractionDigits.removeAt(fractionDigits.size - 1)
-            if (fractionDigits.isEmpty()) {
-                isFictional = false
+            decimalDigits.removeAt(decimalDigits.size - 1)
+            if (decimalDigits.isEmpty()) {
+                hasDecimal = false
             }
 
             return true
