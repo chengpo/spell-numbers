@@ -52,7 +52,7 @@ dependencies {
     })
     testImplementation 'junit:junit:4.12'
 
-    compile project(path: ':ocrCapture')
+    implementation project(path: ':ocrCapture')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:design:$support_lib_version"
