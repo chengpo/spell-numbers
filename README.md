@@ -1,6 +1,6 @@
-# Spell Numbers
+[![Build Status](https://travis-ci.org/chengpo/spell-numbers.svg?branch=master)](https://travis-ci.org/chengpo/spell-numbers)
 
-[![Kotlin](https://img.shields.io/badge/kotlin-1.1.51-blue.svg)](http://kotlinlang.org) ![Version 7.0](https://img.shields.io/badge/Version-1.0.3-green.svg)  [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
+# Spell Numbers
 
 <img src="/pictures/web_hi_res_512.png" alt="Spell Numbers logo" height="128" width="128"> </img>
 
