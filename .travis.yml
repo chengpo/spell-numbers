@@ -11,3 +11,6 @@ android:
 
       - extra-google-google_play_services
       - extra-google-m2repository
+
+script:
+  - ./gradlew clean build testDebugUnitTest
