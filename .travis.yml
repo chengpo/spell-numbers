@@ -21,4 +21,4 @@ before_script:
   - echo 'storeFile=xxx' >> keystore.properties
 
 script:
-  - ./gradlew clean build testDebugUnitTest
+  - ./gradlew clean testDebugUnitTest
