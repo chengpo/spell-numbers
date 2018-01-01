@@ -1,5 +1,7 @@
 sudo: false
+
 language: android
+
 android:
   components:
       - tools
@@ -11,6 +13,9 @@ android:
 
       - extra-google-google_play_services
       - extra-google-m2repository
+
+before_script:
+  - touch keystore.properties
 
 script:
   - ./gradlew clean build testDebugUnitTest
