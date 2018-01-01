@@ -15,7 +15,10 @@ android:
       - extra-google-m2repository
 
 before_script:
-  - touch keystore.properties
+  - echo 'storePassword=xxx' >  keystore.properties
+  - echo 'keyPassword=xxx' >> keystore.properties
+  - echo 'keyAlias=xxx' >>  keystore.properties
+  - echo 'storeFile=xxx' >> keystore.properties
 
 script:
   - ./gradlew clean build testDebugUnitTest
