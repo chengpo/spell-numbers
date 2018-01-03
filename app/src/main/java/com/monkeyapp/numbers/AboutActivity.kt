@@ -40,6 +40,6 @@ class AboutActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        appVersionView.text = getString(R.string.version, BuildConfig.VERSION_NAME)
+        appVersionView.text = getString(R.string.about_app_version, BuildConfig.VERSION_NAME)
     }
 }
