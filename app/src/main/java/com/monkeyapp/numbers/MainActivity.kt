@@ -83,6 +83,14 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        wordTextView.isClickable = true
+        wordTextView.setOnClickListener{
+            val numberWord = wordTextView.text.toString()
+            if (numberWord.isNotBlank()) {
+                FullscreenActivity.start(MainActivity@this, numberWord)
+            }
+        }
+
         rateApp()
     }
     
