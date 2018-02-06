@@ -34,12 +34,14 @@ import android.support.design.widget.Snackbar
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.translators.EnglishNumberSpeller.LargeNumberException
 import com.monkeyapp.numbers.helpers.rateApp
 import com.monkeyapp.numbers.helpers.setIcon
+import com.monkeyapp.numbers.translators.RippleView
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -83,13 +85,27 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        wordTextView.isClickable = true
         wordTextView.setOnClickListener{
             val numberWord = wordTextView.text.toString()
             if (numberWord.isNotBlank()) {
-                FullscreenActivity.start(MainActivity@this, numberWord)
+                rippleView.stopRippleAnimation(object : RippleView.onAnimationEndListener {
+                    override fun onAnimationEnd() {
+                        FullscreenActivity.start(this@MainActivity, numberWord)
+                    }
+                })
             }
         }
+
+        wordTextView.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                event?.let {
+                    rippleView.startRippleAnimation(event.x, event.y)
+                }
+
+                return false
+            }
+        })
+
 
         rateApp()
     }

@@ -48,10 +48,19 @@
             android:layout_below="@id/divider"
             android:padding="10dp"
             android:textAppearance="@style/WordTextAppearance"
+            android:clickable="true"
+            android:focusable="true"
             android:textIsSelectable="true"
             android:lineSpacingMultiplier="1.2"
             android:lineSpacingExtra="4dp"
             tools:text="One Thousands One Hundred Ninty Eight and 00 / 100"/>
+
+        <com.monkeyapp.numbers.translators.RippleView
+            android:id="@+id/rippleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/divider"/>
+
         </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>
 
