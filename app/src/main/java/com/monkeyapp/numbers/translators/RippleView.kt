@@ -46,8 +46,8 @@ class RippleView : View {
     private var cx = 1.0f
     private var cy = 1.0f
 
-    private var isAnimationStart = false
     private var animatorSet: AnimatorSet? = null
+    private var animatorEndListener: onAnimationEndListener? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -69,7 +69,7 @@ class RippleView : View {
     }
 
     fun startRippleAnimation(x : Float, y : Float) {
-        if (isAnimationStart) {
+        if (animatorSet != null) {
             return
         }
 
@@ -107,8 +107,12 @@ class RippleView : View {
 
             override fun onAnimationEnd(animation: Animator?) {
                 visibility = INVISIBLE
-                isAnimationStart = false
+
+                animatorEndListener?.onAnimationEnd()
+                animatorEndListener = null
+
                 animatorSet?.removeAllListeners()
+                animatorSet = null
             }
 
             override fun onAnimationCancel(animation: Animator?) {
@@ -120,28 +124,13 @@ class RippleView : View {
 
         visibility = VISIBLE
         animatorSet?.start()
-        isAnimationStart = true
     }
 
     fun stopRippleAnimation(listener: onAnimationEndListener) {
-        if (!isAnimationStart) {
-            listener.onAnimationEnd()
+        if (animatorSet != null) {
+            animatorEndListener = listener
         } else {
-            animatorSet?.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator?) {
-                }
-
-                override fun onAnimationEnd(animation: Animator?) {
-                    listener.onAnimationEnd()
-                    animatorSet?.removeAllListeners()
-                }
-
-                override fun onAnimationCancel(animation: Animator?) {
-                }
-
-                override fun onAnimationStart(animation: Animator?) {
-                }
-            })
+            listener.onAnimationEnd()
         }
     }
 
