@@ -12,7 +12,7 @@ android {
         applicationId "com.monkeyapp.numbers"
         minSdkVersion rootProject.min_sdk_version
         targetSdkVersion rootProject.target_sdk_version
-        versionCode 10
+        versionCode 11
         versionName "1.0.5"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
