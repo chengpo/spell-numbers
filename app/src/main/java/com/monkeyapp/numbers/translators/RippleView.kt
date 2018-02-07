@@ -85,7 +85,7 @@ class RippleView : View {
 
         val scaleAnimator = ValueAnimator.ofFloat(initRadius / 2.0f, initRadius * 4.5f)
         scaleAnimator.repeatCount = 0
-        scaleAnimator.duration = 800
+        scaleAnimator.duration = 500
         scaleAnimator.addUpdateListener {
             radius = it.animatedValue as Float
             invalidate()
@@ -95,7 +95,7 @@ class RippleView : View {
 
         val alphaAnimator = ObjectAnimator.ofFloat(this, "Alpha", 0.7f, 0.0f)
         alphaAnimator.repeatCount = 0
-        alphaAnimator.duration = 800
+        alphaAnimator.duration = 500
 
         animatorList.add(alphaAnimator)
 

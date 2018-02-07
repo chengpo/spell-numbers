@@ -35,8 +35,8 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_fullscreen.*
 
 class FullscreenActivity : AppCompatActivity() {
-    private val mHideHandler = Handler()
-    private val mHidePart2Runnable = Runnable {
+    private val hideHandler = Handler()
+    private val hidePart2Runnable = Runnable {
         // Delayed removal of status and navigation bar
 
         // Note that some of these constants are new as of API 16 (Jelly Bean)
@@ -50,12 +50,12 @@ class FullscreenActivity : AppCompatActivity() {
                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                         View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
     }
-    private val mShowPart2Runnable = Runnable {
+    private val showPart2Runnable = Runnable {
         // Delayed display of UI elements
         supportActionBar?.show()
     }
-    private var mVisible: Boolean = false
-    private val mHideRunnable = Runnable { hide() }
+    private var systemUiVisible: Boolean = false
+    private val hideRunnable = Runnable { hide() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +69,7 @@ class FullscreenActivity : AppCompatActivity() {
 
         fullscreenContent.text = intent.getStringExtra(INTENT_EXTRA_NUMBER_WORDS)
 
-        mVisible = true
+        systemUiVisible = true
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -92,7 +92,7 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     private fun toggle() {
-        if (mVisible) {
+        if (systemUiVisible) {
             hide()
         } else {
             show()
@@ -103,11 +103,11 @@ class FullscreenActivity : AppCompatActivity() {
         // Hide UI first
         supportActionBar?.hide()
 
-        mVisible = false
+        systemUiVisible = false
 
         // Schedule a runnable to remove the status and navigation bar after a delay
-        mHideHandler.removeCallbacks(mShowPart2Runnable)
-        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY.toLong())
+        hideHandler.removeCallbacks(showPart2Runnable)
+        hideHandler.postDelayed(hidePart2Runnable, UI_ANIMATION_DELAY.toLong())
     }
 
     private fun show() {
@@ -115,11 +115,11 @@ class FullscreenActivity : AppCompatActivity() {
         fullscreenContent.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        mVisible = true
+        systemUiVisible = true
 
         // Schedule a runnable to display UI elements after a delay
-        mHideHandler.removeCallbacks(mHidePart2Runnable)
-        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY.toLong())
+        hideHandler.removeCallbacks(hidePart2Runnable)
+        hideHandler.postDelayed(showPart2Runnable, UI_ANIMATION_DELAY.toLong())
     }
 
     /**
@@ -127,8 +127,8 @@ class FullscreenActivity : AppCompatActivity() {
      * previously scheduled calls.
      */
     private fun delayedHide(delayMillis: Int) {
-        mHideHandler.removeCallbacks(mHideRunnable)
-        mHideHandler.postDelayed(mHideRunnable, delayMillis.toLong())
+        hideHandler.removeCallbacks(hideRunnable)
+        hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
     }
 
     companion object {
