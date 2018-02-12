@@ -41,7 +41,6 @@ import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.translators.EnglishNumberSpeller.LargeNumberException
 import com.monkeyapp.numbers.helpers.rateApp
 import com.monkeyapp.numbers.helpers.setIcon
-import com.monkeyapp.numbers.translators.RippleView
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -88,11 +87,9 @@ class MainActivity : AppCompatActivity() {
         wordTextView.setOnClickListener{
             val numberWord = wordTextView.text.toString()
             if (numberWord.isNotBlank()) {
-                rippleView.stopRippleAnimation(object : RippleView.onAnimationEndListener {
-                    override fun onAnimationEnd() {
-                        FullscreenActivity.start(this@MainActivity, numberWord)
-                    }
-                })
+                rippleView.stopRippleAnimation {
+                    FullscreenActivity.start(this@MainActivity, numberWord)
+                }
             }
         }
 

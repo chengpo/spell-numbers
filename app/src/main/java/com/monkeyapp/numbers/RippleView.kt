@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers.translators
+package com.monkeyapp.numbers
 
 import android.animation.Animator
 import android.animation.AnimatorSet
@@ -126,11 +126,15 @@ class RippleView : View {
         animatorSet?.start()
     }
 
-    fun stopRippleAnimation(listener: onAnimationEndListener) {
-        if (animatorSet != null) {
-            animatorEndListener = listener
+    fun stopRippleAnimation(action: () -> Unit) {
+        if (animatorSet == null) {
+            action()
         } else {
-            listener.onAnimationEnd()
+            animatorEndListener = object : onAnimationEndListener {
+                override fun onAnimationEnd() {
+                    action()
+                }
+            }
         }
     }
 

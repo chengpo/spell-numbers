@@ -55,7 +55,7 @@
             android:lineSpacingExtra="4dp"
             tools:text="One Thousands One Hundred Ninty Eight and 00 / 100"/>
 
-        <com.monkeyapp.numbers.translators.RippleView
+        <com.monkeyapp.numbers.RippleView
             android:id="@+id/rippleView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
