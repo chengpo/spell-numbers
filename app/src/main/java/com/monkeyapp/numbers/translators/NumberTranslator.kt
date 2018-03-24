@@ -48,11 +48,10 @@ class NumberTranslator(private val speller: NumberSpeller) : Translator {
 
     private fun notifyNumberUpdated() {
         observer?.let {
-            theObserver ->
             if (composer.digitStr.isEmpty()) {
-                theObserver.onNumberUpdated("","")
+                it.onNumberUpdated("","")
             } else {
-                theObserver.onNumberUpdated(composer.digitStr,
+                it.onNumberUpdated(composer.digitStr,
                         speller.spellNumber(composer.integers,
                                 composer.decimals))
             }

@@ -71,9 +71,11 @@ class MainActivity : AppCompatActivity() {
         mainViewModel?.digitStr?.observe(this, object : Observer<String> {
             override fun onChanged(digits: String?) {
                 digits?.let {
-                    digitTextView.text = digits
-                    omniButton.state = if (digits.isEmpty()) OmniButton.State.Camera
-                                                        else OmniButton.State.Clean
+                    digitTextView.text = it
+                    omniButton.state = if (it.isEmpty())
+                                            OmniButton.State.Camera
+                                       else
+                                            OmniButton.State.Clean
                 }
             }
         })
@@ -96,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         wordTextView.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 event?.let {
-                    rippleView.startRippleAnimation(event.x, event.y)
+                    rippleView.startRippleAnimation(it.x, it.y)
                 }
 
                 return false
