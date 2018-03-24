@@ -25,8 +25,7 @@ SOFTWARE.
 package com.monkeyapp.numbers.translators
 
 class NumberTranslator(private val speller: NumberSpeller) : Translator {
-    override var observer: NumberObserver? = null
-
+    private lateinit var updateNumber: (String, String) -> Unit
     private val composer = NumberComposer()
 
     override fun appendDigit(digit: Char) {
@@ -46,15 +45,16 @@ class NumberTranslator(private val speller: NumberSpeller) : Translator {
         notifyNumberUpdated()
     }
 
+    override fun registerObserver(updateNumber: (digitStr:String, numberStr: String) -> Unit) {
+        this.updateNumber = updateNumber
+    }
+
     private fun notifyNumberUpdated() {
-        observer?.let {
-            if (composer.digitStr.isEmpty()) {
-                it.onNumberUpdated("","")
-            } else {
-                it.onNumberUpdated(composer.digitStr,
-                        speller.spellNumber(composer.integers,
-                                composer.decimals))
-            }
+        if (composer.digitStr.isEmpty()) {
+            updateNumber("","")
+        } else {
+            updateNumber(composer.digitStr,
+                         speller.spellNumber(composer.integers, composer.decimals))
         }
     }
 }

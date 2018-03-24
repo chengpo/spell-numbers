@@ -25,7 +25,7 @@ SOFTWARE.
 package com.monkeyapp.numbers.translators
 
 interface Translator {
-    var observer: NumberObserver?
+    fun registerObserver(updateNumber: (digitStr:String, numberStr: String) -> Unit)
     fun appendDigit(digit: Char)
     fun deleteDigit()
     fun resetDigit()
