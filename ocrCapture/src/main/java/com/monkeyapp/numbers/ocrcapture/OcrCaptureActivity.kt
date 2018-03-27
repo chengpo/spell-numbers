@@ -160,27 +160,27 @@ class OcrCaptureActivity : AppCompatActivity() {
             }
         }
 
-        cameraSource = CameraSource(applicationContext, object: CameraSource.Callback {
-            override fun onReceiveFrameBitmap(bitmap: Bitmap, frameId:Int) {
-                // crop frame bitmap from camera
-                val cropRect = ocrOverlayView.calculateCaptureRect(bitmap.width, bitmap.height)
+        cameraSource = CameraSource(
+                context = applicationContext,
+                processFrameBitmap = { bitmap: Bitmap, frameId: Int ->
+                    // crop frame bitmap from camera
+                    val cropRect = ocrOverlayView.calculateCaptureRect(bitmap.width, bitmap.height)
 
-                val croppedBitmap = Bitmap.createBitmap(bitmap,
-                                                        cropRect.left.toInt(), cropRect.top.toInt(),
-                                                        cropRect.width().toInt(), cropRect.height().toInt(), null, true)
+                    val croppedBitmap = Bitmap.createBitmap(bitmap,
+                            cropRect.left.toInt(), cropRect.top.toInt(),
+                            cropRect.width().toInt(), cropRect.height().toInt(), null, true)
 
-                val outputFrame = Frame.Builder()
-                        .setBitmap(croppedBitmap)
-                        .setId(frameId)
-                        .setRotation(0)
-                        .build()
+                    val outputFrame = Frame.Builder()
+                            .setBitmap(croppedBitmap)
+                            .setId(frameId)
+                            .setRotation(0)
+                            .build()
 
-                scaleHelper = ScaleHelper(bitmap.width, bitmap.height,
-                                          ocrOverlayView.width, ocrOverlayView.height)
+                    scaleHelper = ScaleHelper(bitmap.width, bitmap.height,
+                            ocrOverlayView.width, ocrOverlayView.height)
 
-                textRecognizer?.receiveFrame(outputFrame)
-            }
-        })
+                    textRecognizer?.receiveFrame(outputFrame)
+                })
     }
 
     private class ScaleHelper(frameWidth:Int = 1, frameHeight:Int = 1,

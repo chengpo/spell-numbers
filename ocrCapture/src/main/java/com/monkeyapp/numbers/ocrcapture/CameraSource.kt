@@ -38,17 +38,13 @@ import java.lang.Exception
 import java.nio.ByteBuffer
 
 class CameraSource(private val context: Context,
-                   private val callback:CameraSource.Callback,
+                   private val processFrameBitmap: (bitmap: Bitmap, frameId:Int) -> Unit,
                    private val requestedPreviewWidth:Int = 800,
                    private val requestedPreviewHeight:Int = 640,
                    private val requestedPreviewFps:Float = 15.0f) {
     companion object {
         private const val TAG = "CameraSource"
         private const val DEFAULT_PREVIEW_IMAGE_FORMAT = ImageFormat.NV21
-    }
-
-    interface Callback {
-        fun onReceiveFrameBitmap(bitmap: Bitmap, frameId:Int)
     }
 
     var previewSize = Size(requestedPreviewWidth, requestedPreviewHeight)
@@ -265,7 +261,9 @@ class CameraSource(private val context: Context,
                        "preview size (${camera!!.parameters.previewSize.width}, ${camera!!.parameters.previewSize.height})" +
                        "format ${camera!!.parameters.previewFormat}")*/
 
-            frameProcessor.setNextFrame(data!!)
+            data?.let {
+                frameProcessor.setNextFrame(it)
+            }
         }
     }
 
@@ -332,7 +330,7 @@ class CameraSource(private val context: Context,
                     try {
                         val bitmap = rsNV21ToRGB(pendingFrameData!!.array(), previewSize.width, previewSize.height)
 
-                        callback.onReceiveFrameBitmap(bitmap, pendingFrameId)
+                        processFrameBitmap(bitmap, pendingFrameId)
                     } catch (e: Exception) {
                         Log.e(TAG, "Exception thrown from detector receiver", e)
                     } finally {
