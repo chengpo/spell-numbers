@@ -41,6 +41,7 @@ import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.translators.EnglishNumberSpeller.LargeNumberException
 import com.monkeyapp.numbers.helpers.rateApp
 import com.monkeyapp.numbers.helpers.setIcon
+import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -95,16 +96,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        wordTextView.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                event?.let {
-                    rippleView.startRippleAnimation(it.x, it.y)
-                }
-
-                return false
+        wordTextView.setOnTouchListener({
+            _, event: MotionEvent? ->
+            event?.let {
+                rippleView.startRippleAnimation(it.x, it.y)
             }
-        })
 
+            false
+        })
 
         rateApp()
     }
@@ -118,13 +117,10 @@ class MainActivity : AppCompatActivity() {
                         when (button.state) {
                             OmniButton.State.Clean -> mainViewModel?.resetDigit()
                             OmniButton.State.Camera -> {
-                                val intent = Intent()
-                                intent.action = INTENT_ACTION_OCR_CAPTURE
-                                startActivityForResult(intent, RC_OCR_CAPTURE)
+                                startActivityForResult(Intent(INTENT_ACTION_OCR_CAPTURE), RC_OCR_CAPTURE)
                             }
                         }
                     }
-
                 }
                 else -> if (button is Button)
                             when (button.text[0]) {
@@ -166,8 +162,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean =
             when (item?.itemId) {
                 R.id.action_about -> {
-                    val intent = Intent(this, AboutActivity::class.java)
-                    startActivity(intent)
+                    startActivity<AboutActivity>()
                     true
                 }
                 else -> super.onOptionsItemSelected(item)

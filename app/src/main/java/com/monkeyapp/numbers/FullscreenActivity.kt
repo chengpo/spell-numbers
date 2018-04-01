@@ -25,7 +25,6 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 import android.content.Context
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -33,6 +32,7 @@ import android.view.View
 import android.support.v4.app.NavUtils
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_fullscreen.*
+import org.jetbrains.anko.startActivity
 
 class FullscreenActivity : AppCompatActivity() {
     private val hideHandler = Handler()
@@ -147,9 +147,7 @@ class FullscreenActivity : AppCompatActivity() {
         private val INTENT_EXTRA_NUMBER_WORDS = "number_words"
 
         fun start(context: Context, numbers: String) {
-            val intent = Intent(context, FullscreenActivity::class.java)
-            intent.putExtra(INTENT_EXTRA_NUMBER_WORDS, numbers)
-            context.startActivity(intent)
+            context.startActivity<FullscreenActivity>(INTENT_EXTRA_NUMBER_WORDS to numbers)
         }
     }
 }
