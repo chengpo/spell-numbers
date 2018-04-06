@@ -29,7 +29,6 @@ import android.graphics.Paint
 import android.graphics.RectF
 
 class OcrGraphic(private val textRect: RectF) {
-    fun draw(canvas: Canvas, paint:Paint) {
+    fun draw(canvas: Canvas, paint:Paint) =
         canvas.drawRect(textRect, paint)
-    }
 }

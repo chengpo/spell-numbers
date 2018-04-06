@@ -33,16 +33,15 @@ import com.monkeyapp.numbers.R
 
 fun Snackbar.setIcon(drawbleId: Int, tintColorId: Int): Snackbar {
     val snackText = view.findViewById<TextView>(android.support.design.R.id.snackbar_text)
-    view.setBackgroundColor(ContextCompat.getColor(context, R.color.primary_dark))
-
-    val errorDrawable = VectorDrawableCompat
-            .create(context.resources, drawbleId, context.theme)!!
-            .tintColor(ContextCompat.getColor(context, tintColorId))
-
     with(snackText) {
+        val errorDrawable = VectorDrawableCompat
+                .create(context.resources, drawbleId, context.theme)!!
+                .tintColor(ContextCompat.getColor(context, tintColorId))
+
         setCompoundDrawablesWithIntrinsicBounds(errorDrawable, null, null, null)
         compoundDrawablePadding = context.resources.getDimensionPixelOffset(R.dimen.snackbar_icon_padding)
     }
 
+    view.setBackgroundColor(ContextCompat.getColor(context, R.color.primary_dark))
     return this
 }

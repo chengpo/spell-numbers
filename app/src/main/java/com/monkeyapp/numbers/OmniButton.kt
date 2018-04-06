@@ -64,14 +64,14 @@ class OmniButton : ImageButton {
         set(value) {
             when(value) {
                 State.Camera -> {
-                    if (isCameraAvailable) {
+                    field = if (isCameraAvailable) {
                         visibility = View.VISIBLE
-                        field = State.Camera
+                        State.Camera
 
                     } else {
                         // hide button when camera is not available
                         visibility = View.INVISIBLE
-                        field = State.Clean
+                        State.Clean
                     }
                 }
                 State.Clean -> {
@@ -99,7 +99,8 @@ class OmniButton : ImageButton {
         setImageDrawable(omniButtonDrawable)
     }
 
-    override fun onCreateDrawableState(extraSpace: Int): IntArray = when(state) {
+    override fun onCreateDrawableState(extraSpace: Int): IntArray =
+        when(state) {
             State.Clean, State.Camera -> {
                 val drawableState = super.onCreateDrawableState(extraSpace + 1)
                 View.mergeDrawableStates(drawableState, state.getDrawableStates())

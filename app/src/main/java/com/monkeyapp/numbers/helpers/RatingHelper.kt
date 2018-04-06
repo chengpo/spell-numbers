@@ -39,9 +39,9 @@ private const val SP_KEY_LAST_PROMPT_TIME = "SP_KEY_LAST_PROMPT_TIME"
 fun AppCompatActivity.rateApp() {
     val pkgInfo = packageManager.getPackageInfo(packageName, 0)
 
-    val lastPromptTime = getSharedPreferences(SP_RATE_APP, 0).getLong(SP_KEY_LAST_PROMPT_TIME, pkgInfo.lastUpdateTime)
+    val lastPromptTime = getSharedPreferences(SP_RATE_APP, 0).getLong(SP_KEY_LAST_PROMPT_TIME, pkgInfo.firstInstallTime)
 
-    val shouldPrompt = (System.currentTimeMillis() - lastPromptTime) > 2 * 24 * 60 * 60 * 1000L
+    val shouldPrompt = (System.currentTimeMillis() - lastPromptTime) > 24 * 60 * 60 * 1000L
     val isRated = getSharedPreferences(SP_RATE_APP, 0).getBoolean(SP_KEY_IS_RATED, false)
 
     if (shouldPrompt && !isRated) {

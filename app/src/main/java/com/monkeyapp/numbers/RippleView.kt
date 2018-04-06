@@ -36,10 +36,6 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 
 class RippleView : View {
-    interface onAnimationEndListener {
-        fun onAnimationEnd()
-    }
-
     private val paint: Paint
 
     private var radius = 1.0f
@@ -47,7 +43,6 @@ class RippleView : View {
     private var cy = 1.0f
 
     private var animatorSet: AnimatorSet? = null
-    private var animatorEndListener: onAnimationEndListener? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -73,68 +68,61 @@ class RippleView : View {
             return
         }
 
-        animatorSet = AnimatorSet()
-        animatorSet?.interpolator = AccelerateDecelerateInterpolator()
-
-        val animatorList = ArrayList<Animator>()
-
         cx = x
         cy = y
 
-        val initRadius = (Math.min(width, height) / 2.0f)
+        animatorSet = AnimatorSet()
+        animatorSet?.let {
+            val initRadius = (Math.min(width, height) / 2.0f)
 
-        val scaleAnimator = ValueAnimator.ofFloat(initRadius / 2.0f, initRadius * 4.5f)
-        scaleAnimator.repeatCount = 0
-        scaleAnimator.duration = 500
-        scaleAnimator.addUpdateListener {
-            radius = it.animatedValue as Float
-            invalidate()
+            it.interpolator = AccelerateDecelerateInterpolator()
+
+            it.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) = Unit
+                override fun onAnimationCancel(animation: Animator?) = Unit
+
+                override fun onAnimationStart(animation: Animator?) {
+                    visibility = VISIBLE
+                }
+
+                override fun onAnimationEnd(animation: Animator?) {
+                    visibility = INVISIBLE
+                    animatorSet = null
+                }
+            })
+
+            it.playTogether(
+                    listOf<Animator>(
+                        ValueAnimator.ofFloat(initRadius / 2.0f, initRadius * 4.5f).apply {
+                            // scale animation
+                            repeatCount = 0
+                            duration = 500
+                            addUpdateListener {
+                                radius = it.animatedValue as Float
+                                invalidate()
+                            }
+                        },
+                        ObjectAnimator.ofFloat(this, "Alpha", 0.7f, 0.0f).apply {
+                            // alpha animation
+                            repeatCount = 0
+                            duration = 500
+                        }))
+
+            it.start()
         }
-
-        animatorList.add(scaleAnimator)
-
-        val alphaAnimator = ObjectAnimator.ofFloat(this, "Alpha", 0.7f, 0.0f)
-        alphaAnimator.repeatCount = 0
-        alphaAnimator.duration = 500
-
-        animatorList.add(alphaAnimator)
-
-        animatorSet?.playTogether(animatorList)
-
-        animatorSet?.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {
-            }
-
-            override fun onAnimationEnd(animation: Animator?) {
-                visibility = INVISIBLE
-
-                animatorEndListener?.onAnimationEnd()
-                animatorEndListener = null
-
-                animatorSet?.removeAllListeners()
-                animatorSet = null
-            }
-
-            override fun onAnimationCancel(animation: Animator?) {
-            }
-
-            override fun onAnimationStart(animation: Animator?) {
-            }
-        })
-
-        visibility = VISIBLE
-        animatorSet?.start()
     }
 
-    fun stopRippleAnimation(action: () -> Unit) {
+    fun stopRippleAnimation(onAnimationEndAction: () -> Unit) {
         if (animatorSet == null) {
-            action()
+            onAnimationEndAction()
         } else {
-            animatorEndListener = object : onAnimationEndListener {
-                override fun onAnimationEnd() {
-                    action()
-                }
-            }
+            animatorSet?.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) = Unit
+                override fun onAnimationCancel(animation: Animator?) = Unit
+                override fun onAnimationStart(animation: Animator?) = Unit
+
+                override fun onAnimationEnd(animation: Animator?) = onAnimationEndAction()
+            })
         }
     }
 
