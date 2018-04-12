@@ -27,10 +27,9 @@ package com.monkeyapp.numbers.helpers
 import android.content.ActivityNotFoundException
 import android.support.design.widget.Snackbar
 import kotlinx.android.synthetic.main.content_number_word.*
-import android.content.Intent
-import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import com.monkeyapp.numbers.R
+import org.jetbrains.anko.browse
 
 private const val SP_RATE_APP = "SP_RATE_APP"
 private const val SP_KEY_IS_RATED = "SP_KEY_IS_RATED"
@@ -48,13 +47,11 @@ fun AppCompatActivity.rateApp() {
         Snackbar.make(wordTextView, R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.rate_sure, {
                     try {
-                        startActivity(
-                                Intent(Intent.ACTION_VIEW,
-                                       Uri.parse("market://details?id=com.monkeyapp.numbers")))
+                        browse(url = "market://details?id=com.monkeyapp.numbers",
+                               newTask = true)
                     } catch (e: ActivityNotFoundException) {
-                        startActivity(
-                                Intent(Intent.ACTION_VIEW,
-                                       Uri.parse("https://play.google.com/store/apps/details?id=com.monkeyapp.numbers")))
+                        browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
+                               newTask =  true)
                     }
 
                     getSharedPreferences(SP_RATE_APP, 0)

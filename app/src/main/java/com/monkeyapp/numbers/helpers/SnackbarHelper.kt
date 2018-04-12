@@ -30,6 +30,7 @@ import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.content.ContextCompat
 import android.widget.TextView
 import com.monkeyapp.numbers.R
+import org.jetbrains.anko.backgroundColor
 
 fun Snackbar.setIcon(drawbleId: Int, tintColorId: Int): Snackbar {
     val snackText = view.findViewById<TextView>(android.support.design.R.id.snackbar_text)
@@ -42,6 +43,6 @@ fun Snackbar.setIcon(drawbleId: Int, tintColorId: Int): Snackbar {
         compoundDrawablePadding = context.resources.getDimensionPixelOffset(R.dimen.snackbar_icon_padding)
     }
 
-    view.setBackgroundColor(ContextCompat.getColor(context, R.color.primary_dark))
+    view.backgroundColor = ContextCompat.getColor(context, R.color.primary_dark)
     return this
 }
