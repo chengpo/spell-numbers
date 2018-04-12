@@ -150,7 +150,9 @@ class MainActivity : AppCompatActivity() {
 
         if (digits.toString() != mainViewModel?.digitStr?.value) {
             mainViewModel?.resetDigit()
-            digits?.forEach { mainViewModel?.appendDigit(it) }
+            digits?.forEach {
+                mainViewModel?.appendDigit(it)
+            }
         }
     }
 
@@ -175,7 +177,9 @@ class MainActivity : AppCompatActivity() {
 
             if (number.isNotBlank()) {
                 mainViewModel?.resetDigit()
-                number.forEach { mainViewModel?.appendDigit(it) }
+                number.forEach {
+                    mainViewModel?.appendDigit(it)
+                }
             }
         }
     }

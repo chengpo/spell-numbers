@@ -36,10 +36,10 @@ class MainViewModel(private val translator: Translator =
     val numberStr = MutableLiveData<String>()
 
     init {
-        translator.registerObserver({
+        translator.registerObserver {
             digitStr: String, numberStr: String ->
                 this.digitStr.value = digitStr
                 this.numberStr.value = numberStr
-        })
+        }
     }
 }

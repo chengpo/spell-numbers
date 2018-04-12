@@ -49,9 +49,9 @@ class OcrOverlayView : View {
             }
 
             // run on main thread
-            post({
+            post {
                 invalidate()
-            })
+            }
         }
 
     constructor(context: Context?) : super(context)
@@ -124,9 +124,9 @@ class OcrOverlayView : View {
                 ocrGraphics = ocrGraphicList
             }
 
-            ocrGraphics.forEach({
+            ocrGraphics.forEach {
                 it.draw(theCanvas, ocrGraphicPaint)
-            })
+            }
         }
     }
 }
