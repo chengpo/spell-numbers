@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        wordTextView.setOnClickListener{
+        wordTextView.setOnClickListener {
             val numberWord = wordTextView.text.toString()
             if (numberWord.isNotBlank()) {
                 rippleView.stopRippleAnimation {
@@ -96,14 +96,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        wordTextView.setOnTouchListener({
+        wordTextView.setOnTouchListener {
             _, event: MotionEvent? ->
             event?.let {
                 rippleView.startRippleAnimation(it.x, it.y)
             }
 
             false
-        })
+        }
 
         rateApp()
     }

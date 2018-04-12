@@ -30,11 +30,15 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.support.v4.app.NavUtils
+import android.support.v4.widget.TextViewCompat
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.MenuItem
-import kotlinx.android.synthetic.main.activity_fullscreen.*
-import org.jetbrains.anko.startActivity
+import android.widget.TextView
+import org.jetbrains.anko.*
 
 class FullscreenActivity : AppCompatActivity() {
+    private lateinit var fullscreenContent: TextView
     private val hideHandler = Handler()
     private val hidePart2Runnable = Runnable {
         // Delayed removal of status and navigation bar
@@ -60,16 +64,38 @@ class FullscreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_fullscreen)
+        frameLayout {
+            keepScreenOn = true
+            lparams(width = matchParent, height = matchParent)
+
+            fullscreenContent = textView {
+                gravity = Gravity.CENTER
+                padding = dip(50)
+
+                textAppearance = R.style.TextAppearance_AppCompat_Display1
+                text = intent.getStringExtra(INTENT_EXTRA_NUMBER_WORDS)
+
+                setOnClickListener {
+                    toggle()
+                }
+            }
+
+            fullscreenContent.lparams(width = matchParent, height = matchParent) {
+            }
+
+            TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                    fullscreenContent,
+                    sp(12),
+                    sp(34),
+                    sp(5),
+                    TypedValue.DENSITY_DEFAULT
+            )
+        }
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        fullscreenContent.setOnClickListener{ toggle() }
-
-        delayedHide(AUTO_HIDE_DELAY_MILLIS)
-
-        fullscreenContent.text = intent.getStringExtra(INTENT_EXTRA_NUMBER_WORDS)
-
         systemUiVisible = true
+        delayedHide(AUTO_HIDE_DELAY_MILLIS)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

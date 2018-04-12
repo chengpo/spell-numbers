@@ -67,7 +67,6 @@ class OmniButton : ImageButton {
                     field = if (isCameraAvailable) {
                         visibility = View.VISIBLE
                         State.Camera
-
                     } else {
                         // hide button when camera is not available
                         visibility = View.INVISIBLE
