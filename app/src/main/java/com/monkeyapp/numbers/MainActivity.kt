@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         private const val RC_OCR_CAPTURE = 1000
     }
 
-    private var mainViewModel: MainViewModel? = null
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,24 +68,25 @@ class MainActivity : AppCompatActivity() {
         omniButton.state = OmniButton.State.Camera
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-
-        mainViewModel?.digitStr?.observe(this, object : Observer<String> {
-            override fun onChanged(digits: String?) {
-                digits?.let {
-                    digitTextView.text = it
-                    omniButton.state = if (it.isEmpty())
-                                            OmniButton.State.Camera
-                                       else
-                                            OmniButton.State.Clean
+        mainViewModel.run {
+            digitStr.observe(this@MainActivity, object : Observer<String> {
+                override fun onChanged(digits: String?) {
+                    digits?.let {
+                        digitTextView.text = it
+                        omniButton.state = if (it.isEmpty())
+                            OmniButton.State.Camera
+                        else
+                            OmniButton.State.Clean
+                    }
                 }
-            }
-        })
+            })
 
-        mainViewModel?.numberStr?.observe(this, object : Observer<String> {
-            override fun onChanged(numbers: String?) {
-                wordTextView.text = numbers
-            }
-        })
+            numberStr.observe(this@MainActivity, object : Observer<String> {
+                override fun onChanged(numbers: String?) {
+                    wordTextView.text = numbers
+                }
+            })
+        }
 
         wordTextView.setOnClickListener {
             val numberWord = wordTextView.text.toString()
@@ -98,8 +99,8 @@ class MainActivity : AppCompatActivity() {
 
         wordTextView.setOnTouchListener {
             _, event: MotionEvent? ->
-            event?.let {
-                rippleView.startRippleAnimation(it.x, it.y)
+            event?.run {
+                rippleView.startRippleAnimation(x, y)
             }
 
             false
@@ -109,32 +110,35 @@ class MainActivity : AppCompatActivity() {
     }
     
     fun onButtonClicked(button: View) {
-        try {
-            when (button.id) {
-                R.id.btnDel -> mainViewModel?.deleteDigit()
-                R.id.omniButton -> {
-                    if (button is OmniButton) {
-                        when (button.state) {
-                            OmniButton.State.Clean -> mainViewModel?.resetDigit()
-                            OmniButton.State.Camera -> {
-                                startActivityForResult(Intent(INTENT_ACTION_OCR_CAPTURE), RC_OCR_CAPTURE)
+        mainViewModel.run {
+            try {
+                when (button.id) {
+                    R.id.btnDel -> deleteDigit()
+                    R.id.omniButton ->
+                        if (button is OmniButton) {
+                            when (button.state) {
+                                OmniButton.State.Clean -> resetDigit()
+                                OmniButton.State.Camera -> {
+                                    startActivityForResult(Intent(INTENT_ACTION_OCR_CAPTURE), RC_OCR_CAPTURE)
+                                }
                             }
                         }
-                    }
-                }
-                else -> if (button is Button)
+                    else ->
+                        if (button is Button) {
                             when (button.text[0]) {
-                                '.', in '0'..'9' -> mainViewModel?.appendDigit(button.text[0])
+                                '.', in '0'..'9' -> appendDigit(button.text[0])
                             }
+                        }
+                }
+
+            } catch (exception: LargeNumberException) {
+                Snackbar.make(wordTextView, R.string.too_large_to_spell, Snackbar.LENGTH_LONG)
+                        .setIcon(R.drawable.ic_error, R.color.accent)
+                        .show()
+
+                // revoke the last digit
+                deleteDigit()
             }
-
-        } catch (exception: LargeNumberException) {
-            Snackbar.make(wordTextView, R.string.too_large_to_spell, Snackbar.LENGTH_LONG)
-                    .setIcon(R.drawable.ic_error, R.color.accent)
-                    .show()
-
-            // revoke the last digit
-            mainViewModel?.deleteDigit()
         }
     }
 
@@ -146,12 +150,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        val digits: CharSequence? = savedInstanceState?.getCharSequence(BUNDLE_EXTRA_DIGITS)
+        val digits = savedInstanceState?.getCharSequence(BUNDLE_EXTRA_DIGITS) ?: ""
 
-        if (digits.toString() != mainViewModel?.digitStr?.value) {
-            mainViewModel?.resetDigit()
-            digits?.forEach {
-                mainViewModel?.appendDigit(it)
+        mainViewModel.run {
+            if (digits.toString() != digitStr.value) {
+                resetDigit()
+                digits.forEach {
+                    appendDigit(it)
+                }
             }
         }
     }
@@ -161,7 +167,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean =
+    override fun onOptionsItemSelected(item: MenuItem?) =
             when (item?.itemId) {
                 R.id.action_about -> {
                     startActivity<AboutActivity>()
@@ -175,10 +181,12 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == RC_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
             val number = data?.getStringExtra("number") ?: ""
 
-            if (number.isNotBlank()) {
-                mainViewModel?.resetDigit()
-                number.forEach {
-                    mainViewModel?.appendDigit(it)
+            mainViewModel.run {
+                if (number.isNotBlank()) {
+                    resetDigit()
+                    number.forEach {
+                        appendDigit(it)
+                    }
                 }
             }
         }

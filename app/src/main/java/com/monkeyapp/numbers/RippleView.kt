@@ -31,6 +31,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -54,7 +55,7 @@ class RippleView : View {
 
         paint = Paint()
         paint.style = Paint.Style.FILL
-        paint.color = resources.getColor(android.R.color.darker_gray)
+        paint.color = ResourcesCompat.getColor(resources, android.R.color.darker_gray, context.theme)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -72,12 +73,12 @@ class RippleView : View {
         cy = y
 
         animatorSet = AnimatorSet()
-        animatorSet?.let {
+        animatorSet?.run {
             val initRadius = (Math.min(width, height) / 2.0f)
 
-            it.interpolator = AccelerateDecelerateInterpolator()
+            interpolator = AccelerateDecelerateInterpolator()
 
-            it.addListener(object : Animator.AnimatorListener {
+            addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator?) = Unit
                 override fun onAnimationCancel(animation: Animator?) = Unit
 
@@ -91,24 +92,24 @@ class RippleView : View {
                 }
             })
 
-            it.playTogether(
-                    listOf<Animator>(
-                        ValueAnimator.ofFloat(initRadius / 2.0f, initRadius * 4.5f).apply {
-                            // scale animation
-                            repeatCount = 0
-                            duration = 500
-                            addUpdateListener {
-                                radius = it.animatedValue as Float
-                                invalidate()
-                            }
-                        },
-                        ObjectAnimator.ofFloat(this, "Alpha", 0.7f, 0.0f).apply {
-                            // alpha animation
-                            repeatCount = 0
-                            duration = 500
-                        }))
+            playTogether(
+                listOf<Animator>(
+                    ValueAnimator.ofFloat(initRadius / 2.0f, initRadius * 4.5f).apply {
+                        // scale animation
+                        repeatCount = 0
+                        duration = 500
+                        addUpdateListener {
+                            radius = it.animatedValue as Float
+                            invalidate()
+                        }
+                    },
+                    ObjectAnimator.ofFloat(this@RippleView, "alpha", 0.7f, 0.0f).apply {
+                        // alpha animation
+                        repeatCount = 0
+                        duration = 500
+                    }))
 
-            it.start()
+            start()
         }
     }
 

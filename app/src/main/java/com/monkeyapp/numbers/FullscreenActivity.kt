@@ -80,8 +80,7 @@ class FullscreenActivity : AppCompatActivity() {
                 }
             }
 
-            fullscreenContent.lparams(width = matchParent, height = matchParent) {
-            }
+            fullscreenContent.lparams(width = matchParent, height = matchParent)
 
             TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                     fullscreenContent,
