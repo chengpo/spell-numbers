@@ -75,8 +75,7 @@ class CameraSource(private val context: Context,
             if (_camera == null && rearCameraId != -1) {
                 _camera = Camera.open(rearCameraId)
 
-                _camera?.let {
-                    theCamera ->
+                _camera?.let { theCamera ->
                     val theParams = theCamera.parameters
 
                     theParams.previewFormat = DEFAULT_PREVIEW_IMAGE_FORMAT

@@ -106,8 +106,7 @@ class OcrOverlayView : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        canvas?.let {
-            theCanvas ->
+        canvas?.let { theCanvas ->
 
             // draw the capture rectangle
             theCanvas.drawRect(captureRect, rectPaint)

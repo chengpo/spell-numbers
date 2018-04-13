@@ -106,6 +106,10 @@ class NumberComposer {
                         decimalDigits.add(digit)
                     }
                 } else {
+                    if (integerDigits.size == 1 && integerDigits[0] == '0') {
+                        return false
+                    }
+
                     integerDigits.add(digit)
                 }
             }
@@ -124,11 +128,15 @@ class NumberComposer {
         if (hasDecimal) {
             if (decimalDigits.isEmpty()) {
                 hasDecimal = false
-                return false
+                return true
             }
 
             decimalDigits.removeAt(decimalDigits.size - 1)
             if (decimalDigits.isEmpty()) {
+                if (integerDigits.size == 1 && integerDigits[0] == '0') {
+                    integerDigits.clear()
+                }
+
                 hasDecimal = false
             }
 

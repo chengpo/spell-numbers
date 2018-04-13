@@ -69,8 +69,7 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         mainViewModel.run {
-            digitStr.observe(this@MainActivity, object : Observer<String> {
-                override fun onChanged(digits: String?) {
+            digitStr.observe(this@MainActivity, Observer<String> { digits ->
                     digits?.let {
                         digitTextView.text = it
                         omniButton.state = if (it.isEmpty())
@@ -78,13 +77,11 @@ class MainActivity : AppCompatActivity() {
                         else
                             OmniButton.State.Clean
                     }
-                }
+
             })
 
-            numberStr.observe(this@MainActivity, object : Observer<String> {
-                override fun onChanged(numbers: String?) {
+            numberStr.observe(this@MainActivity,  Observer<String> { numbers ->
                     wordTextView.text = numbers
-                }
             })
         }
 
@@ -97,9 +94,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        wordTextView.setOnTouchListener {
-            _, event: MotionEvent? ->
-            event?.run {
+        wordTextView.setOnTouchListener { _, event ->
+            event.run {
                 rippleView.startRippleAnimation(x, y)
             }
 
