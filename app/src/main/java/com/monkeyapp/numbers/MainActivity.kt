@@ -34,13 +34,13 @@ import android.support.design.widget.Snackbar
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.translators.EnglishNumberSpeller.LargeNumberException
 import com.monkeyapp.numbers.helpers.rateApp
 import com.monkeyapp.numbers.helpers.setIcon
+import org.jetbrains.anko.ctx
 import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
             val numberWord = wordTextView.text.toString()
             if (numberWord.isNotBlank()) {
                 rippleView.stopRippleAnimation {
-                    FullscreenActivity.start(this@MainActivity, numberWord)
+                    FullscreenActivity.start(ctx, numberWord)
                 }
             }
         }
