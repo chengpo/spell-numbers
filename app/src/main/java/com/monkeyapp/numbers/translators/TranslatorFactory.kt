@@ -24,8 +24,8 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.translators
 
-class TranslatorFactory {
-    companion object {
-        fun getEnglishTranslator() = NumberTranslator(EnglishNumberSpeller())
-    }
+class TranslatorFactory(private val updateNumber: (digitStr:String, numberStr: String) -> Unit) {
+    fun getEnglishTranslator() = NumberTranslator(composer = NumberComposer(),
+                                                  speller = EnglishNumberSpeller(),
+                                                  updateNumber = updateNumber)
 }

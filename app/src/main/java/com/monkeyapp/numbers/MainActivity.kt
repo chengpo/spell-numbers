@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
     }
     
     fun onButtonClicked(button: View) {
-        mainViewModel.run {
+        mainViewModel.translator.run {
             try {
                 when (button.id) {
                     R.id.btnDel -> deleteDigit()
@@ -154,9 +154,9 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.run {
             if (digits.toString() != digitStr.value) {
-                resetDigit()
+                translator.resetDigit()
                 digits.forEach {
-                    appendDigit(it)
+                    translator.appendDigit(it)
                 }
             }
         }
@@ -181,7 +181,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == RC_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
             val number = data?.getStringExtra("number") ?: ""
 
-            mainViewModel.run {
+            mainViewModel.translator.run {
                 if (number.isNotBlank()) {
                     resetDigit()
                     number.forEach {

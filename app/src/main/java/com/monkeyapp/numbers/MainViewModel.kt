@@ -29,17 +29,17 @@ import android.arch.lifecycle.ViewModel
 import com.monkeyapp.numbers.translators.Translator
 import com.monkeyapp.numbers.translators.TranslatorFactory
 
-class MainViewModel(private val translator: Translator =
-                                TranslatorFactory.getEnglishTranslator()) :
-                                ViewModel(), Translator by translator {
+class MainViewModel : ViewModel() {
+    var translator: Translator
     val digitStr = MutableLiveData<String>()
     val numberStr = MutableLiveData<String>()
 
+    private val translatorFactor = TranslatorFactory { digitStr: String, numberStr: String ->
+        this.digitStr.value = digitStr
+        this.numberStr.value = numberStr
+    }
+
     init {
-        translator.registerObserver {
-            digitStr: String, numberStr: String ->
-                this.digitStr.value = digitStr
-                this.numberStr.value = numberStr
-        }
+        translator = translatorFactor.getEnglishTranslator()
     }
 }
