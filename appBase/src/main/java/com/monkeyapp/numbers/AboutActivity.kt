@@ -27,8 +27,7 @@ package com.monkeyapp.numbers
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.monkeyapp.numbers.appbase.BuildConfig
-import com.monkeyapp.numbers.appbase.R
+
 
 import kotlinx.android.synthetic.main.activity_about.*
 import kotlinx.android.synthetic.main.content_about.*

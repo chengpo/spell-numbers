@@ -35,7 +35,6 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.MenuItem
 import android.widget.TextView
-import com.monkeyapp.numbers.appbase.R
 import org.jetbrains.anko.*
 
 class FullscreenActivity : AppCompatActivity() {

@@ -29,7 +29,7 @@ import android.support.design.widget.Snackbar
 import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.content.ContextCompat
 import android.widget.TextView
-import com.monkeyapp.numbers.appbase.R
+import com.monkeyapp.numbers.R
 import org.jetbrains.anko.backgroundColor
 
 fun Snackbar.setIcon(drawbleId: Int, tintColorId: Int): Snackbar {

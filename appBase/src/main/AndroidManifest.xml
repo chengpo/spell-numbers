@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.monkeyapp.numbers.appbase"
+    package="com.monkeyapp.numbers"
     android:installLocation="auto">
 
     <application
@@ -16,7 +16,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -26,7 +26,14 @@
                     android:scheme="https"
                     android:host="chengpo.github.io"
                     android:path="/spell-numbers" />
+                <data
+                    android:scheme="http"
+                    android:host="chengpo.github.io"
+                    android:pathPattern="/spell-numbers" />
             </intent-filter>
+            <meta-data
+                android:name="default-url"
+                android:value="https://chengpo.github.io/spell-numbers" />
         </activity>
         <activity
             android:name="com.monkeyapp.numbers.AboutActivity"

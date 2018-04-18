@@ -1,4 +1,3 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.monkeyapp.numbers">
-    <application/>
+    package="com.monkeyapp.numbers.appapk">
 </manifest>

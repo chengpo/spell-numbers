@@ -28,7 +28,7 @@ import android.content.ActivityNotFoundException
 import android.support.design.widget.Snackbar
 import kotlinx.android.synthetic.main.content_number_word.*
 import android.support.v7.app.AppCompatActivity
-import com.monkeyapp.numbers.appbase.R
+import com.monkeyapp.numbers.R
 import org.jetbrains.anko.browse
 
 private const val SP_RATE_APP = "SP_RATE_APP"

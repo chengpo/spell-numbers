@@ -31,7 +31,6 @@ import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageButton
-import com.monkeyapp.numbers.appbase.R
 import com.monkeyapp.numbers.helpers.tintColor
 
 class OmniButton : ImageButton {
