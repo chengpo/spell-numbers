@@ -15,17 +15,20 @@ android {
     defaultConfig {
         minSdkVersion rootProject.min_sdk_version
         targetSdkVersion rootProject.target_sdk_version
-        versionCode 1
-        versionName "1.0"
+        versionCode rootProject.version_code
+        versionName rootProject.version_name
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        resConfigs rootProject.res_configs
     }
 
     buildTypes {
         release {
             minifyEnabled true
-            minifyEnabled false
-            consumerProguardFiles 'proguard-rules.pro'
+            zipAlignEnabled true
+            pseudoLocalesEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
