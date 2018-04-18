@@ -13,6 +13,9 @@ buildscript {
     ext.target_sdk_version = 27
     ext.anko_version='0.10.4'
 
+    ext.renderscript_target_api = 18
+    ext.renderscript_support_mode_enabled = true
+
     ext.res_configs = "en"
 
     repositories {

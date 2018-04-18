@@ -16,8 +16,8 @@ android {
         versionCode rootProject.version_code
         versionName rootProject.version_name
 
-        renderscriptTargetApi 18
-        renderscriptSupportModeEnabled true
+        renderscriptTargetApi rootProject.renderscript_target_api
+        renderscriptSupportModeEnabled rootProject.renderscript_support_mode_enabled
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -29,7 +29,7 @@ android {
             minifyEnabled true
             zipAlignEnabled true
             pseudoLocalesEnabled false
-            consumerProguardFiles 'proguard-rules.pro'
+            consumerProguardFile  'proguard-rules.pro'
         }
     }
 }

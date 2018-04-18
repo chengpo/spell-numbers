@@ -23,3 +23,5 @@
 # If you keep the line digitStr information, uncomment this to
 # hide the original source file name.
 -renamesourcefileattribute SourceFile
+
+-keep class android.support.v8.renderscript.** { *; }
