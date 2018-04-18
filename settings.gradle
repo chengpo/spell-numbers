@@ -1,1 +1,1 @@
-include ':app', ':ocrCapture'
+include ':appBase', ':ocrCapture', ':appApk', ':appInstant'

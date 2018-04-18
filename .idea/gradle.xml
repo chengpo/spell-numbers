@@ -8,7 +8,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/appApk" />
+            <option value="$PROJECT_DIR$/appBase" />
+            <option value="$PROJECT_DIR$/appInstant" />
             <option value="$PROJECT_DIR$/ocrCapture" />
           </set>
         </option>

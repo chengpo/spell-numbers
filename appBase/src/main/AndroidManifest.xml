@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.monkeyapp.numbers.appbase"
+    android:installLocation="auto">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name="com.monkeyapp.numbers.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="chengpo.github.io"
+                    android:path="/spell-numbers" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.monkeyapp.numbers.AboutActivity"
+            android:label="@string/about_activity_title"
+            android:parentActivityName="com.monkeyapp.numbers.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.monkeyapp.numbers.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.monkeyapp.numbers.FullscreenActivity"
+            android:screenOrientation="userLandscape"
+            android:parentActivityName="com.monkeyapp.numbers.MainActivity"
+            android:theme="@style/FullscreenTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.monkeyapp.numbers.MainActivity" />
+        </activity>
+    </application>
+
+</manifest>
