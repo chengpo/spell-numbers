@@ -2,6 +2,8 @@ apply plugin: 'com.android.instantapp'
 
 
 android {
+    buildToolsVersion rootProject.build_tool_version
+
     defaultConfig {
         applicationId "com.monkeyapp.numbers"
         compileSdkVersion rootProject.compile_sdk_version

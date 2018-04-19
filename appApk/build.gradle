@@ -5,6 +5,8 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
+    buildToolsVersion rootProject.build_tool_version
+
     defaultConfig {
         applicationId "com.monkeyapp.numbers"
         compileSdkVersion rootProject.compile_sdk_version
