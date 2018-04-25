@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/appApk/appApk.iml" filepath="$PROJECT_DIR$/appApk/appApk.iml" />
       <module fileurl="file://$PROJECT_DIR$/appBase/appBase.iml" filepath="$PROJECT_DIR$/appBase/appBase.iml" />
       <module fileurl="file://$PROJECT_DIR$/appInstant/appInstant.iml" filepath="$PROJECT_DIR$/appInstant/appInstant.iml" />
-      <module fileurl="file://$PROJECT_DIR$/numbers.iml" filepath="$PROJECT_DIR$/numbers.iml" />
       <module fileurl="file://$PROJECT_DIR$/ocrCapture/ocrCapture.iml" filepath="$PROJECT_DIR$/ocrCapture/ocrCapture.iml" />
       <module fileurl="file://$PROJECT_DIR$/spell-numbers.iml" filepath="$PROJECT_DIR$/spell-numbers.iml" />
     </modules>

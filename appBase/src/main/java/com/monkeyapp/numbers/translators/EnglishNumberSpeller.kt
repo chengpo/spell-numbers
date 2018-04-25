@@ -64,13 +64,13 @@ class EnglishNumberSpeller: NumberSpeller {
     
     fun spellInteger(integer: Long): Array<String> =
             when (integer) {
-                in 0..19 -> arrayOf(NUM_WORDS[integer.toInt()])
-                in 20..99 -> {
+                in 0 until 20 -> arrayOf(NUM_WORDS[integer.toInt()])
+                in 20 until 100 -> {
                     val step = integer / 10 - 2
                     arrayOf(NUM_WORDS[20 + step.toInt()]).plus(
                             if (integer % 10 > 0) spellInteger(integer % 10) else emptyArray())
                 }
-                in 100..999 -> {
+                in 100 until 1000 -> {
                     val step = integer / 100
                     arrayOf(NUM_WORDS[step.toInt()], "Hundred").plus(
                             if (integer % 100 > 0) spellInteger(integer % 100) else emptyArray())
