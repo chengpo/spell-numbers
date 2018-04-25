@@ -43,13 +43,11 @@ import com.monkeyapp.numbers.helpers.setIcon
 import org.jetbrains.anko.ctx
 import org.jetbrains.anko.startActivity
 
-class MainActivity : AppCompatActivity() {
-    companion object {
-        private const val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
-        private const val BUNDLE_EXTRA_DIGITS = "bundle_extra_digits"
-        private const val RC_OCR_CAPTURE = 1000
-    }
+private const val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
+private const val BUNDLE_EXTRA_DIGITS = "bundle_extra_digits"
+private const val RC_OCR_CAPTURE = 1000
 
+class MainActivity : AppCompatActivity() {
     private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {

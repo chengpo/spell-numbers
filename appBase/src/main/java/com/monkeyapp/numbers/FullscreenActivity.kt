@@ -37,7 +37,27 @@ import android.view.MenuItem
 import android.widget.TextView
 import org.jetbrains.anko.*
 
+/**
+ * The number of milliseconds to wait after
+ * user interaction before hiding the system UI.
+ */
+private const val AUTO_HIDE_DELAY_MILLIS = 3000
+
+/**
+ * Some older devices needs a small delay between UI widget updates
+ * and a change of the status and navigation bar.
+ */
+private const val UI_ANIMATION_DELAY = 300
+
+private const val INTENT_EXTRA_NUMBER_WORDS = "number_words"
+
 class FullscreenActivity : AppCompatActivity() {
+    companion object {
+        fun start(context: Context, numbers: String) {
+            context.startActivity<FullscreenActivity>(INTENT_EXTRA_NUMBER_WORDS to numbers)
+        }
+    }
+
     private lateinit var fullscreenContent: TextView
     private val hideHandler = Handler()
     private val hidePart2Runnable = Runnable {
@@ -154,25 +174,5 @@ class FullscreenActivity : AppCompatActivity() {
     private fun delayedHide(delayMillis: Int) {
         hideHandler.removeCallbacks(hideRunnable)
         hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
-    }
-
-    companion object {
-        /**
-         * The number of milliseconds to wait after
-         * user interaction before hiding the system UI.
-         */
-        private val AUTO_HIDE_DELAY_MILLIS = 3000
-
-        /**
-         * Some older devices needs a small delay between UI widget updates
-         * and a change of the status and navigation bar.
-         */
-        private val UI_ANIMATION_DELAY = 300
-
-        private val INTENT_EXTRA_NUMBER_WORDS = "number_words"
-
-        fun start(context: Context, numbers: String) {
-            context.startActivity<FullscreenActivity>(INTENT_EXTRA_NUMBER_WORDS to numbers)
-        }
     }
 }
