@@ -5,20 +5,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:orientation="horizontal"
     tools:context="com.monkeyapp.numbers.MainActivity">
 
-
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:layout_margin="5dp">
 
         <include layout="@layout/content_number_word"/>
-    </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
     <android.support.v7.widget.GridLayout
         android:layout_width="0dp"

@@ -8,15 +8,14 @@
     android:orientation="vertical"
     tools:context="com.monkeyapp.numbers.MainActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_margin="5dp">
 
         <include layout="@layout/content_number_word"/>
-    </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
     <android.support.v7.widget.GridLayout
         android:layout_width="match_parent"
