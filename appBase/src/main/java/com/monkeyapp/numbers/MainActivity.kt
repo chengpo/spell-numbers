@@ -31,7 +31,6 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -40,6 +39,7 @@ import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.translators.EnglishNumberSpeller.LargeNumberException
 import com.monkeyapp.numbers.helpers.rateApp
 import com.monkeyapp.numbers.helpers.setIcon
+import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.ctx
 import org.jetbrains.anko.startActivity
 
@@ -54,8 +54,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val myToolbar = findViewById<Toolbar>(R.id.my_toolbar)
-        setSupportActionBar(myToolbar)
+        setSupportActionBar(toolbar)
 
         omniButton.isCameraAvailable = applicationContext
                                             .packageManager
