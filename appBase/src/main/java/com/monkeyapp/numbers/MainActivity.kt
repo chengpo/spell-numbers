@@ -30,15 +30,16 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import com.monkeyapp.numbers.helpers.SnackbarHelper
 import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.translators.EnglishNumberSpeller.LargeNumberException
 import com.monkeyapp.numbers.helpers.rateApp
 import com.monkeyapp.numbers.helpers.setIcon
+import com.monkeyapp.numbers.helpers.show
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.ctx
 import org.jetbrains.anko.startActivity
@@ -125,9 +126,9 @@ class MainActivity : AppCompatActivity() {
                 }
 
             } catch (exception: LargeNumberException) {
-                Snackbar.make(wordTextView, R.string.too_large_to_spell, Snackbar.LENGTH_LONG)
-                        .setIcon(R.drawable.ic_error, R.color.accent)
-                        .show()
+                SnackbarHelper.show(wordTextView, R.string.too_large_to_spell) {
+                    setIcon(R.drawable.ic_error, R.color.accent)
+                }
 
                 // revoke the last digit
                 deleteDigit()

@@ -45,31 +45,34 @@ fun AppCompatActivity.rateApp() {
     val isRated = getSharedPreferences(SP_RATE_APP, 0).getBoolean(SP_KEY_IS_RATED, false)
 
     if (shouldPrompt && !isRated) {
-        Snackbar.make(wordTextView, R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.rate_sure, {
-                    try {
-                        browse(url = "market://details?id=com.monkeyapp.numbers",
-                               newTask = true)
-                    } catch (e: ActivityNotFoundException) {
-                        browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
-                               newTask =  true)
-                    }
+        SnackbarHelper.show(wordTextView, R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE)
+        {
+            setAction(R.string.rate_sure, {
+                try {
+                    browse(url = "market://details?id=com.monkeyapp.numbers",
+                            newTask = true)
+                } catch (e: ActivityNotFoundException) {
+                    browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
+                            newTask = true)
+                }
 
+                getSharedPreferences(SP_RATE_APP, 0)
+                        .edit {
+                            putBoolean(SP_KEY_IS_RATED, true)
+                        }
+            })
+
+            addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
                     getSharedPreferences(SP_RATE_APP, 0)
                             .edit {
-                                putBoolean(SP_KEY_IS_RATED, true)
+                                putLong(SP_KEY_LAST_PROMPT_TIME, System.currentTimeMillis())
                             }
-                })
-                .addCallback(object :Snackbar.Callback() {
-                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                        super.onDismissed(transientBottomBar, event)
-                        getSharedPreferences(SP_RATE_APP, 0)
-                                .edit {
-                                    putLong(SP_KEY_LAST_PROMPT_TIME, System.currentTimeMillis())
-                                }
-                    }
-                })
-                .setIcon(R.drawable.ic_rate_app, R.color.accent)
-                .show()
+                }
+            })
+
+            setIcon(R.drawable.ic_rate_app, R.color.accent)
+        }
     }
 }
