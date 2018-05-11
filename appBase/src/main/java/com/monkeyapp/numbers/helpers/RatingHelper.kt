@@ -28,6 +28,7 @@ import android.content.ActivityNotFoundException
 import android.support.design.widget.Snackbar
 import kotlinx.android.synthetic.main.content_number_word.*
 import android.support.v7.app.AppCompatActivity
+import androidx.core.content.edit
 import com.monkeyapp.numbers.R
 import org.jetbrains.anko.browse
 
@@ -55,17 +56,17 @@ fun AppCompatActivity.rateApp() {
                     }
 
                     getSharedPreferences(SP_RATE_APP, 0)
-                            .edit()
-                            .putBoolean(SP_KEY_IS_RATED, true)
-                            .apply()
+                            .edit {
+                                putBoolean(SP_KEY_IS_RATED, true)
+                            }
                 })
                 .addCallback(object :Snackbar.Callback() {
                     override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                         super.onDismissed(transientBottomBar, event)
                         getSharedPreferences(SP_RATE_APP, 0)
-                                .edit()
-                                .putLong(SP_KEY_LAST_PROMPT_TIME, System.currentTimeMillis())
-                                .apply()
+                                .edit {
+                                    putLong(SP_KEY_LAST_PROMPT_TIME, System.currentTimeMillis())
+                                }
                     }
                 })
                 .setIcon(R.drawable.ic_rate_app, R.color.accent)
