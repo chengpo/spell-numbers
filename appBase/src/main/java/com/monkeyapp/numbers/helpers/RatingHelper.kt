@@ -39,15 +39,18 @@ private const val SP_KEY_LAST_PROMPT_TIME = "SP_KEY_LAST_PROMPT_TIME"
 fun AppCompatActivity.rateApp() {
     val pkgInfo = packageManager.getPackageInfo(packageName, 0)
 
-    val lastPromptTime = getSharedPreferences(SP_RATE_APP, 0).getLong(SP_KEY_LAST_PROMPT_TIME, pkgInfo.firstInstallTime)
+    val ratePrefs = getSharedPreferences(SP_RATE_APP, 0)
+    val lastPromptTime = ratePrefs.getLong(SP_KEY_LAST_PROMPT_TIME, pkgInfo.firstInstallTime)
 
     val shouldPrompt = (System.currentTimeMillis() - lastPromptTime) > 24 * 60 * 60 * 1000L
-    val isRated = getSharedPreferences(SP_RATE_APP, 0).getBoolean(SP_KEY_IS_RATED, false)
+    val isRated = ratePrefs.getBoolean(SP_KEY_IS_RATED, false)
 
     if (shouldPrompt && !isRated) {
-        SnackbarHelper.show(wordTextView, R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE)
+        wordTextView.snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE)
         {
-            setAction(R.string.rate_sure, {
+            icon(R.drawable.ic_rate_app, R.color.accent)
+
+            action(R.string.rate_sure) {
                 try {
                     browse(url = "market://details?id=com.monkeyapp.numbers",
                             newTask = true)
@@ -56,23 +59,16 @@ fun AppCompatActivity.rateApp() {
                             newTask = true)
                 }
 
-                getSharedPreferences(SP_RATE_APP, 0)
-                        .edit {
-                            putBoolean(SP_KEY_IS_RATED, true)
-                        }
-            })
-
-            addCallback(object : Snackbar.Callback() {
-                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                    super.onDismissed(transientBottomBar, event)
-                    getSharedPreferences(SP_RATE_APP, 0)
-                            .edit {
-                                putLong(SP_KEY_LAST_PROMPT_TIME, System.currentTimeMillis())
-                            }
+                ratePrefs.edit {
+                    putBoolean(SP_KEY_IS_RATED, true)
                 }
-            })
+            }
 
-            setIcon(R.drawable.ic_rate_app, R.color.accent)
+            dismissCallback {
+                ratePrefs.edit {
+                    putLong(SP_KEY_LAST_PROMPT_TIME, System.currentTimeMillis())
+                }
+            }
         }
     }
 }

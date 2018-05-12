@@ -34,12 +34,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import com.monkeyapp.numbers.helpers.SnackbarHelper
+import com.monkeyapp.numbers.helpers.*
 import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.translators.EnglishNumberSpeller.LargeNumberException
-import com.monkeyapp.numbers.helpers.rateApp
-import com.monkeyapp.numbers.helpers.setIcon
-import com.monkeyapp.numbers.helpers.show
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.ctx
 import org.jetbrains.anko.startActivity
@@ -126,8 +123,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
             } catch (exception: LargeNumberException) {
-                SnackbarHelper.show(wordTextView, R.string.too_large_to_spell) {
-                    setIcon(R.drawable.ic_error, R.color.accent)
+                wordTextView.snackbar(R.string.too_large_to_spell) {
+                    icon(R.drawable.ic_error, R.color.accent)
                 }
 
                 // revoke the last digit

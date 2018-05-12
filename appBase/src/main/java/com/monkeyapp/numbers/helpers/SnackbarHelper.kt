@@ -33,17 +33,24 @@ import android.widget.TextView
 import com.monkeyapp.numbers.R
 import org.jetbrains.anko.backgroundColor
 
-class SnackbarHelper {
-    companion object
-}
 
-inline fun SnackbarHelper.Companion.show(anchor: View, stringId: Int, length: Int = Snackbar.LENGTH_SHORT, action: Snackbar.() -> Snackbar) {
-    val snackbar = Snackbar.make(anchor, stringId, length)
+inline fun View.snackbar(stringId: Int, length: Int = Snackbar.LENGTH_SHORT, action: Snackbar.() -> Snackbar) {
+    val snackbar = Snackbar.make(this, stringId, length)
     action(snackbar)
     snackbar.show()
 }
 
-fun Snackbar.setIcon(drawbleId: Int, tintColorId: Int): Snackbar {
+inline fun Snackbar.action(stringId: Int, crossinline callback: () -> Unit) = setAction(stringId, { callback() })
+
+inline fun Snackbar.dismissCallback(crossinline callback: () -> Unit) =
+    addCallback(object : Snackbar.Callback() {
+        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+            super.onDismissed(transientBottomBar, event)
+            callback()
+        }
+    })
+
+fun Snackbar.icon(drawbleId: Int, tintColorId: Int): Snackbar {
     val snackText = view.findViewById<TextView>(android.support.design.R.id.snackbar_text)
     with(snackText) {
         val errorDrawable = VectorDrawableCompat
