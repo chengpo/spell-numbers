@@ -24,10 +24,13 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.helpers
 
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.OnLifecycleEvent
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.support.design.widget.Snackbar
-import kotlinx.android.synthetic.main.content_number_word.*
-import android.support.v7.app.AppCompatActivity
+import android.view.View
 import androidx.core.content.edit
 import com.monkeyapp.numbers.R
 import org.jetbrains.anko.browse
@@ -36,37 +39,46 @@ private const val SP_RATE_APP = "SP_RATE_APP"
 private const val SP_KEY_IS_RATED = "SP_KEY_IS_RATED"
 private const val SP_KEY_LAST_PROMPT_TIME = "SP_KEY_LAST_PROMPT_TIME"
 
-fun AppCompatActivity.rateApp() {
-    val pkgInfo = packageManager.getPackageInfo(packageName, 0)
+class RatingHelper(private val context: Context, private val anchorView: View) : LifecycleObserver {
 
-    val ratePrefs = getSharedPreferences(SP_RATE_APP, 0)
-    val lastPromptTime = ratePrefs.getLong(SP_KEY_LAST_PROMPT_TIME, pkgInfo.firstInstallTime)
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun onCreate() {
+        context.apply {
+            val pkgInfo = packageManager.getPackageInfo(packageName, 0)
 
-    val shouldPrompt = (System.currentTimeMillis() - lastPromptTime) > 24 * 60 * 60 * 1000L
-    val isRated = ratePrefs.getBoolean(SP_KEY_IS_RATED, false)
+            val ratePrefs = getSharedPreferences(SP_RATE_APP, 0)
+            val lastPromptTime = ratePrefs.getLong(SP_KEY_LAST_PROMPT_TIME, pkgInfo.firstInstallTime)
 
-    if (shouldPrompt && !isRated) {
-        wordTextView.snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE)
-        {
-            icon(R.drawable.ic_rate_app, R.color.accent)
+            val shouldPrompt = (System.currentTimeMillis() - lastPromptTime) > 24 * 60 * 60 * 1000L
+            val isRated = ratePrefs.getBoolean(SP_KEY_IS_RATED, false)
 
-            action(R.string.rate_sure) {
-                try {
-                    browse(url = "market://details?id=com.monkeyapp.numbers",
-                            newTask = true)
-                } catch (e: ActivityNotFoundException) {
-                    browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
-                            newTask = true)
-                }
+            if (shouldPrompt && !isRated) {
+                anchorView.apply {
+                    // prompting user for rating App
+                    snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE)
+                    {
+                        icon(R.drawable.ic_rate_app, R.color.accent)
 
-                ratePrefs.edit {
-                    putBoolean(SP_KEY_IS_RATED, true)
-                }
-            }
+                        action(R.string.rate_sure) {
+                            try {
+                                browse(url = "market://details?id=com.monkeyapp.numbers",
+                                        newTask = true)
+                            } catch (e: ActivityNotFoundException) {
+                                browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
+                                        newTask = true)
+                            }
 
-            dismissCallback {
-                ratePrefs.edit {
-                    putLong(SP_KEY_LAST_PROMPT_TIME, System.currentTimeMillis())
+                            ratePrefs.edit {
+                                putBoolean(SP_KEY_IS_RATED, true)
+                            }
+                        }
+
+                        dismissCallback {
+                            ratePrefs.edit {
+                                putLong(SP_KEY_LAST_PROMPT_TIME, System.currentTimeMillis())
+                            }
+                        }
+                    }
                 }
             }
         }

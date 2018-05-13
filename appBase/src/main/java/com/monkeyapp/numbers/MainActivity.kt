@@ -54,6 +54,9 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
 
+        // bind lifecycle to rating helper
+        lifecycle.addObserver(RatingHelper(this, wordTextView))
+
         omniButton.isCameraAvailable = applicationContext
                                             .packageManager
                                             .queryIntentActivities(
@@ -63,8 +66,7 @@ class MainActivity : AppCompatActivity() {
         omniButton.state = OmniButton.State.Camera
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        mainViewModel.run {
-            digitStr.observe(this@MainActivity, Observer<String> { digits ->
+        mainViewModel.digitStr.observe(this@MainActivity, Observer<String> { digits ->
                     digits?.let {
                         digitTextView.text = it
                         omniButton.state = if (it.isEmpty())
@@ -75,10 +77,9 @@ class MainActivity : AppCompatActivity() {
 
             })
 
-            numberStr.observe(this@MainActivity,  Observer<String> { numbers ->
+        mainViewModel.numberStr.observe(this@MainActivity,  Observer<String> { numbers ->
                     wordTextView.text = numbers
             })
-        }
 
         wordTextView.setOnClickListener {
             val numberWord = wordTextView.text.toString()
@@ -90,14 +91,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         wordTextView.setOnTouchListener { _, event ->
-            event.run {
-                rippleView.startRippleAnimation(x, y)
-            }
-
+            rippleView.startRippleAnimation(event.x, event.y)
             false
         }
-
-        rateApp()
     }
     
     fun onButtonClicked(button: View) {
