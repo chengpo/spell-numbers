@@ -62,7 +62,6 @@ class MainActivity : AppCompatActivity() {
                 else
                     OmniButton.State.Clean
             }
-
         })
 
         mainViewModel.numberStr.observe(this@MainActivity, Observer<String> { numbers ->

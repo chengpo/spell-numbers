@@ -33,7 +33,6 @@ import android.widget.TextView
 import com.monkeyapp.numbers.R
 import org.jetbrains.anko.backgroundColor
 
-
 inline fun View.snackbar(stringId: Int, length: Int = Snackbar.LENGTH_SHORT, action: Snackbar.() -> Snackbar) {
     val snackbar = Snackbar.make(this, stringId, length)
     action(snackbar)
