@@ -38,7 +38,6 @@ import com.monkeyapp.numbers.helpers.*
 import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.translators.EnglishNumberSpeller.LargeNumberException
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.ctx
 import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
@@ -74,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             val numberWord = wordTextView.text.toString()
             if (numberWord.isNotBlank()) {
                 rippleView.stopRippleAnimation {
-                    FullscreenActivity.start(ctx, numberWord)
+                    showFullScreen(numberWord)
                 }
             }
         }

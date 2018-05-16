@@ -51,14 +51,12 @@ private const val UI_ANIMATION_DELAY = 300
 
 private const val INTENT_EXTRA_NUMBER_WORDS = "number_words"
 
-class FullscreenActivity : AppCompatActivity() {
-    companion object {
-        fun start(context: Context, numbers: String) {
-            context.startActivity<FullscreenActivity>(INTENT_EXTRA_NUMBER_WORDS to numbers)
-        }
-    }
+fun Context.showFullScreen(numbers: String) {
+    startActivity<FullScreenActivity>(INTENT_EXTRA_NUMBER_WORDS to numbers)
+}
 
-    private lateinit var fullscreenContent: TextView
+class FullScreenActivity : AppCompatActivity() {
+    private lateinit var contentView: TextView
     private val hideHandler = Handler()
     private val hidePart2Runnable = Runnable {
         // Delayed removal of status and navigation bar
@@ -66,7 +64,7 @@ class FullscreenActivity : AppCompatActivity() {
         // Note that some of these constants are new as of API 16 (Jelly Bean)
         // and API 19 (KitKat). It is safe to use them, as they are inlined
         // at compile-time and do nothing on earlier devices.
-        fullscreenContent.systemUiVisibility =
+        contentView.systemUiVisibility =
                         View.SYSTEM_UI_FLAG_LOW_PROFILE or
                         View.SYSTEM_UI_FLAG_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
@@ -88,7 +86,7 @@ class FullscreenActivity : AppCompatActivity() {
             keepScreenOn = true
             lparams(width = matchParent, height = matchParent)
 
-            fullscreenContent = textView {
+            contentView = textView {
                 gravity = Gravity.CENTER
                 padding = dip(50)
 
@@ -100,10 +98,10 @@ class FullscreenActivity : AppCompatActivity() {
                 }
             }
 
-            fullscreenContent.lparams(width = matchParent, height = matchParent)
+            contentView.lparams(width = matchParent, height = matchParent)
 
             TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
-                    fullscreenContent,
+                    contentView,
                     sp(12),
                     sp(34),
                     sp(5),
@@ -157,7 +155,7 @@ class FullscreenActivity : AppCompatActivity() {
 
     private fun show() {
         // Show the system bar
-        fullscreenContent.systemUiVisibility =
+        contentView.systemUiVisibility =
                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         systemUiVisible = true

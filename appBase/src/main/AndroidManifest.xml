@@ -44,7 +44,7 @@
                 android:value="com.monkeyapp.numbers.MainActivity" />
         </activity>
         <activity
-            android:name="com.monkeyapp.numbers.FullscreenActivity"
+            android:name="com.monkeyapp.numbers.FullScreenActivity"
             android:screenOrientation="userLandscape"
             android:parentActivityName="com.monkeyapp.numbers.MainActivity"
             android:theme="@style/FullscreenTheme">
