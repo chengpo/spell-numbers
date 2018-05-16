@@ -41,10 +41,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.ctx
 import org.jetbrains.anko.startActivity
 
-private const val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
-private const val BUNDLE_EXTRA_DIGITS = "bundle_extra_digits"
-private const val RC_OCR_CAPTURE = 1000
-
 class MainActivity : AppCompatActivity() {
     private lateinit var mainViewModel: MainViewModel
 
@@ -56,30 +52,23 @@ class MainActivity : AppCompatActivity() {
 
         // bind lifecycle to rating helper
         lifecycle.addObserver(RatingHelper(this, wordTextView))
-
-        omniButton.isCameraAvailable = applicationContext
-                                            .packageManager
-                                            .queryIntentActivities(
-                                                    Intent(INTENT_ACTION_OCR_CAPTURE), 0)
-                                            .isNotEmpty()
-
         omniButton.state = OmniButton.State.Camera
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         mainViewModel.digitStr.observe(this@MainActivity, Observer<String> { digits ->
-                    digits?.let {
-                        digitTextView.text = it
-                        omniButton.state = if (it.isEmpty())
-                            OmniButton.State.Camera
-                        else
-                            OmniButton.State.Clean
-                    }
+            digits?.let {
+                digitTextView.text = it
+                omniButton.state = if (it.isEmpty())
+                    OmniButton.State.Camera
+                else
+                    OmniButton.State.Clean
+            }
 
-            })
+        })
 
-        mainViewModel.numberStr.observe(this@MainActivity,  Observer<String> { numbers ->
-                    wordTextView.text = numbers
-            })
+        mainViewModel.numberStr.observe(this@MainActivity, Observer<String> { numbers ->
+            wordTextView.text = numbers
+        })
 
         wordTextView.setOnClickListener {
             val numberWord = wordTextView.text.toString()
@@ -95,57 +84,30 @@ class MainActivity : AppCompatActivity() {
             false
         }
     }
-    
+
     fun onButtonClicked(button: View) {
-        mainViewModel.translator.run {
-            try {
-                when (button.id) {
-                    R.id.btnDel -> deleteDigit()
-                    R.id.omniButton ->
-                        if (button is OmniButton) {
-                            when (button.state) {
-                                OmniButton.State.Clean -> resetDigit()
-                                OmniButton.State.Camera -> {
-                                    startActivityForResult(Intent(INTENT_ACTION_OCR_CAPTURE), RC_OCR_CAPTURE)
-                                }
-                            }
-                        }
-                    else ->
-                        if (button is Button) {
-                            when (button.text[0]) {
-                                '.', in '0'..'9' -> appendDigit(button.text[0])
-                            }
-                        }
-                }
-
-            } catch (exception: LargeNumberException) {
-                wordTextView.snackbar(R.string.too_large_to_spell) {
-                    icon(R.drawable.ic_error, R.color.accent)
-                }
-
-                // revoke the last digit
-                deleteDigit()
+        try {
+            when {
+                button.id == R.id.btnDel -> mainViewModel.deleteDigit()
+                button is OmniButton ->
+                    when (button.state) {
+                        OmniButton.State.Clean -> mainViewModel.resetDigit()
+                        OmniButton.State.Camera -> startActivityForResult(
+                                Intent(INTENT_ACTION_OCR_CAPTURE),
+                                RC_OCR_CAPTURE)
+                    }
+                button is Button ->
+                    when (button.text[0]) {
+                        '.', in '0'..'9' -> mainViewModel.appendDigit(button.text[0])
+                    }
             }
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle?) {
-        super.onSaveInstanceState(outState)
-
-        outState?.putCharSequence(BUNDLE_EXTRA_DIGITS, digitTextView.text)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        val digits = savedInstanceState?.getCharSequence(BUNDLE_EXTRA_DIGITS) ?: ""
-
-        mainViewModel.run {
-            if (digits.toString() != digitStr.value) {
-                translator.resetDigit()
-                digits.forEach {
-                    translator.appendDigit(it)
-                }
+        } catch (exception: LargeNumberException) {
+            wordTextView.snackbar(R.string.too_large_to_spell) {
+                icon(R.drawable.ic_error, R.color.accent)
             }
+
+            // revoke the last digit
+            mainViewModel.deleteDigit()
         }
     }
 
@@ -168,12 +130,10 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == RC_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
             val number = data?.getStringExtra("number") ?: ""
 
-            mainViewModel.translator.run {
-                if (number.isNotBlank()) {
-                    resetDigit()
-                    number.forEach {
-                        appendDigit(it)
-                    }
+            if (number.isNotBlank()) {
+                mainViewModel.resetDigit()
+                number.forEach {
+                    mainViewModel.appendDigit(it)
                 }
             }
         }

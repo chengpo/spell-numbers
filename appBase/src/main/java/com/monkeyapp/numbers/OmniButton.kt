@@ -31,6 +31,7 @@ import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageButton
+import com.monkeyapp.numbers.helpers.isOcrAvailable
 import com.monkeyapp.numbers.helpers.tintColor
 
 class OmniButton : ImageButton {
@@ -58,13 +59,13 @@ class OmniButton : ImageButton {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    var isCameraAvailable = false
+    var isOcrAvailable = lazy { context.isOcrAvailable() }
 
     var state: State = State.None
         set(value) {
             when(value) {
                 State.Camera -> {
-                    field = if (isCameraAvailable) {
+                    field = if (isOcrAvailable.value) {
                         visibility = View.VISIBLE
                         State.Camera
                     } else {

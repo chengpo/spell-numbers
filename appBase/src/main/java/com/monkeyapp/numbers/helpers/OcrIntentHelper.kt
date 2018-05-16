@@ -22,39 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers
+package com.monkeyapp.numbers.helpers
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import com.monkeyapp.numbers.translators.Translator
-import com.monkeyapp.numbers.translators.TranslatorFactory
+import android.content.Context
+import android.content.Intent
 
-class MainViewModel : ViewModel() {
-    private var translator: Translator
+const val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
+const val RC_OCR_CAPTURE = 1000
 
-    private val digitStrLiveData = MutableLiveData<String>()
-    private val numberStrLiveData = MutableLiveData<String>()
-
-    private val translatorFactor = TranslatorFactory { digitStr: String, numberStr: String ->
-        digitStrLiveData.value = digitStr
-        numberStrLiveData.value = numberStr
-    }
-
-    init {
-        translator = translatorFactor.getEnglishTranslator()
-    }
-
-    val digitStr
-        get() = digitStrLiveData as LiveData<String>
-
-    val numberStr
-        get() = numberStrLiveData as LiveData<String>
-
-    fun deleteDigit() = translator.deleteDigit()
-
-    fun appendDigit(digit: Char) = translator.appendDigit(digit)
-
-    fun resetDigit() = translator.resetDigit()
+fun Context.isOcrAvailable(): Boolean {
+    return applicationContext
+            .packageManager
+            .queryIntentActivities(
+                    Intent(INTENT_ACTION_OCR_CAPTURE), 0)
+            .isNotEmpty()
 }
-
