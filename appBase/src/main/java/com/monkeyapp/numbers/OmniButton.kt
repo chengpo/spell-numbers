@@ -59,25 +59,25 @@ class OmniButton : ImageButton {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    var isOcrAvailable = lazy { context.isOcrAvailable() }
+    private var isOcrAvailable = lazy { context.isOcrAvailable() }
 
     var state: State = State.None
         set(value) {
-            when(value) {
-                State.Camera -> {
-                    field = if (isOcrAvailable.value) {
-                        visibility = View.VISIBLE
-                        State.Camera
-                    } else {
-                        // hide button when camera is not available
-                        visibility = View.INVISIBLE
-                        State.Clean
-                    }
-                }
-                State.Clean -> {
+            field = when {
+                value == State.Camera && isOcrAvailable.value -> {
                     visibility = View.VISIBLE
-                    field = State.Clean
+                    State.Camera
                 }
+                value == State.Camera && !isOcrAvailable.value -> {
+                    // hide button when camera is not available
+                    visibility = View.INVISIBLE
+                    State.None
+                }
+                value == State.Clean -> {
+                    visibility = View.VISIBLE
+                    State.Clean
+                }
+                else -> State.None
             }
 
             refreshDrawableState()
@@ -100,14 +100,14 @@ class OmniButton : ImageButton {
     }
 
     override fun onCreateDrawableState(extraSpace: Int): IntArray =
-        when(state) {
-            State.Clean, State.Camera -> {
-                val drawableState = super.onCreateDrawableState(extraSpace + 1)
-                View.mergeDrawableStates(drawableState, state.getDrawableStates())
+            when (state) {
+                State.Clean, State.Camera -> {
+                    val drawableState = super.onCreateDrawableState(extraSpace + 1)
+                    View.mergeDrawableStates(drawableState, state.getDrawableStates())
+                }
+                else -> {
+                    visibility = View.INVISIBLE
+                    super.onCreateDrawableState(extraSpace)
+                }
             }
-            else ->  {
-                visibility = View.INVISIBLE
-                super.onCreateDrawableState(extraSpace)
-            }
-        }
 }
