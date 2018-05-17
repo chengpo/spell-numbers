@@ -68,7 +68,7 @@ dependencies {
     implementation "com.android.support:support-v4:$support_lib_version"
     implementation "com.android.support:appcompat-v7:$support_lib_version"
     implementation "com.android.support:gridlayout-v7:$support_lib_version"
-    implementation "com.android.support.constraint:constraint-layout:1.1.0"
+    implementation "com.android.support.constraint:constraint-layout:$constraint_layout"
 
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
