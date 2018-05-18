@@ -97,6 +97,8 @@ class OmniButton : ImageButton {
                 cameraDrawable.tintColor(ContextCompat.getColor(context, R.color.primary_text)))
 
         setImageDrawable(omniButtonDrawable)
+
+        state = OmniButton.State.Camera
     }
 
     override fun onCreateDrawableState(extraSpace: Int): IntArray =

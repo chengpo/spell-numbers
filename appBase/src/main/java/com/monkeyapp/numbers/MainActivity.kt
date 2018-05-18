@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity() {
 
         // bind lifecycle to rating helper
         lifecycle.addObserver(RatingHelper(this, wordTextView))
-        omniButton.state = OmniButton.State.Camera
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         mainViewModel.digitStr.observe(this@MainActivity, Observer<String> { digits ->
