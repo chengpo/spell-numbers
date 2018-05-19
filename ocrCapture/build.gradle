@@ -17,6 +17,8 @@ android {
         versionCode rootProject.version_code
         versionName rootProject.version_name
 
+        consumerProguardFiles 'proguard-rules.pro'
+
         renderscriptTargetApi rootProject.renderscript_target_api
         renderscriptSupportModeEnabled rootProject.renderscript_support_mode_enabled
 
