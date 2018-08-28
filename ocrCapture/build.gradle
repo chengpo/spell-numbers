@@ -19,9 +19,6 @@ android {
 
         consumerProguardFiles 'proguard-rules.pro'
 
-        renderscriptTargetApi rootProject.renderscript_target_api
-        renderscriptSupportModeEnabled rootProject.renderscript_support_mode_enabled
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         resConfigs rootProject.res_configs
