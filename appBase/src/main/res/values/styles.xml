@@ -21,6 +21,7 @@
     <style name="PadButtonStyle" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">0dip</item>
         <item name="android:layout_height">0dip</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Large</item>
         <item name="android:onClick">onButtonClicked</item>
         <item name="android:gravity">center</item>

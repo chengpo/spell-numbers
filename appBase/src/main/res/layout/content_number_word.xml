@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:onClick="onButtonClicked"
         android:tint="@color/primary_text"
+        android:background="?selectableItemBackgroundBorderless"
         style="@style/Widget.AppCompat.Button.Borderless"/>
 
     <TextView
