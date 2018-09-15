@@ -59,7 +59,7 @@ class EnglishNumberSpeller: NumberSpeller {
 
     class LargeNumberException : IllegalArgumentException("Number is too large to spellInteger")
 
-    fun spellDecimals(decimals: Float) =
+    private fun spellDecimals(decimals: Float) =
             String.format("%02d / 100", Math.round(decimals * 100))
     
     fun spellInteger(integer: Long): Array<String> =
