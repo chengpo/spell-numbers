@@ -55,7 +55,7 @@ class RippleView : View {
 
         paint = Paint()
         paint.style = Paint.Style.FILL
-        paint.color = ResourcesCompat.getColor(resources, android.R.color.darker_gray, context.theme)
+        paint.color = ResourcesCompat.getColor(resources, R.color.ripple_gray, context.theme)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
