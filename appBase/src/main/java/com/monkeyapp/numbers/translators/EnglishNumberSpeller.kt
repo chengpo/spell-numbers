@@ -25,54 +25,25 @@ SOFTWARE.
 package com.monkeyapp.numbers.translators
 
 class EnglishNumberSpeller: NumberSpeller {
-    companion object {
-        @JvmField val NUM_WORDS = arrayOf(
-                "Zero",
-                "One",
-                "Two",
-                "Three",
-                "Four",
-                "Five",
-                "Six",
-                "Seven",
-                "Eight",
-                "Nine",
-                "Ten",
-                "Eleven",
-                "Twelve",
-                "Thirteen",
-                "Fourteen",
-                "Fifteen",
-                "Sixteen",
-                "Seventeen",
-                "Eighteen",
-                "Nineteen",
-                "Twenty",
-                "Thirty",
-                "Forty",
-                "Fifty",
-                "Sixty",
-                "Seventy",
-                "Eighty",
-                "Ninety")
-    }
-
-    class LargeNumberException : IllegalArgumentException("Number is too large to spellInteger")
+   private val symbols = listOf(
+           "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
+           "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen",
+           "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety")
 
     private fun spellDecimals(decimals: Float) =
             String.format("%02d / 100", Math.round(decimals * 100))
     
     fun spellInteger(integer: Long): Array<String> =
             when (integer) {
-                in 0 until 20 -> arrayOf(NUM_WORDS[integer.toInt()])
+                in 0 until 20 -> arrayOf(symbols[integer.toInt()])
                 in 20 until 100 -> {
-                    val step = integer / 10 - 2
-                    arrayOf(NUM_WORDS[20 + step.toInt()]).plus(
+                    val index = integer / 10 - 2
+                    arrayOf(symbols[20 + index.toInt()]).plus(
                             if (integer % 10 > 0) spellInteger(integer % 10) else emptyArray())
                 }
                 in 100 until 1000 -> {
-                    val step = integer / 100
-                    arrayOf(NUM_WORDS[step.toInt()], "Hundred").plus(
+                    val index = integer / 100
+                    arrayOf(symbols[index.toInt()], "Hundred").plus(
                             if (integer % 100 > 0) spellInteger(integer % 100) else emptyArray())
                 }
                 in 1000 until 1000 * 1000 -> {

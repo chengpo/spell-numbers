@@ -36,7 +36,7 @@ import android.view.View
 import android.widget.Button
 import com.monkeyapp.numbers.helpers.*
 import kotlinx.android.synthetic.main.content_number_word.*
-import com.monkeyapp.numbers.translators.EnglishNumberSpeller.LargeNumberException
+import com.monkeyapp.numbers.translators.LargeNumberException
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
 

@@ -27,3 +27,5 @@ package com.monkeyapp.numbers.translators
 interface NumberSpeller {
     fun spellNumber(integers: Long, decimals: Float): String
 }
+
+class LargeNumberException : IllegalArgumentException("Number is too large to spellInteger")

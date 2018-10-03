@@ -52,16 +52,13 @@ class NumberComposer {
     private val integerStr: String
         get() {
             val integerWithComma = mutableListOf<Char>()
-            var i = 0
 
-            integerDigits.reversed().forEach {
-                if (i > 0 && i % 3 == 0) {
+            integerDigits.reversed().forEachIndexed { index, digit ->
+                if (index > 0 && index % 3 == 0) {
                     integerWithComma.add(',')
                 }
 
-                i++
-
-                integerWithComma.add(it)
+                integerWithComma.add(digit)
             }
 
             return integerWithComma.reversed().joinToString(separator = "")
@@ -69,26 +66,24 @@ class NumberComposer {
 
     val integers: Long
         get() {
-            var _integers = 0L
+            var value = 0L
 
-            for (digit in integerDigits) {
-                _integers = (_integers * 10) + (digit - '0')
+            integerDigits.forEach { digit ->
+                value = (value * 10) + (digit - '0')
             }
 
-            return _integers
+            return value
         }
 
     val decimals: Float
         get() {
-            var _fractions = 0.0F
-            var step = 0.1F
+            var value = 0.0F
 
-            for (digit in decimalDigits) {
-                _fractions += (digit - '0') * step
-                step *= 0.1F
+            decimalDigits.forEachIndexed { index, digit ->
+                value += (digit - '0') * Math.pow(0.1, (index + 1).toDouble()).toFloat()
             }
 
-            return _fractions
+            return value
         }
 
     fun appendDigit(digit: Char): Boolean {
