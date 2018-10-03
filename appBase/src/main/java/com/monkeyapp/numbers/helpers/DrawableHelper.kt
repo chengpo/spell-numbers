@@ -26,7 +26,7 @@ package com.monkeyapp.numbers.helpers
 
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
-import android.support.v4.graphics.drawable.DrawableCompat
+import androidx.core.graphics.drawable.DrawableCompat
 
 fun Drawable.tintColor(tintColor: Int): Drawable {
     val drawable = DrawableCompat.wrap(mutate())

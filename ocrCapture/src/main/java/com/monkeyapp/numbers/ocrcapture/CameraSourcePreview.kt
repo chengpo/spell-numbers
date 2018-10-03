@@ -28,7 +28,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
+import androidx.core.app.ActivityCompat
 import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceHolder

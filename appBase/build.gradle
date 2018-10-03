@@ -26,7 +26,7 @@ android {
         versionName rootProject.version_name
 
         vectorDrawables.useSupportLibrary = true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         resConfigs rootProject.res_configs
     }
@@ -56,33 +56,25 @@ android {
 }
 
 dependencies {
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation 'junit:junit:4.12'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.support:support-annotations:$support_lib_version"
-    implementation "com.android.support:support-compat:$support_lib_version"
-    implementation "com.android.support:design:$support_lib_version"
-    implementation "com.android.support:support-v4:$support_lib_version"
-    implementation "com.android.support:appcompat-v7:$support_lib_version"
-    implementation "com.android.support:gridlayout-v7:$support_lib_version"
-    implementation "com.android.support.constraint:constraint-layout:$constraint_layout"
+    implementation 'androidx.annotation:annotation:1.0.0'
+    implementation 'androidx.core:core:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
 
     // ViewModel and LiveData
-    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
-    kapt "android.arch.lifecycle:compiler:$lifecycle_version"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
 
-    // def lifecycle_version = "2.0.0-alpha1"
-    // implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-    // kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
-
-    implementation 'androidx.core:core-ktx:0.3'
-
-    // Android Jetpack
-    // implementation 'androidx.core:core-ktx:1.0.0-alpha1'
-    // implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0-alpha1'
+    implementation 'androidx.core:core-ktx:1.0.0'
 
     // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

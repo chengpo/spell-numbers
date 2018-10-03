@@ -12,7 +12,7 @@ android {
         versionCode rootProject.version_code
         versionName rootProject.version_name
         vectorDrawables.useSupportLibrary = true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         resConfigs rootProject.res_configs
     }

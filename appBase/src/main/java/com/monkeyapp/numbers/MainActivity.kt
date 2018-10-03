@@ -25,19 +25,19 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import android.view.Viewatus
 import android.widget.Button
 import com.monkeyapp.numbers.helpers.*
-import kotlinx.android.synthetic.main.content_number_word.*
 import com.monkeyapp.numbers.translators.LargeNumberException
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_number_word.*
 import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {

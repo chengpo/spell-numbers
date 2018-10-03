@@ -25,12 +25,12 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.support.v4.app.NavUtils
-import android.support.v4.widget.TextViewCompat
+import androidx.core.app.NavUtils
+import androidx.core.widget.TextViewCompat
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.MenuItem

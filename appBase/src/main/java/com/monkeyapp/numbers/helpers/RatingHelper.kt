@@ -24,12 +24,12 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.helpers
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import android.content.ActivityNotFoundException
 import android.content.Context
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.view.View
 import androidx.core.content.edit
 import com.monkeyapp.numbers.R

@@ -26,8 +26,8 @@ package com.monkeyapp.numbers
 
 import android.content.Context
 import android.graphics.drawable.StateListDrawable
-import android.support.graphics.drawable.VectorDrawableCompat
-import android.support.v4.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageButton

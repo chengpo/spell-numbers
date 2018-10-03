@@ -9,16 +9,16 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.monkeyapp.numbers.MainActivity">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_margin="5dp">
 
         <include layout="@layout/content_number_word"/>
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <android.support.v7.widget.GridLayout
+    <androidx.gridlayout.widget.GridLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -29,6 +29,6 @@
         app:useDefaultMargins="false">
 
         <include layout="@layout/content_digit_pad"/>
-    </android.support.v7.widget.GridLayout>
+    </androidx.gridlayout.widget.GridLayout>
 
 </LinearLayout>

@@ -29,8 +29,8 @@ import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v7.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AppCompatActivity
 import android.view.ScaleGestureDetector
 import com.google.android.gms.vision.text.TextRecognizer
 import android.util.Log
@@ -40,12 +40,12 @@ import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.RectF
 import android.view.MotionEvent
-import kotlinx.android.synthetic.main.activity_ocr_capture.*
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.text.TextBlock
+import kotlinx.android.synthetic.main.activity_ocr_capture.*
 import java.util.regex.Pattern
 
 private const val RC_HANDLE_CAMERA_PERM = 200

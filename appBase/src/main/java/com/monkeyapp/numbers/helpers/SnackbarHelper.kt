@@ -25,9 +25,9 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.helpers
 
-import android.support.design.widget.Snackbar
-import android.support.graphics.drawable.VectorDrawableCompat
-import android.support.v4.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.TextView
 import com.monkeyapp.numbers.R
@@ -50,7 +50,7 @@ inline fun Snackbar.dismissCallback(crossinline callback: () -> Unit) =
     })
 
 fun Snackbar.icon(drawbleId: Int, tintColorId: Int): Snackbar {
-    val snackText = view.findViewById<TextView>(android.support.design.R.id.snackbar_text)
+    val snackText = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
     with(snackText) {
         val errorDrawable = VectorDrawableCompat
                 .create(context.resources, drawbleId, context.theme)!!
