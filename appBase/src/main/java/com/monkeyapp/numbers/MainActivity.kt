@@ -32,7 +32,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.Viewatus
+import android.view.View
 import android.widget.Button
 import com.monkeyapp.numbers.helpers.*
 import com.monkeyapp.numbers.translators.LargeNumberException
