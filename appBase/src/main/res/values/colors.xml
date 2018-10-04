@@ -2,11 +2,9 @@
 <resources>
     <color name="primary">#607d8b</color>
     <color name="primary_dark">#455A64</color>
-    <color name="primary_light">#CFD8DC</color>
     <color name="accent">#FF9900</color>
     <color name="primary_text">#4c4c4c</color>
     <color name="secondary_text">#757575</color>
-    <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
     <color name="ripple_gray">#DDD</color>
     <color name="black_overlay">#66000000</color>
