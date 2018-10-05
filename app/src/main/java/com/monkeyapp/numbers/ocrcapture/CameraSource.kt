@@ -37,15 +37,14 @@ import com.google.android.gms.common.images.Size
 import java.lang.Exception
 import java.nio.ByteBuffer
 
+private const val TAG = "CameraSource"
+private const val DEFAULT_PREVIEW_IMAGE_FORMAT = ImageFormat.NV21
+
 class CameraSource(private val context: Context,
                    private val processFrameBitmap: (bitmap: Bitmap, frameId:Int) -> Unit,
                    private val requestedPreviewWidth:Int = 800,
                    private val requestedPreviewHeight:Int = 640,
                    private val requestedPreviewFps:Float = 15.0f) {
-    companion object {
-        private const val TAG = "CameraSource"
-        private const val DEFAULT_PREVIEW_IMAGE_FORMAT = ImageFormat.NV21
-    }
 
     var previewSize = Size(requestedPreviewWidth, requestedPreviewHeight)
 

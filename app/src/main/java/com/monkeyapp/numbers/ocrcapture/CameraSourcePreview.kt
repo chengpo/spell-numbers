@@ -38,14 +38,12 @@ import com.google.android.gms.common.images.Size
 import com.monkeyapp.numbers.helpers.isPortraitMode
 import java.io.IOException
 
-class CameraSourcePreview : ViewGroup {
-    companion object {
-        private const val TAG = "CameraSourcePreview"
-        private const val DEFAULT_VIEW_WIDTH = 320
-        private const val DEFAULT_VIEW_HEIGHT = 240
-        @JvmField val DEFAULT_VIEW_SIZE = Size(DEFAULT_VIEW_WIDTH, DEFAULT_VIEW_HEIGHT)
-    }
+private const val TAG = "CameraSourcePreview"
+private const val DEFAULT_VIEW_WIDTH = 320
+private const val DEFAULT_VIEW_HEIGHT = 240
+@JvmField val DEFAULT_VIEW_SIZE = Size(DEFAULT_VIEW_WIDTH, DEFAULT_VIEW_HEIGHT)
 
+class CameraSourcePreview : ViewGroup {
     private val surfaceView = SurfaceView(context)
 
     private var cameraSource: CameraSource? = null
