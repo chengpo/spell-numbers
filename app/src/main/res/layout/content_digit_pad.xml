@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <Button
+        android:id="@+id/btnSeven"
+        style="@style/PadButtonStyle"
+        android:text="@string/digit_seven" />
+
+    <Button
+        android:id="@+id/btnEight"
+        style="@style/PadButtonStyle"
+        android:text="@string/digit_eight" />
+
+    <Button
+        android:id="@+id/btnNine"
+        style="@style/PadButtonStyle"
+        android:text="@string/digit_nine" />
+
+    <Button
+        android:id="@+id/btnFour"
+        style="@style/PadButtonStyle"
+        android:text="@string/digit_four" />
+
+    <Button
+        android:id="@+id/btnFive"
+        style="@style/PadButtonStyle"
+        android:text="@string/digit_five" />
+
+    <Button
+        android:id="@+id/btnSix"
+        style="@style/PadButtonStyle"
+        android:text="@string/digit_six" />
+
+    <Button
+        android:id="@+id/btnOne"
+        style="@style/PadButtonStyle"
+        android:text="@string/digit_one" />
+
+    <Button
+        android:id="@+id/btnTwo"
+        style="@style/PadButtonStyle"
+        android:text="@string/digit_two" />
+
+    <Button
+        android:id="@+id/btnThree"
+        style="@style/PadButtonStyle"
+        android:text="@string/digit_three" />
+
+    <Button
+        android:id="@+id/btnDot"
+        style="@style/PadButtonStyle"
+        android:text="@string/dot" />
+
+    <Button
+        android:id="@+id/btnZero"
+        style="@style/PadButtonStyle"
+        android:text="@string/digit_zero" />
+
+    <ImageButton
+        android:id="@+id/btnDel"
+        style="@style/PadButtonStyle"
+        android:text="@string/del"
+        android:tint="@color/primary_text"
+        app:srcCompat="@drawable/ic_backspace"
+        tools:ignore="contentDescription"/>
+</merge>
