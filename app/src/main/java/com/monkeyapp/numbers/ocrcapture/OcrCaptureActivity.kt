@@ -217,8 +217,8 @@ class OcrCaptureActivity : AppCompatActivity() {
                             Log.v("OcrDetectorProcessor", "Detect number: ${matcher.group()}")
 
                             val count = textBlockMap[number]
-                            val total = if (count != null) count + 1 else 1
-                            textBlockMap[number] = total
+                            val totalCount = if (count != null) count + 1 else 1
+                            textBlockMap[number] = totalCount
 
                             var rect = RectF(textBlock.boundingBox)
                             rect.left = scaleHelper.transX(rect.left)
@@ -230,10 +230,10 @@ class OcrCaptureActivity : AppCompatActivity() {
 
                             ocrGraphics.add(OcrGraphic(rect))
 
-                            if (total >= 5) {
-                                val data = Intent()
-                                data.putExtra("number", number)
-                                setResult(Activity.RESULT_OK, data)
+                            if (totalCount >= 5) {
+                                val result = Intent()
+                                result.putExtra("number", number)
+                                setResult(Activity.RESULT_OK, result)
                                 finish()
                             }
                         }
