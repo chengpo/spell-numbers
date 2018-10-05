@@ -25,12 +25,19 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_about.*
 import kotlinx.android.synthetic.main.content_about.*
 
 class AboutActivity : AppCompatActivity() {
+    companion object {
+        fun show(context: Context) {
+            context.startActivity(Intent(context, AboutActivity::class.java))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

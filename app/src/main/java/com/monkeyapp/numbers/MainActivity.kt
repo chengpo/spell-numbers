@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?) =
             when (item?.itemId) {
                 R.id.action_about -> {
-                    startActivity(Intent(this, AboutActivity::class.java))
+                    AboutActivity.show(this)
                     true
                 }
                 else -> super.onOptionsItemSelected(item)
