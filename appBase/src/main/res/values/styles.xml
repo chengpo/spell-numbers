@@ -8,6 +8,10 @@
         <item name="android:textColorSecondary">@color/secondary_text</item>
     </style>
 
+    <style name="ActionBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="titleTextColor">@android:color/white</item>
+    </style>
+
     <style name="NumTextAppearance" parent="TextAppearance.AppCompat.Large">
         <item name="android:textColor">@color/secondary_text</item>
     </style>
