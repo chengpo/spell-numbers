@@ -49,6 +49,11 @@ android {
             applicationIdSuffix ".debug"
         }
     }
+    lintOptions {
+        check 'NewApi', 'HandlerLeak'
+        ignoreWarnings false
+        abortOnError true
+    }
     dexOptions {
         javaMaxHeapSize "2048m"
     }
@@ -91,7 +96,4 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-}
-repositories {
-    mavenCentral()
 }
