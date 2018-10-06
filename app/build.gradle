@@ -22,6 +22,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         resConfigs "en"
+        resConfigs "nodpi"
     }
     signingConfigs {
         release {
@@ -36,6 +37,9 @@ android {
             minifyEnabled true
             shrinkResources true
             zipAlignEnabled true
+            debuggable false
+            jniDebuggable false
+            renderscriptDebuggable false
             pseudoLocalesEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
