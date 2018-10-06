@@ -44,8 +44,8 @@ class AboutActivity : AppCompatActivity() {
         setContentView(R.layout.activity_about)
 
         setSupportActionBar(toolbar)
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         appVersionView.text = getString(R.string.about_app_version, BuildConfig.VERSION_NAME)
     }
 }

@@ -29,22 +29,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.core.app.NavUtils
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_full_screen.*
-
-/**
- * The number of milliseconds to wait after
- * user interaction before hiding the system UI.
- */
-private const val AUTO_HIDE_DELAY_MILLIS = 3000
-
-/**
- * Some older devices needs a small delay between UI widget updates
- * and a change of the status and navigation bar.
- */
-private const val UI_ANIMATION_DELAY = 300
 
 class FullScreenActivity : AppCompatActivity() {
     companion object {
@@ -55,7 +44,12 @@ class FullScreenActivity : AppCompatActivity() {
         }
     }
 
-    private val hideHandler = Handler()
+    private val hideHandler = Handler(Looper.getMainLooper())
+
+    private val hideRunnable = Runnable {
+        systemUiVisible = false
+    }
+
     private val hidePart2Runnable = Runnable {
         // Delayed removal of status and navigation bar
 
@@ -70,12 +64,47 @@ class FullScreenActivity : AppCompatActivity() {
                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                         View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
     }
+
     private val showPart2Runnable = Runnable {
         // Delayed display of UI elements
         supportActionBar?.show()
     }
-    private var systemUiVisible: Boolean = false
-    private val hideRunnable = Runnable { hide() }
+
+    private var systemUiVisible: Boolean = true
+        set(isVisible) {
+            // Some older devices needs a small delay between UI widget updates
+            // and a change of the status and navigation bar.
+            val uiAutomationDelay = 300L
+
+            fun show() {
+                field = true
+
+                // Show the system bar
+                wordsTextView.systemUiVisibility =
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+
+                // Schedule a runnable to display UI elements after a delay
+                hideHandler.removeCallbacks(hidePart2Runnable)
+                hideHandler.postDelayed(showPart2Runnable, uiAutomationDelay)
+            }
+
+            fun hide() {
+                field = false
+
+                // Hide UI first
+                supportActionBar?.hide()
+
+                // Schedule a runnable to remove the status and navigation bar after a delay
+                hideHandler.removeCallbacks(showPart2Runnable)
+                hideHandler.postDelayed(hidePart2Runnable, uiAutomationDelay)
+            }
+
+            if (isVisible)
+                show()
+            else
+                hide()
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,10 +113,13 @@ class FullScreenActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         wordsTextView.text = intent.getStringExtra("number_words")
-        wordsTextView.setOnClickListener { toggle() }
+        wordsTextView.setOnClickListener {
+            // toggle system ui visibility
+            systemUiVisible = !systemUiVisible
+        }
 
-        systemUiVisible = true
-        delayedHide(AUTO_HIDE_DELAY_MILLIS)
+        // Wait after user interaction before hiding the system UI.
+        delayedHide(3000L)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -96,7 +128,16 @@ class FullScreenActivity : AppCompatActivity() {
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
-        delayedHide(100)
+        delayedHide(100L)
+    }
+
+    /**
+     * Schedules a call to hide() in [delayMillis], canceling any
+     * previously scheduled calls.
+     */
+    private fun delayedHide(delayMillis: Long) {
+        hideHandler.removeCallbacks(hideRunnable)
+        hideHandler.postDelayed(hideRunnable, delayMillis)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) =
@@ -108,38 +149,4 @@ class FullScreenActivity : AppCompatActivity() {
                 }
                 else -> super.onOptionsItemSelected(item)
             }
-
-    private fun toggle() = if (systemUiVisible) hide() else show()
-
-    private fun hide() {
-        // Hide UI first
-        supportActionBar?.hide()
-
-        systemUiVisible = false
-
-        // Schedule a runnable to remove the status and navigation bar after a delay
-        hideHandler.removeCallbacks(showPart2Runnable)
-        hideHandler.postDelayed(hidePart2Runnable, UI_ANIMATION_DELAY.toLong())
-    }
-
-    private fun show() {
-        // Show the system bar
-        wordsTextView.systemUiVisibility =
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        systemUiVisible = true
-
-        // Schedule a runnable to display UI elements after a delay
-        hideHandler.removeCallbacks(hidePart2Runnable)
-        hideHandler.postDelayed(showPart2Runnable, UI_ANIMATION_DELAY.toLong())
-    }
-
-    /**
-     * Schedules a call to hide() in [delayMillis], canceling any
-     * previously scheduled calls.
-     */
-    private fun delayedHide(delayMillis: Int) {
-        hideHandler.removeCallbacks(hideRunnable)
-        hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
-    }
 }
