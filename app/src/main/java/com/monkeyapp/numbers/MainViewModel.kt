@@ -24,37 +24,40 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.monkeyapp.numbers.translators.Translator
 import com.monkeyapp.numbers.translators.TranslatorFactory
 
 class MainViewModel : ViewModel() {
-    private var translator: Translator
-
-    private val numberTextLiveData = MutableLiveData<String>()
-    private val wordsTextLiveData = MutableLiveData<String>()
-
-    private val translatorFactor = TranslatorFactory { number: String, words: String ->
-        numberTextLiveData.value = number
-        wordsTextLiveData.value = words
-    }
+    private val translator: Translator
+    private val viewObjLiveData = MutableLiveData<ViewObject>()
 
     init {
-        translator = translatorFactor.getEnglishTranslator()
+        // TODO : support other language translators
+        translator = TranslatorFactory.getEnglishTranslator { numberText: String, wordsText: String ->
+            viewObjLiveData.value = ViewObject(numberText, wordsText)
+        }
     }
-
-    val numberText
-        get() = numberTextLiveData as LiveData<String>
-
-    val wordsText
-        get() = wordsTextLiveData as LiveData<String>
 
     fun deleteDigit() = translator.deleteDigit()
 
     fun appendDigit(digit: Char) = translator.appendDigit(digit)
 
+    fun appendDigit(digits: CharSequence) {
+        digits.forEach {
+            appendDigit(it)
+        }
+    }
+
     fun resetDigit() = translator.resetDigit()
+
+    fun observe(owner: LifecycleOwner, observer: (viewObj: ViewObject?) -> Unit) {
+        viewObjLiveData.observe(owner, Observer { observer(it) })
+    }
+
+    data class ViewObject(val numberText: String, val wordsText: String)
 }
 

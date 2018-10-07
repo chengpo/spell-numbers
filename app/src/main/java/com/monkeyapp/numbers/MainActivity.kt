@@ -25,7 +25,6 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 import android.app.Activity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -53,19 +52,17 @@ class MainActivity : AppCompatActivity() {
         lifecycle.addObserver(RatingPrompter(this, wordsTextView))
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        mainViewModel.numberText.observe(this, Observer<String> { digits ->
-            digits?.let {
-                numberTextView.text = it
-                omniButton.state = if (it.isEmpty())
+        mainViewModel.observe(this) { viewObj ->
+            viewObj?.let {
+                numberTextView.text = it.numberText
+                omniButton.state = if (it.numberText.isEmpty())
                     OmniButton.State.Camera
                 else
                     OmniButton.State.Clean
-            }
-        })
 
-        mainViewModel.wordsText.observe(this, Observer<String> { numbers ->
-            wordsTextView.text = numbers
-        })
+                wordsTextView.text = it.wordsText
+            }
+        }
 
         wordsTextView.setOnClickListener {
             val wordsText = wordsTextView.text.toString()
@@ -126,12 +123,9 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
             val number = data?.getStringExtra("number") ?: ""
-
             if (number.isNotBlank()) {
                 mainViewModel.resetDigit()
-                number.forEach {
-                    mainViewModel.appendDigit(it)
-                }
+                mainViewModel.appendDigit(number)
             }
         }
     }
