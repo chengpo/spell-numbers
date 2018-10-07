@@ -45,6 +45,47 @@ class RippleView : View {
     private var cy = 1.0f
 
     private var animatorSet: AnimatorSet? = null
+        set(value) {
+            if (value != null) {
+                // start animation
+                val initRadius = (Math.min(width, height) / 2.0f)
+                val animators = listOf<Animator>(
+                        ValueAnimator.ofFloat(initRadius / 2.0f, initRadius * 4.5f).apply {
+                            // scale animation
+                            repeatCount = 0
+                            duration = 500
+                            addUpdateListener {
+                                radius = it.animatedValue as Float
+                                invalidate()
+                            }
+                        },
+                        ObjectAnimator.ofFloat(this, "alpha", 0.7f, 0.0f).apply {
+                            // alpha animation
+                            repeatCount = 0
+                            duration = 500
+                        })
+
+                value.addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) = Unit
+                    override fun onAnimationCancel(animation: Animator?) = Unit
+
+                    override fun onAnimationStart(animation: Animator?) {
+                        visibility = VISIBLE
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        visibility = INVISIBLE
+                        animatorSet = null
+                    }
+                })
+
+                value.interpolator = AccelerateDecelerateInterpolator()
+                value.playTogether(animators)
+                value.start()
+            }
+
+            field = value
+        }
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -73,46 +114,7 @@ class RippleView : View {
 
         cx = x
         cy = y
-
         animatorSet = AnimatorSet()
-        animatorSet?.run {
-            val initRadius = (Math.min(width, height) / 2.0f)
-
-            interpolator = AccelerateDecelerateInterpolator()
-
-            addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator?) = Unit
-                override fun onAnimationCancel(animation: Animator?) = Unit
-
-                override fun onAnimationStart(animation: Animator?) {
-                    visibility = VISIBLE
-                }
-
-                override fun onAnimationEnd(animation: Animator?) {
-                    visibility = INVISIBLE
-                    animatorSet = null
-                }
-            })
-
-            playTogether(
-                listOf<Animator>(
-                    ValueAnimator.ofFloat(initRadius / 2.0f, initRadius * 4.5f).apply {
-                        // scale animation
-                        repeatCount = 0
-                        duration = 500
-                        addUpdateListener {
-                            radius = it.animatedValue as Float
-                            invalidate()
-                        }
-                    },
-                    ObjectAnimator.ofFloat(this@RippleView, "alpha", 0.7f, 0.0f).apply {
-                        // alpha animation
-                        repeatCount = 0
-                        duration = 500
-                    }))
-
-            start()
-        }
     }
 
     fun stopRippleAnimation(onAnimationEndAction: () -> Unit) {
