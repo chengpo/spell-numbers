@@ -28,6 +28,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import arrow.core.Try
 import com.monkeyapp.numbers.translators.NumberTranslator
 import com.monkeyapp.numbers.translators.TranslatorFactory
 
@@ -44,7 +45,7 @@ class MainViewModel : ViewModel() {
 
     fun deleteDigit() = translator.deleteDigit()
 
-    fun appendDigit(digit: Char) = translator.appendDigit(digit)
+    fun appendDigit(digit: Char) = Try { translator.appendDigit(digit) }
 
     fun appendDigit(digits: CharSequence) {
         digits.forEach {

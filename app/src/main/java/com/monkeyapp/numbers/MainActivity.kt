@@ -33,9 +33,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import arrow.core.getOrElse
 
 import com.monkeyapp.numbers.helpers.*
-import com.monkeyapp.numbers.translators.LargeNumberException
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_number_word.*
 
@@ -80,28 +80,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onButtonClicked(button: View) {
-        try {
-            when {
-                button.id == R.id.btnDel -> mainViewModel.deleteDigit()
-                button is OmniButton ->
-                    when (button.state) {
-                        OmniButton.State.Clean -> mainViewModel.resetDigit()
-                        OmniButton.State.Camera -> startActivityForResult(
-                                Intent(INTENT_ACTION_OCR_CAPTURE),
-                                RC_OCR_CAPTURE)
-                    }
-                button is Button ->
-                    when (button.text[0]) {
-                        '.', in '0'..'9' -> mainViewModel.appendDigit(button.text[0])
-                    }
-            }
-        } catch (exception: LargeNumberException) {
-            wordsTextView.snackbar(R.string.too_large_to_spell) {
-                icon(R.drawable.ic_error, R.color.accent)
-            }
+        when {
+            button.id == R.id.btnDel ->
+                mainViewModel.deleteDigit()
 
-            // revoke the last digit
-            mainViewModel.deleteDigit()
+            button is OmniButton ->
+                when (button.state) {
+                    OmniButton.State.Clean ->
+                        mainViewModel.resetDigit()
+                    OmniButton.State.Camera ->
+                        startActivityForResult(
+                            Intent(INTENT_ACTION_OCR_CAPTURE),
+                            RC_OCR_CAPTURE)
+                }
+
+            button is Button && (button.text[0] == '.' || button.text[0] in '0'..'9') ->
+                mainViewModel
+                    .appendDigit(button.text[0])
+                    .getOrElse {
+                        wordsTextView.snackbar(R.string.too_large_to_spell) {
+                            icon(R.drawable.ic_error, R.color.accent)
+                        }
+
+                        // revoke the last digit
+                        mainViewModel.deleteDigit()
+                    }
         }
     }
 
