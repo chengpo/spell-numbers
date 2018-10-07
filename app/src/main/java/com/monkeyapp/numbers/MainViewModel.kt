@@ -28,11 +28,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.monkeyapp.numbers.translators.Translator
+import com.monkeyapp.numbers.translators.NumberTranslator
 import com.monkeyapp.numbers.translators.TranslatorFactory
 
 class MainViewModel : ViewModel() {
-    private val translator: Translator
+    private val translator: NumberTranslator
     private val viewObjLiveData = MutableLiveData<ViewObject>()
 
     init {

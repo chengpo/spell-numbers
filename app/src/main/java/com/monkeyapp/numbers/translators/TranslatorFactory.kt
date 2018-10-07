@@ -30,3 +30,33 @@ object TranslatorFactory {
                              speller = EnglishNumberSpeller(),
                              onNumberTranslated = onNumberTranslated)
 }
+
+class NumberTranslator(private val composer: NumberComposer,
+                       private val speller: NumberSpeller,
+                       private val onNumberTranslated: (number: String, words: String) -> Unit) {
+    fun appendDigit(digit: Char) {
+        if (composer.appendDigit(digit)) {
+            notifyNumberUpdated()
+        }
+    }
+
+    fun deleteDigit() {
+        if (composer.deleteDigit()) {
+            notifyNumberUpdated()
+        }
+    }
+
+    fun resetDigit() {
+        composer.resetDigit()
+        notifyNumberUpdated()
+    }
+
+    private fun notifyNumberUpdated() {
+        if (composer.digitStr.isEmpty()) {
+            onNumberTranslated("","")
+        } else {
+            onNumberTranslated(composer.digitStr,
+                         speller.spellNumber(composer.integers, composer.decimals))
+        }
+    }
+}
