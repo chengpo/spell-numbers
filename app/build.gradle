@@ -67,8 +67,6 @@ android {
     }
 }
 
-def arrow_version = "0.7.3"
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
