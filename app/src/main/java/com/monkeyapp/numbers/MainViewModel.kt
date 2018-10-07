@@ -29,11 +29,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import arrow.core.Try
-import com.monkeyapp.numbers.translators.NumberTranslator
 import com.monkeyapp.numbers.translators.TranslatorFactory
+import com.monkeyapp.numbers.translators.TranslatorFactory.Translator
 
 class MainViewModel : ViewModel() {
-    private val translator: NumberTranslator
+    private val translator: Translator
     private val viewObjLiveData = MutableLiveData<ViewObject>()
 
     init {

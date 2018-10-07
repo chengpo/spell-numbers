@@ -24,7 +24,7 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.translators
 
-class EnglishNumberSpeller: NumberSpeller {
+class EnglishNumberSpeller: NumberSpeller() {
    private val symbols = listOf(
            "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
            "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen",

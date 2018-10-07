@@ -29,7 +29,7 @@ class NumberComposer {
     private var decimalDigits = mutableListOf<Char>()
     private var hasDecimal: Boolean = false
 
-    val digitStr: String
+    val numberText: String
         get() {
             if (hasDecimal) {
                 if (integerDigits.isEmpty() && decimalDigits.isEmpty()) {

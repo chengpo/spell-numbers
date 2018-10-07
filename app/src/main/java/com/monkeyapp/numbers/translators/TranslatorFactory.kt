@@ -26,37 +26,39 @@ package com.monkeyapp.numbers.translators
 
 object TranslatorFactory {
     fun getEnglishTranslator(onNumberTranslated: (number:String, words: String) -> Unit) =
-            NumberTranslator(composer = NumberComposer(),
-                             speller = EnglishNumberSpeller(),
-                             onNumberTranslated = onNumberTranslated)
-}
+            Translator(composer = NumberComposer(),
+                       speller = EnglishNumberSpeller(),
+                       onNumberTranslated = onNumberTranslated)
 
-class NumberTranslator(private val composer: NumberComposer,
-                       private val speller: NumberSpeller,
-                       private val onNumberTranslated: (number: String, words: String) -> Unit) {
-    fun appendDigit(digit: Char) {
-        if (composer.appendDigit(digit)) {
+    class Translator(private val composer: NumberComposer,
+                     private val speller: NumberSpeller,
+                     private val onNumberTranslated: (number: String, words: String) -> Unit) {
+        fun appendDigit(digit: Char) {
+            if (composer.appendDigit(digit)) {
+                notifyNumberUpdated()
+            }
+        }
+
+        fun deleteDigit() {
+            if (composer.deleteDigit()) {
+                notifyNumberUpdated()
+            }
+        }
+
+        fun resetDigit() {
+            composer.resetDigit()
             notifyNumberUpdated()
         }
-    }
 
-    fun deleteDigit() {
-        if (composer.deleteDigit()) {
-            notifyNumberUpdated()
-        }
-    }
-
-    fun resetDigit() {
-        composer.resetDigit()
-        notifyNumberUpdated()
-    }
-
-    private fun notifyNumberUpdated() {
-        if (composer.digitStr.isEmpty()) {
-            onNumberTranslated("","")
-        } else {
-            onNumberTranslated(composer.digitStr,
-                         speller.spellNumber(composer.integers, composer.decimals))
+        private fun notifyNumberUpdated() {
+            if (composer.numberText.isEmpty()) {
+                onNumberTranslated("","")
+            } else {
+                onNumberTranslated(
+                        composer.numberText,
+                        speller.spellNumber(composer.integers, composer.decimals))
+            }
         }
     }
 }
+
