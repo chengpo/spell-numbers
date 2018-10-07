@@ -68,11 +68,9 @@ class RippleView : View {
                 value.addListener(object : Animator.AnimatorListener {
                     override fun onAnimationRepeat(animation: Animator?) = Unit
                     override fun onAnimationCancel(animation: Animator?) = Unit
-
                     override fun onAnimationStart(animation: Animator?) {
                         visibility = VISIBLE
                     }
-
                     override fun onAnimationEnd(animation: Animator?) {
                         visibility = INVISIBLE
                         animatorSet = null
@@ -125,7 +123,6 @@ class RippleView : View {
                 override fun onAnimationRepeat(animation: Animator?) = Unit
                 override fun onAnimationCancel(animation: Animator?) = Unit
                 override fun onAnimationStart(animation: Animator?) = Unit
-
                 override fun onAnimationEnd(animation: Animator?) = onAnimationEndAction()
             })
         }
