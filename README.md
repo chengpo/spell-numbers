@@ -12,7 +12,7 @@ It is a handy tool for writing checks, filling forms.
 ## Technology Behind
 
 Spell Numbers is based on following technologies:
-- Kotlin Anko library 
+- Arrow-kt Library
 - Vector Images
 - Google Mobile Vision Text Recognition API
 - Renderscript
