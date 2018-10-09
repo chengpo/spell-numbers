@@ -11,8 +11,8 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.monkeyapp.numbers"
-        versionCode 17
-        versionName '1.0.10'
+        versionCode 18
+        versionName '1.0.11'
 
         compileSdkVersion 28
         minSdkVersion 17
