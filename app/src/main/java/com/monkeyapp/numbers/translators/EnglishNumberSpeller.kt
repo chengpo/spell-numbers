@@ -24,8 +24,10 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.translators
 
+import java.lang.StringBuilder
+
 class EnglishNumberSpeller: NumberSpeller() {
-   private val symbols = listOf(
+    private val symbols = listOf(
            "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
            "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen",
            "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety")
@@ -33,34 +35,39 @@ class EnglishNumberSpeller: NumberSpeller() {
     private fun spellDecimals(decimals: Float) =
             String.format("%02d / 100", Math.round(decimals * 100))
     
-    fun spellInteger(integer: Long): Array<String> =
+    fun spellInteger(integer: Long): StringBuilder =
             when (integer) {
-                in 0 until 20 -> arrayOf(symbols[integer.toInt()])
+                in 0 until 20 -> StringBuilder().append(symbols[integer.toInt()])
                 in 20 until 100 -> {
                     val index = integer / 10 - 2
-                    arrayOf(symbols[20 + index.toInt()]).plus(
-                            if (integer % 10 > 0) spellInteger(integer % 10) else emptyArray())
+                    StringBuilder()
+                            .append(symbols[20 + index.toInt()])
+                            .append(if (integer % 10 > 0) " ${spellInteger(integer % 10)}" else "")
                 }
                 in 100 until 1000 -> {
                     val index = integer / 100
-                    arrayOf(symbols[index.toInt()], "Hundred").plus(
-                            if (integer % 100 > 0) spellInteger(integer % 100) else emptyArray())
+                    StringBuilder()
+                            .append("${symbols[index.toInt()]} Hundred")
+                            .append(if (integer % 100 > 0) " ${spellInteger(integer % 100)}" else "")
                 }
                 in 1000 until 1000 * 1000 -> {
-                    spellInteger(integer / 1000).plus(arrayOf("Thousand")).plus(
-                            if (integer % 1000 > 0) spellInteger(integer % 1000) else emptyArray())
+                    spellInteger(integer / 1000)
+                            .append(" Thousand")
+                            .append(if (integer % 1000 > 0) " ${spellInteger(integer % 1000)}" else "")
                 }
                 in 1000 * 1000 until 1000 * 1000 * 1000 -> {
-                    spellInteger(integer / (1000 * 1000)).plus(arrayOf("Million")).plus(
-                            if (integer % (1000 * 1000) > 0) spellInteger(integer % (1000 * 1000)) else emptyArray())
+                    spellInteger(integer / (1000 * 1000))
+                            .append(" Million")
+                            .append(if (integer % (1000 * 1000) > 0) " ${spellInteger(integer % (1000 * 1000))}" else "")
                 }
                 in 1000 * 1000 * 1000 until 1000 * 1000 * 1000 * 1000L -> {
-                    spellInteger(integer / (1000 * 1000 * 1000)).plus(arrayOf("Billion")).plus(
-                            if (integer % (1000 * 1000 * 1000) > 0) spellInteger(integer % (1000 * 1000 * 1000)) else emptyArray())
+                    spellInteger(integer / (1000 * 1000 * 1000))
+                            .append(" Billion")
+                            .append(if (integer % (1000 * 1000 * 1000) > 0) " ${spellInteger(integer % (1000 * 1000 * 1000))}" else "")
                 }
                 else -> throw LargeNumberException()
             }
 
     override fun spellNumber(integers: Long, decimals: Float) =
-            "${spellInteger(integers).joinToString(separator = " ")} and ${spellDecimals(decimals)}"
+            "${spellInteger(integers)} and ${spellDecimals(decimals)}"
 }

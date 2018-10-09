@@ -24,9 +24,11 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.translators
 
+import java.util.*
+
 class NumberComposer {
-    private var integerDigits = mutableListOf<Char>()
-    private var decimalDigits = mutableListOf<Char>()
+    private var integerDigits = Stack<Char>()
+    private var decimalDigits = Stack<Char>()
     private var hasDecimal: Boolean = false
 
     val numberText: String
@@ -37,28 +39,28 @@ class NumberComposer {
                 }
 
                 if (integerDigits.isEmpty()) {
-                    return "0.$decimalStr"
+                    return "0.$decimalText"
                 }
 
-                return "$integerStr.$decimalStr"
+                return "$integerText.$decimalText"
             }
 
-            return integerStr
+            return integerText
         }
 
-    private val decimalStr: String
+    private val decimalText: String
         get() = decimalDigits.joinToString(separator = "")
 
-    private val integerStr: String
+    private val integerText: String
         get() {
-            val integerWithComma = mutableListOf<Char>()
+            val integerWithComma = Stack<Char>()
 
             integerDigits.reversed().forEachIndexed { index, digit ->
                 if (index > 0 && index % 3 == 0) {
-                    integerWithComma.add(',')
+                    integerWithComma.push(',')
                 }
 
-                integerWithComma.add(digit)
+                integerWithComma.push(digit)
             }
 
             return integerWithComma.reversed().joinToString(separator = "")
@@ -98,14 +100,14 @@ class NumberComposer {
             in '0'..'9' -> {
                 if (hasDecimal) {
                     if (decimalDigits.size < 3) {
-                        decimalDigits.add(digit)
+                        decimalDigits.push(digit)
                     }
                 } else {
                     if (integerDigits.size == 1 && integerDigits[0] == '0') {
                         return false
                     }
 
-                    integerDigits.add(digit)
+                    integerDigits.push(digit)
                 }
             }
         }
@@ -126,7 +128,7 @@ class NumberComposer {
                 return true
             }
 
-            decimalDigits.removeAt(decimalDigits.size - 1)
+            decimalDigits.pop()
             if (decimalDigits.isEmpty()) {
                 if (integerDigits.size == 1 && integerDigits[0] == '0') {
                     integerDigits.clear()
@@ -142,7 +144,7 @@ class NumberComposer {
             return false
         }
 
-        integerDigits.removeAt(integerDigits.size - 1)
+        integerDigits.pop()
         return true
     }
 }
