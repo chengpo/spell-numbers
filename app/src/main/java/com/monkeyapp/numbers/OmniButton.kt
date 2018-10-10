@@ -26,11 +26,13 @@ package com.monkeyapp.numbers
 
 import android.content.Context
 import android.graphics.drawable.StateListDrawable
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.AttrRes
+import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageButton
+import com.monkeyapp.numbers.helpers.getCompatColor
+import com.monkeyapp.numbers.helpers.getVectorDrawable
 import com.monkeyapp.numbers.helpers.isOcrAvailable
 import com.monkeyapp.numbers.helpers.tintColor
 
@@ -83,17 +85,20 @@ class OmniButton : AppCompatImageButton {
         }
 
     init {
+        fun stateOf(@AttrRes attrId: Int) = arrayOf(attrId).toIntArray()
+        fun drawableOf(@DrawableRes drawableId: Int) = context.getVectorDrawable(drawableId)!!
+                .tintColor(context.getCompatColor(R.color.primary_text))
+
         val omniButtonDrawable = StateListDrawable()
 
-        val clearDrawable = VectorDrawableCompat.create(resources, R.drawable.ic_clear, context.theme)!!
-        omniButtonDrawable.addState(
-                arrayListOf(R.attr.state_clean).toIntArray(),
-                clearDrawable.tintColor(ContextCompat.getColor(context, R.color.primary_text)))
-
-        val cameraDrawable = VectorDrawableCompat.create(resources, R.drawable.ic_camera, context.theme)!!
-        omniButtonDrawable.addState(
-                arrayListOf(R.attr.state_camera).toIntArray(),
-                cameraDrawable.tintColor(ContextCompat.getColor(context, R.color.primary_text)))
+        listOf(R.attr.state_clean to R.drawable.ic_clean,
+               R.attr.state_camera to R.drawable.ic_camera)
+                .map { (attrId, drawableId) ->
+                    stateOf(attrId) to drawableOf(drawableId)
+                }
+                .forEach { (state, drawable) ->
+                    omniButtonDrawable.addState(state, drawable)
+                }
 
         setImageDrawable(omniButtonDrawable)
 

@@ -26,10 +26,12 @@ SOFTWARE.
 package com.monkeyapp.numbers.helpers
 
 import com.google.android.material.snackbar.Snackbar
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.monkeyapp.numbers.R
 
 inline fun View.snackbar(stringId: Int, length: Int = Snackbar.LENGTH_SHORT, prepare: Snackbar.() -> Snackbar) =
@@ -38,7 +40,7 @@ inline fun View.snackbar(stringId: Int, length: Int = Snackbar.LENGTH_SHORT, pre
         show()
     }
 
-fun Snackbar.action(stringId: Int, onClickListener: View.OnClickListener) = setAction(stringId, onClickListener)
+fun Snackbar.action(@StringRes stringId: Int, onClickListener: View.OnClickListener) = setAction(stringId, onClickListener)
 
 inline fun Snackbar.dismissCallback(crossinline callback: () -> Unit) =
     addCallback(object : Snackbar.Callback() {
@@ -48,12 +50,11 @@ inline fun Snackbar.dismissCallback(crossinline callback: () -> Unit) =
         }
     })
 
-fun Snackbar.icon(drawbleId: Int, tintColorId: Int): Snackbar {
+fun Snackbar.icon(@DrawableRes drawableId: Int, @ColorRes tintColorId: Int): Snackbar {
     val snackText = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
 
-    val errorDrawable = VectorDrawableCompat
-            .create(context.resources, drawbleId, context.theme)!!
-            .tintColor(ContextCompat.getColor(context, tintColorId))
+    val errorDrawable = context.getVectorDrawable(drawableId)!!
+                               .tintColor(context.getCompatColor(tintColorId))
 
     snackText.setCompoundDrawablesWithIntrinsicBounds(errorDrawable, null, null, null)
     snackText.compoundDrawablePadding = context.resources.getDimensionPixelOffset(R.dimen.snackbar_icon_padding)
