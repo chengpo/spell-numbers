@@ -25,14 +25,14 @@ SOFTWARE.
 package com.monkeyapp.numbers.translators
 
 object TranslatorFactory {
-    fun getEnglishTranslator(onNumberTranslated: (number:String, words: String) -> Unit) =
+    fun getEnglishTranslator(onNumberTranslated: (numberText:String, wordsText: String) -> Unit) =
             Translator(composer = NumberComposer(),
                        speller = EnglishNumberSpeller(),
                        onNumberTranslated = onNumberTranslated)
 
     class Translator(private val composer: NumberComposer,
                      private val speller: NumberSpeller,
-                     private val onNumberTranslated: (number: String, words: String) -> Unit) {
+                     private val onNumberTranslated: (numberText: String, wordsText: String) -> Unit) {
         fun appendDigit(digit: Char) {
             if (composer.appendDigit(digit)) {
                 notifyNumberUpdated()

@@ -35,7 +35,7 @@ class EnglishNumberSpeller: NumberSpeller() {
     private fun spellDecimals(decimals: Float) =
             String.format("%02d / 100", Math.round(decimals * 100))
     
-    fun spellInteger(integer: Long): StringBuilder =
+    private fun spellInteger(integer: Long): StringBuilder =
             when (integer) {
                 in 0 until 20 -> StringBuilder().append(symbols[integer.toInt()])
                 in 20 until 100 -> {
@@ -68,6 +68,6 @@ class EnglishNumberSpeller: NumberSpeller() {
                 else -> throw LargeNumberException()
             }
 
-    override fun spellNumber(integers: Long, decimals: Float) =
-            "${spellInteger(integers)} and ${spellDecimals(decimals)}"
+    override fun spellNumber(integer: Long, decimals: Float) =
+            "${spellInteger(integer)} and ${spellDecimals(decimals)}"
 }
