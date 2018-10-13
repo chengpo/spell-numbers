@@ -48,7 +48,7 @@ class MainViewModelTest {
         val lifecycle = LifecycleRegistry(mock(LifecycleOwner::class.java))
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
 
-        val lifecycleOwner = LifecycleOwner{lifecycle}
+        val lifecycleOwner = LifecycleOwner { lifecycle }
 
         viewModel.observe(lifecycleOwner) { viewModelObj ->
             viewModelObj?.numberText shouldEqual "100,000"
