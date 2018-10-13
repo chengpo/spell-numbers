@@ -40,7 +40,7 @@ class EnglishNumberSpeller: NumberSpeller() {
     private fun spellWholeNumber(wholeNumber: Long): Node =
             when (wholeNumber) {
                 in 0 until 20 -> Node(symbols[wholeNumber.toInt()])
-                
+
                 in 20 until 100 -> {
                     val index = wholeNumber / 10 - 2
 
@@ -105,16 +105,16 @@ class EnglishNumberSpeller: NumberSpeller() {
          override fun toString(): String {
              val sb = StringBuffer()
              var node: Node? = this
-             do {
+             while(true) {
                  sb.append(node?.symbol)
                  node = node?.next
 
-                 if (node != null) {
-                     sb.append(" ")
+                 if (node == null) {
+                     return sb.toString()
                  }
-             } while (node != null)
 
-             return sb.toString()
+                 sb.append(" ")
+             }
          }
      }
 }
