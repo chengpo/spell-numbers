@@ -32,6 +32,8 @@ class EnglishNumberSpeller: NumberSpeller() {
            "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety")
 
     private val radixSymbols = listOf("Billion", "Million", "Thousand")
+    private val maxNumber = Math.pow(1000.0, (radixSymbols.size + 1).toDouble()).toLong()
+    private val maxRadix = Math.pow(1000.0, radixSymbols.size.toDouble()).toLong()
 
     override fun spellNumber(wholeNumber: Long, fraction: Float) =
             "${spellWholeNumber(wholeNumber)} and ${spellFraction(fraction)}"
@@ -64,8 +66,8 @@ class EnglishNumberSpeller: NumberSpeller() {
                     }
                 }
 
-                in 1000 until 1000 * 1000 * 1000 * 1000L -> {
-                    var radix = 1000 * 1000 * 1000L
+                in 1000 until maxNumber -> {
+                    var radix = maxRadix
                     var radixIndex = 0
                     while (wholeNumber / radix == 0L) {
                         radix /= 1000L
