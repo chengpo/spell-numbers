@@ -27,7 +27,7 @@ package com.monkeyapp.numbers.translators
 import java.util.*
 
 class EnglishNumberComposer: NumberComposer.Observable {
-    private var observerCallback: (numberText: String, integers: Long, decimals: Float) -> Unit = { _, _, _ -> }
+    private var observerCallback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit = { _, _, _ -> }
     private var wholeNumberDigits = Stack<Char>()
     private var fractionDigits = Stack<Char>()
     private var isDecimal: Boolean = false
@@ -54,17 +54,17 @@ class EnglishNumberComposer: NumberComposer.Observable {
 
     private val wholeNumberText: String
         get() {
-            val integerWithComma = Stack<Char>()
+            val digitsSeparatedByCommas = Stack<Char>()
 
             wholeNumberDigits.reversed().forEachIndexed { index, digit ->
                 if (index > 0 && index % 3 == 0) {
-                    integerWithComma.push(',')
+                    digitsSeparatedByCommas.push(',')
                 }
 
-                integerWithComma.push(digit)
+                digitsSeparatedByCommas.push(digit)
             }
 
-            return integerWithComma.reversed().joinToString(separator = "")
+            return digitsSeparatedByCommas.reversed().joinToString(separator = "")
         }
 
     private val wholeNumber: Long
@@ -144,7 +144,8 @@ class EnglishNumberComposer: NumberComposer.Observable {
         observerCallback(numberText, wholeNumber, fraction)
     }
 
-    override fun observe(callback: (numberText: String, integers: Long, decimals: Float) -> Unit) {
+    override fun observe(callback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit) {
         observerCallback = callback
+        observerCallback(numberText, wholeNumber, fraction)
     }
 }
