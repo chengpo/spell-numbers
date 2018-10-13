@@ -47,11 +47,13 @@ class EnglishNumberSpellerTest {
                              "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
                              "Eighteen", "Nineteen")
 
-        symbols.forEachIndexed { number, symbol ->
-            verifySpellIntegers(testSample {
-                integer = number.toLong()
+        symbols.mapIndexed { index, symbol ->
+            testSample {
+                integer = index.toLong()
                 expected = "$symbol and 00 / 100"
-            })
+            }
+        }.forEach { sample ->
+            verifySpellIntegers(sample)
         }
     }
 
@@ -63,14 +65,15 @@ class EnglishNumberSpellerTest {
         val radixSymbols = listOf("", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty",
                 "Seventy", "Eighty", "Ninety")
 
-        for (radix in 2 .. 9) {
-            symbols.forEachIndexed { number, symbol ->
-                verifySpellIntegers(testSample {
-                    integer = radix * 10L + number
-                    expected = if (number == 0) "${radixSymbols[radix]} and 00 / 100" else "${radixSymbols[radix]} $symbol and 00 / 100"
-
-                })
+        (2 .. 9).map { radix ->
+            symbols.mapIndexed { index, symbol ->
+                testSample {
+                    integer = radix * 10L + index
+                    expected = if (index == 0) "${radixSymbols[radix]} and 00 / 100" else "${radixSymbols[radix]} $symbol and 00 / 100"
+                }
             }
+        }.forEach { samples ->
+            verifySpellIntegers(*samples.toTypedArray())
         }
     }
 
@@ -81,13 +84,15 @@ class EnglishNumberSpellerTest {
                 "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
                 "Eighteen", "Nineteen")
 
-        for (hundred in 1 .. 9) {
-            symbols.forEachIndexed { number, symbol ->
-                verifySpellIntegers(testSample {
-                    integer = hundred * 100L + number
-                    expected = if (number == 0) "${symbols[hundred]} Hundred and 00 / 100" else "${symbols[hundred]} Hundred $symbol and 00 / 100"
-                })
+        (1 .. 9).map { hundred ->
+            symbols.mapIndexed { index, symbol ->
+                testSample {
+                    integer = hundred * 100L + index
+                    expected = if (index == 0) "${symbols[hundred]} Hundred and 00 / 100" else "${symbols[hundred]} Hundred $symbol and 00 / 100"
+                }
             }
+        }.forEach { samples ->
+            verifySpellIntegers(*samples.toTypedArray())
         }
     }
 
@@ -99,18 +104,20 @@ class EnglishNumberSpellerTest {
         val radixSymbols = listOf("", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty",
                 "Seventy", "Eighty", "Ninety")
 
-        for (hundred in 1 .. 9) {
-            for (radix in 2 .. 9) {
-                symbols.forEachIndexed { number, symbol ->
-                    verifySpellIntegers(testSample {
-                        integer =  hundred * 100L + radix * 10L + number
-                        expected = if (number == 0)
-                                        "${symbols[hundred]} Hundred ${radixSymbols[radix]} and 00 / 100"
-                                   else
-                                        "${symbols[hundred]} Hundred ${radixSymbols[radix]} $symbol and 00 / 100"
-                    })
+        (1 .. 9).map { hundred ->
+            (2 .. 9).map { radix ->
+                symbols.mapIndexed { index, symbol ->
+                    testSample {
+                        integer =  hundred * 100L + radix * 10L + index
+                        expected = if (index == 0)
+                            "${symbols[hundred]} Hundred ${radixSymbols[radix]} and 00 / 100"
+                        else
+                            "${symbols[hundred]} Hundred ${radixSymbols[radix]} $symbol and 00 / 100"
+                    }
                 }
             }
+        }.flatten().map { samples ->
+            verifySpellIntegers(*samples.toTypedArray())
         }
     }
 
