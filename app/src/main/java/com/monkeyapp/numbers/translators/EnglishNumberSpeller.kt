@@ -32,42 +32,42 @@ class EnglishNumberSpeller: NumberSpeller() {
            "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen",
            "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety")
 
-    private fun spellDecimals(decimals: Float) =
-            String.format("%02d / 100", Math.round(decimals * 100))
+    private fun spellFraction(fraction: Float) =
+            String.format("%02d / 100", Math.round(fraction * 100))
     
-    private fun spellInteger(integer: Long): StringBuilder =
-            when (integer) {
-                in 0 until 20 -> StringBuilder().append(symbols[integer.toInt()])
+    private fun spellWholeNumber(wholeNumber: Long): StringBuilder =
+            when (wholeNumber) {
+                in 0 until 20 -> StringBuilder().append(symbols[wholeNumber.toInt()])
                 in 20 until 100 -> {
-                    val index = integer / 10 - 2
+                    val index = wholeNumber / 10 - 2
                     StringBuilder()
                             .append(symbols[20 + index.toInt()])
-                            .append(if (integer % 10 > 0) " ${spellInteger(integer % 10)}" else "")
+                            .append(if (wholeNumber % 10 > 0) " ${spellWholeNumber(wholeNumber % 10)}" else "")
                 }
                 in 100 until 1000 -> {
-                    val index = integer / 100
+                    val index = wholeNumber / 100
                     StringBuilder()
                             .append("${symbols[index.toInt()]} Hundred")
-                            .append(if (integer % 100 > 0) " ${spellInteger(integer % 100)}" else "")
+                            .append(if (wholeNumber % 100 > 0) " ${spellWholeNumber(wholeNumber % 100)}" else "")
                 }
                 in 1000 until 1000 * 1000 -> {
-                    spellInteger(integer / 1000)
+                    spellWholeNumber(wholeNumber / 1000)
                             .append(" Thousand")
-                            .append(if (integer % 1000 > 0) " ${spellInteger(integer % 1000)}" else "")
+                            .append(if (wholeNumber % 1000 > 0) " ${spellWholeNumber(wholeNumber % 1000)}" else "")
                 }
                 in 1000 * 1000 until 1000 * 1000 * 1000 -> {
-                    spellInteger(integer / (1000 * 1000))
+                    spellWholeNumber(wholeNumber / (1000 * 1000))
                             .append(" Million")
-                            .append(if (integer % (1000 * 1000) > 0) " ${spellInteger(integer % (1000 * 1000))}" else "")
+                            .append(if (wholeNumber % (1000 * 1000) > 0) " ${spellWholeNumber(wholeNumber % (1000 * 1000))}" else "")
                 }
                 in 1000 * 1000 * 1000 until 1000 * 1000 * 1000 * 1000L -> {
-                    spellInteger(integer / (1000 * 1000 * 1000))
+                    spellWholeNumber(wholeNumber / (1000 * 1000 * 1000))
                             .append(" Billion")
-                            .append(if (integer % (1000 * 1000 * 1000) > 0) " ${spellInteger(integer % (1000 * 1000 * 1000))}" else "")
+                            .append(if (wholeNumber % (1000 * 1000 * 1000) > 0) " ${spellWholeNumber(wholeNumber % (1000 * 1000 * 1000))}" else "")
                 }
                 else -> throw LargeNumberException()
             }
 
-    override fun spellNumber(integers: Long, decimals: Float) =
-            "${spellInteger(integers)} and ${spellDecimals(decimals)}"
+    override fun spellNumber(wholeNumber: Long, fraction: Float) =
+            "${spellWholeNumber(wholeNumber)} and ${spellFraction(fraction)}"
 }

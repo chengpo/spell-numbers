@@ -28,35 +28,35 @@ import java.util.*
 
 class EnglishNumberComposer: NumberComposer.Observable {
     private var observerCallback: (numberText: String, integers: Long, decimals: Float) -> Unit = { _, _, _ -> }
-    private var integerDigits = Stack<Char>()
-    private var decimalDigits = Stack<Char>()
-    private var hasDecimal: Boolean = false
+    private var wholeNumberDigits = Stack<Char>()
+    private var fractionDigits = Stack<Char>()
+    private var isDecimal: Boolean = false
 
     private val numberText: String
         get() {
-            if (hasDecimal) {
-                if (integerDigits.isEmpty() && decimalDigits.isEmpty()) {
+            if (isDecimal) {
+                if (wholeNumberDigits.isEmpty() && fractionDigits.isEmpty()) {
                     return "0"
                 }
 
-                if (integerDigits.isEmpty()) {
-                    return "0.$decimalText"
+                if (wholeNumberDigits.isEmpty()) {
+                    return "0.$fractionText"
                 }
 
-                return "$integerText.$decimalText"
+                return "$wholeNumberText.$fractionText"
             }
 
-            return integerText
+            return wholeNumberText
         }
 
-    private val decimalText: String
-        get() = decimalDigits.joinToString(separator = "")
+    private val fractionText: String
+        get() = fractionDigits.joinToString(separator = "")
 
-    private val integerText: String
+    private val wholeNumberText: String
         get() {
             val integerWithComma = Stack<Char>()
 
-            integerDigits.reversed().forEachIndexed { index, digit ->
+            wholeNumberDigits.reversed().forEachIndexed { index, digit ->
                 if (index > 0 && index % 3 == 0) {
                     integerWithComma.push(',')
                 }
@@ -67,22 +67,22 @@ class EnglishNumberComposer: NumberComposer.Observable {
             return integerWithComma.reversed().joinToString(separator = "")
         }
 
-    private val integers: Long
+    private val wholeNumber: Long
         get() {
             var value = 0L
 
-            integerDigits.forEach { digit ->
+            wholeNumberDigits.forEach { digit ->
                 value = (value * 10) + (digit - '0')
             }
 
             return value
         }
 
-    private val decimals: Float
+    private val fraction: Float
         get() {
             var value = 0.0F
 
-            decimalDigits.forEachIndexed { index, digit ->
+            fractionDigits.forEachIndexed { index, digit ->
                 value += (digit - '0') * Math.pow(0.1, (index + 1).toDouble()).toFloat()
             }
 
@@ -92,56 +92,56 @@ class EnglishNumberComposer: NumberComposer.Observable {
     override fun append(digit: Char) {
         when (digit) {
             '.' -> {
-                if (!hasDecimal) {
-                    hasDecimal = true
+                if (!isDecimal) {
+                    isDecimal = true
                 }
             }
             in '0'..'9' -> {
-                if (hasDecimal) {
-                    if (decimalDigits.size < 3) {
-                        decimalDigits.push(digit)
+                if (isDecimal) {
+                    if (fractionDigits.size < 3) {
+                        fractionDigits.push(digit)
                     }
                 } else {
-                    if (integerDigits.size == 1 && integerDigits[0] == '0') {
+                    if (wholeNumberDigits.size == 1 && wholeNumberDigits[0] == '0') {
                         // ignore duplicated 0
                     } else {
-                        integerDigits.push(digit)
+                        wholeNumberDigits.push(digit)
                     }
                 }
             }
         }
 
-        observerCallback(numberText, integers, decimals)
+        observerCallback(numberText, wholeNumber, fraction)
     }
 
     override fun reset() {
-        hasDecimal = false
-        integerDigits.clear()
-        decimalDigits.clear()
+        isDecimal = false
+        wholeNumberDigits.clear()
+        fractionDigits.clear()
 
-        observerCallback(numberText, integers, decimals)
+        observerCallback(numberText, wholeNumber, fraction)
     }
 
     override fun backspace() {
-        if (hasDecimal) {
-            if (decimalDigits.isEmpty()) {
-                hasDecimal = false
+        if (isDecimal) {
+            if (fractionDigits.isEmpty()) {
+                isDecimal = false
             } else {
-                decimalDigits.pop()
+                fractionDigits.pop()
 
-                if (decimalDigits.isEmpty()) {
-                    if (integerDigits.size == 1 && integerDigits[0] == '0') {
-                        integerDigits.clear()
+                if (fractionDigits.isEmpty()) {
+                    if (wholeNumberDigits.size == 1 && wholeNumberDigits[0] == '0') {
+                        wholeNumberDigits.clear()
                     }
 
-                    hasDecimal = false
+                    isDecimal = false
                 }
             }
-        } else if (!integerDigits.isEmpty()) {
-            integerDigits.pop()
+        } else if (!wholeNumberDigits.isEmpty()) {
+            wholeNumberDigits.pop()
         }
 
-        observerCallback(numberText, integers, decimals)
+        observerCallback(numberText, wholeNumber, fraction)
     }
 
     override fun observe(callback: (numberText: String, integers: Long, decimals: Float) -> Unit) {

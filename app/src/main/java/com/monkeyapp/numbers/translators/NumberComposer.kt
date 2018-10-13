@@ -30,7 +30,7 @@ interface NumberComposer {
     fun reset()
 
     interface Observable: NumberComposer {
-        fun observe(callback: (numberText: String, integers: Long, decimals: Float) -> Unit)
+        fun observe(callback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit)
     }
 }
 

@@ -33,11 +33,11 @@ object TranslatorFactory {
                      private val speller: NumberSpeller) : NumberComposer by composer {
 
         fun observe(observerCallback: (numberText:String, wordsText: String) -> Unit) {
-            composer.observe { numberText, integers, decimals ->
+            composer.observe { numberText, wholeNumber, fraction ->
                 if (numberText.isEmpty()) {
                     observerCallback("", "")
                 } else {
-                    observerCallback(numberText, speller.spellNumber(integers, decimals))
+                    observerCallback(numberText, speller.spellNumber(wholeNumber, fraction))
                 }
             }
         }
