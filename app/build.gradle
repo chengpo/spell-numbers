@@ -61,10 +61,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-    sourceSets {
-        // TODO: This is a workaround for resolving R.java
-        main.resources.srcDirs += 'build/generated/not_namespaced_r_class_sources/debug/processDebugResources/r'
-    }
 }
 
 dependencies {

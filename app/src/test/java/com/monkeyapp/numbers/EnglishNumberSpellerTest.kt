@@ -28,183 +28,214 @@ import com.monkeyapp.numbers.translators.EnglishNumberSpeller
 import org.junit.Test
 
 class EnglishNumberSpellerTest {
-    private inline fun englishNumberSpeller(action: EnglishNumberSpeller.() -> Unit) = action(EnglishNumberSpeller())
+    private class TestSample(var integer: Long = 0L,
+                             var decimal: Float = 0.0F,
+                             var expected: String = "")
 
-    private inline fun EnglishNumberSpeller.verify(sampleData: () -> Map<Int, Array<String>>) {
-        sampleData().forEach { number, words ->
-            spellInteger(number.toLong()) shouldEqual words
+    private fun testSample(action: TestSample.() -> Unit) = TestSample().apply(action)
+
+    private fun verifySpellIntegers(vararg samples: TestSample) {
+        samples.forEach { sample ->
+            EnglishNumberSpeller().spellNumber(sample.integer, sample.decimal) shouldEqual sample.expected
         }
     }
 
     @Test
-    fun `englishNumberSpeller should spell number less than 20 correct`() {
-        englishNumberSpeller {
-            verify {
-                mapOf(0 to arrayOf("Zero"),
-                        1 to arrayOf("One"),
-                        2 to arrayOf("Two"),
-                        3 to arrayOf("Three"),
-                        4 to arrayOf("Four"),
-                        5 to arrayOf("Five"),
-                        6 to arrayOf("Six"),
-                        7 to arrayOf("Seven"),
-                        8 to arrayOf("Eight"),
-                        9 to arrayOf("Nine"),
-                        10 to arrayOf("Ten"),
-                        11 to arrayOf("Eleven"),
-                        12 to arrayOf("Twelve"),
-                        13 to arrayOf("Thirteen"),
-                        14 to arrayOf("Fourteen"),
-                        15 to arrayOf("Fifteen"),
-                        16 to arrayOf("Sixteen"),
-                        17 to arrayOf("Seventeen"),
-                        18 to arrayOf("Eighteen"),
-                        19 to arrayOf("Nineteen"))
+    fun `englishNumberSpeller should spell number 1 to 19 correctly`() {
+        val symbols = listOf("Zero", "One", "Two", "Three", "Four", "Five", "Six",
+                            "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve",
+                             "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+                             "Eighteen", "Nineteen")
+
+        symbols.mapIndexed { index, symbol ->
+            testSample {
+                integer = index.toLong()
+                expected = "$symbol and 00 / 100"
             }
+        }.forEach { sample ->
+            verifySpellIntegers(sample)
         }
     }
 
     @Test
-    fun `englishNumberSpeller should spell number less than 30 correct`() {
-        englishNumberSpeller {
-            verify {
-                mapOf(20 to arrayOf("Twenty"),
-                        21 to arrayOf("Twenty", "One"),
-                        22 to arrayOf("Twenty", "Two"),
-                        23 to arrayOf("Twenty", "Three"),
-                        24 to arrayOf("Twenty", "Four"),
-                        25 to arrayOf("Twenty", "Five"),
-                        26 to arrayOf("Twenty", "Six"),
-                        27 to arrayOf("Twenty", "Seven"),
-                        28 to arrayOf("Twenty", "Eight"),
-                        29 to arrayOf("Twenty", "Nine"))
+    fun `englishNumberSpeller should spell number 20 to 99 correctly`() {
+        val symbols = listOf("", "One", "Two", "Three", "Four", "Five", "Six",
+                "Seven", "Eight", "Nine")
+
+        val radixSymbols = listOf("", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty",
+                "Seventy", "Eighty", "Ninety")
+
+        (2 .. 9).map { radix ->
+            symbols.mapIndexed { index, symbol ->
+                testSample {
+                    integer = radix * 10L + index
+                    expected = if (index == 0) "${radixSymbols[radix]} and 00 / 100" else "${radixSymbols[radix]} $symbol and 00 / 100"
+                }
             }
+        }.forEach { samples ->
+            verifySpellIntegers(*samples.toTypedArray())
         }
     }
 
     @Test
-    fun `englishNumberSpeller should spell number less than 40 correct`() {
-        englishNumberSpeller {
-            verify {
-                mapOf(30 to arrayOf("Thirty"),
-                        31 to arrayOf("Thirty", "One"),
-                        32 to arrayOf("Thirty", "Two"),
-                        33 to arrayOf("Thirty", "Three"),
-                        34 to arrayOf("Thirty", "Four"),
-                        35 to arrayOf("Thirty", "Five"),
-                        36 to arrayOf("Thirty", "Six"),
-                        37 to arrayOf("Thirty", "Seven"),
-                        38 to arrayOf("Thirty", "Eight"),
-                        39 to arrayOf("Thirty", "Nine")
-                )
+    fun `englishNumberSpeller should spell x00 to x19 correctly`() {
+        val symbols = listOf("", "One", "Two", "Three", "Four", "Five", "Six",
+                "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve",
+                "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+                "Eighteen", "Nineteen")
+
+        (1 .. 9).map { hundred ->
+            symbols.mapIndexed { index, symbol ->
+                testSample {
+                    integer = hundred * 100L + index
+                    expected = if (index == 0) "${symbols[hundred]} Hundred and 00 / 100" else "${symbols[hundred]} Hundred $symbol and 00 / 100"
+                }
             }
+        }.forEach { samples ->
+            verifySpellIntegers(*samples.toTypedArray())
         }
     }
 
     @Test
-    fun `englishNumberSpeller should spell number less than 50 correct`() {
-        englishNumberSpeller {
-            verify {
-                mapOf(40 to arrayOf("Forty"),
-                        41 to arrayOf("Forty", "One"),
-                        42 to arrayOf("Forty", "Two"),
-                        43 to arrayOf("Forty", "Three"),
-                        44 to arrayOf("Forty", "Four"),
-                        45 to arrayOf("Forty", "Five"),
-                        46 to arrayOf("Forty", "Six"),
-                        47 to arrayOf("Forty", "Seven"),
-                        48 to arrayOf("Forty", "Eight"),
-                        49 to arrayOf("Forty", "Nine"))
+    fun `englishNumberSpeller should spell x20 to x99 correctly`() {
+        val symbols = listOf("", "One", "Two", "Three", "Four", "Five", "Six",
+                "Seven", "Eight", "Nine")
+
+        val radixSymbols = listOf("", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty",
+                "Seventy", "Eighty", "Ninety")
+
+        (1 .. 9).map { hundred ->
+            (2 .. 9).map { radix ->
+                symbols.mapIndexed { index, symbol ->
+                    testSample {
+                        integer =  hundred * 100L + radix * 10L + index
+                        expected = if (index == 0)
+                            "${symbols[hundred]} Hundred ${radixSymbols[radix]} and 00 / 100"
+                        else
+                            "${symbols[hundred]} Hundred ${radixSymbols[radix]} $symbol and 00 / 100"
+                    }
+                }
             }
+        }.flatten().map { samples ->
+            verifySpellIntegers(*samples.toTypedArray())
         }
     }
 
     @Test
-    fun `englishNumberSpeller should spell number less than 60 correct`() {
-        englishNumberSpeller {
-            verify {
-                mapOf(50 to arrayOf("Fifty"),
-                        51 to arrayOf("Fifty", "One"),
-                        52 to arrayOf("Fifty", "Two"),
-                        53 to arrayOf("Fifty", "Three"),
-                        54 to arrayOf("Fifty", "Four"),
-                        55 to arrayOf("Fifty", "Five"),
-                        56 to arrayOf("Fifty", "Six"),
-                        57 to arrayOf("Fifty", "Seven"),
-                        58 to arrayOf("Fifty", "Eight"),
-                        59 to arrayOf("Fifty", "Nine"))
-            }
+    fun `englishNumberSpeller should spell thousands correctly`() {
+        val symbols = listOf("", "One", "Two", "Three", "Four", "Five", "Six",
+                "Seven", "Eight", "Nine")
+
+        for (number in 1 .. 9) {
+            verifySpellIntegers(
+                testSample {
+                    integer = number * 1000L
+                    expected = "${symbols[number]} Thousand and 00 / 100"
+                },
+                testSample {
+                    integer = number * 1000L + 1
+                    expected = "${symbols[number]} Thousand One and 00 / 100"
+                },
+                testSample {
+                    integer = number * 1000L + 12L
+                    expected = "${symbols[number]} Thousand Twelve and 00 / 100"
+                },
+                testSample {
+                    integer = number * 1000L + 21L
+                    expected = "${symbols[number]} Thousand Twenty One and 00 / 100"
+                },
+                testSample {
+                    integer =  number * 1000L + 199L
+                    expected = "${symbols[number]} Thousand One Hundred Ninety Nine and 00 / 100"
+                }
+            )
+        }
+
+        verifySpellIntegers(
+                testSample {
+                    integer = 100 * 1000L
+                    expected = "One Hundred Thousand and 00 / 100"
+                }
+        )
+    }
+
+    @Test
+    fun `englishNumberSpeller should spell millions correctly`() {
+        val symbols = listOf("", "One", "Two", "Three", "Four", "Five", "Six",
+                "Seven", "Eight", "Nine")
+
+        for (number in 1 .. 9) {
+            verifySpellIntegers(
+                    testSample {
+                        integer = number * 1000 * 1000L
+                        expected = "${symbols[number]} Million and 00 / 100"
+                    },
+                    testSample {
+                        integer = number * 1000 * 1000L + number * 1000L
+                        expected = "${symbols[number]} Million ${symbols[number]} Thousand and 00 / 100"
+                    },
+                    testSample {
+                        integer = number * 1000 * 1000L + number * 1000L + number * 100L
+                        expected = "${symbols[number]} Million ${symbols[number]} Thousand ${symbols[number]} Hundred and 00 / 100"
+                    },
+                    testSample {
+                        integer = number * 1000 * 1000L + number * 1000L + number * 100L + number
+                        expected = "${symbols[number]} Million ${symbols[number]} Thousand ${symbols[number]} Hundred ${symbols[number]} and 00 / 100"
+                    }
+            )
         }
     }
 
     @Test
-    fun `englishNumberSpeller should spell number less than 100 correct`() {
-        englishNumberSpeller {
-            verify {
-                mapOf(90 to arrayOf("Ninety"),
-                        91 to arrayOf("Ninety", "One"),
-                        92 to arrayOf("Ninety", "Two"),
-                        93 to arrayOf("Ninety", "Three"),
-                        94 to arrayOf("Ninety", "Four"),
-                        95 to arrayOf("Ninety", "Five"),
-                        96 to arrayOf("Ninety", "Six"),
-                        97 to arrayOf("Ninety", "Seven"),
-                        98 to arrayOf("Ninety", "Eight"),
-                        99 to arrayOf("Ninety", "Nine")
-                )
-            }
+    fun `EnglishNumberSpeller should spell billions correctly`() {
+        val symbols = listOf("", "One", "Two", "Three", "Four", "Five", "Six",
+                "Seven", "Eight", "Nine")
+
+        for (number in 1 .. 9) {
+            verifySpellIntegers(
+                    testSample {
+                        integer = number * 1000 * 1000L * 1000L
+                        expected = "${symbols[number]} Billion and 00 / 100"
+                    },
+                    testSample {
+                        integer = number * 1000 * 1000L * 1000L + 1000 * 1000L + 1000L
+                        expected = "${symbols[number]} Billion One Million One Thousand and 00 / 100"
+                    },
+                    testSample {
+                        integer = number * 1000 * 1000L * 1000L + 1000 * 1000L + 1000L + 100L
+                        expected = "${symbols[number]} Billion One Million One Thousand One Hundred and 00 / 100"
+                    },
+                    testSample {
+                        integer = number * 1000 * 1000L * 1000L + 1000 * 1000L + 1000L + 100L + 10L
+                        expected = "${symbols[number]} Billion One Million One Thousand One Hundred Ten and 00 / 100"
+                    }
+            )
         }
     }
 
     @Test
-    fun `englishNumberSpeller should spell number larger than 100 correct`() {
-        englishNumberSpeller {
-            verify {
-                mapOf(100 to arrayOf("One", "Hundred"),
-                        101 to arrayOf("One", "Hundred", "One"),
-                        110 to arrayOf("One", "Hundred", "Ten"),
-                        200 to arrayOf("Two", "Hundred"),
-                        219 to arrayOf("Two", "Hundred", "Nineteen"),
-                        999 to arrayOf("Nine", "Hundred", "Ninety", "Nine")
-                )
-            }
-        }
-    }
-
-    @Test
-    fun `englishNumberSpeller should spell number larger than 1000 correct`() {
-        englishNumberSpeller {
-            verify {
-                mapOf(1000 to arrayOf("One", "Thousand"),
-                        1001 to arrayOf("One", "Thousand", "One"),
-                        10000 to arrayOf("Ten", "Thousand"),
-                        10015 to arrayOf("Ten", "Thousand", "Fifteen"),
-                        10020 to arrayOf("Ten", "Thousand", "Twenty"),
-                        10021 to arrayOf("Ten", "Thousand", "Twenty", "One"),
-                        999999 to arrayOf("Nine", "Hundred", "Ninety", "Nine",
-                                "Thousand", "Nine", "Hundred", "Ninety", "Nine"))
-            }
-        }
-    }
-
-    @Test
-    fun `englishNumberSpeller should spell number larger than 1 million`() {
-        englishNumberSpeller {
-            verify {
-                mapOf(1000 * 1000 to arrayOf("One", "Million"),
-                        1000 * 1000 + 100 * 1000 to arrayOf("One", "Million", "One", "Hundred", "Thousand")
-                )
-            }
-        }
-    }
-
-    @Test
-    fun `englishNumberSpeller should spell number larger than 1 billion`() {
-        englishNumberSpeller {
-            verify {
-                mapOf(1000 * 1000 * 1000 to arrayOf("One", "Billion"),
-                        1000 * 1000 * 1000 + 100 * 1000 * 1000 to arrayOf("One", "Billion", "One", "Hundred", "Million"))
-            }
-        }
+    fun `englishNumberSpeller should spell decimal correctly`() {
+        verifySpellIntegers(
+                testSample {
+                    integer = 0L
+                    decimal = 0.1F
+                    expected = "Zero and 10 / 100"
+                },
+                testSample {
+                    integer = 1L
+                    decimal = 0.1F
+                    expected = "One and 10 / 100"
+                },
+                testSample {
+                    integer = 1L
+                    decimal = 0.15F
+                    expected = "One and 15 / 100"
+                },
+                testSample {
+                    integer = 1L
+                    decimal = 0.155F
+                    expected = "One and 16 / 100"
+                }
+        )
     }
 }

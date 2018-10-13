@@ -24,125 +24,13 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.translators
 
-class NumberComposer {
-    private var integerDigits = mutableListOf<Char>()
-    private var decimalDigits = mutableListOf<Char>()
-    private var hasDecimal: Boolean = false
+interface NumberComposer {
+    fun append(digit: Char)
+    fun backspace()
+    fun reset()
 
-    val numberText: String
-        get() {
-            if (hasDecimal) {
-                if (integerDigits.isEmpty() && decimalDigits.isEmpty()) {
-                    return "0"
-                }
-
-                if (integerDigits.isEmpty()) {
-                    return "0.$decimalStr"
-                }
-
-                return "$integerStr.$decimalStr"
-            }
-
-            return integerStr
-        }
-
-    private val decimalStr: String
-        get() = decimalDigits.joinToString(separator = "")
-
-    private val integerStr: String
-        get() {
-            val integerWithComma = mutableListOf<Char>()
-
-            integerDigits.reversed().forEachIndexed { index, digit ->
-                if (index > 0 && index % 3 == 0) {
-                    integerWithComma.add(',')
-                }
-
-                integerWithComma.add(digit)
-            }
-
-            return integerWithComma.reversed().joinToString(separator = "")
-        }
-
-    val integers: Long
-        get() {
-            var value = 0L
-
-            integerDigits.forEach { digit ->
-                value = (value * 10) + (digit - '0')
-            }
-
-            return value
-        }
-
-    val decimals: Float
-        get() {
-            var value = 0.0F
-
-            decimalDigits.forEachIndexed { index, digit ->
-                value += (digit - '0') * Math.pow(0.1, (index + 1).toDouble()).toFloat()
-            }
-
-            return value
-        }
-
-    fun appendDigit(digit: Char): Boolean {
-        when (digit) {
-            '.' -> {
-                if (hasDecimal) {
-                    return false
-                }
-
-                hasDecimal = true
-            }
-            in '0'..'9' -> {
-                if (hasDecimal) {
-                    if (decimalDigits.size < 3) {
-                        decimalDigits.add(digit)
-                    }
-                } else {
-                    if (integerDigits.size == 1 && integerDigits[0] == '0') {
-                        return false
-                    }
-
-                    integerDigits.add(digit)
-                }
-            }
-        }
-
-        return true
-    }
-
-    fun resetDigit() {
-        hasDecimal = false
-        integerDigits.clear()
-        decimalDigits.clear()
-    }
-
-    fun deleteDigit(): Boolean {
-        if (hasDecimal) {
-            if (decimalDigits.isEmpty()) {
-                hasDecimal = false
-                return true
-            }
-
-            decimalDigits.removeAt(decimalDigits.size - 1)
-            if (decimalDigits.isEmpty()) {
-                if (integerDigits.size == 1 && integerDigits[0] == '0') {
-                    integerDigits.clear()
-                }
-
-                hasDecimal = false
-            }
-
-            return true
-        }
-
-        if (integerDigits.isEmpty()) {
-            return false
-        }
-
-        integerDigits.removeAt(integerDigits.size - 1)
-        return true
+    interface Observable: NumberComposer {
+        fun observe(callback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit)
     }
 }
+

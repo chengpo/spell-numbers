@@ -33,6 +33,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import arrow.core.Try
 import arrow.core.getOrElse
 
 import com.monkeyapp.numbers.helpers.*
@@ -82,12 +83,12 @@ class MainActivity : AppCompatActivity() {
     fun onButtonClicked(button: View) {
         when {
             button.id == R.id.btnDel ->
-                mainViewModel.deleteDigit()
+                mainViewModel.backspace()
 
             button is OmniButton ->
                 when (button.state) {
                     OmniButton.State.Clean ->
-                        mainViewModel.resetDigit()
+                        mainViewModel.reset()
                     OmniButton.State.Camera ->
                         startActivityForResult(
                             Intent(INTENT_ACTION_OCR_CAPTURE),
@@ -95,16 +96,16 @@ class MainActivity : AppCompatActivity() {
                 }
 
             button is Button && (button.text[0] == '.' || button.text[0] in '0'..'9') ->
-                mainViewModel
-                    .appendDigit(button.text[0])
-                    .getOrElse {
-                        wordsTextView.snackbar(R.string.too_large_to_spell) {
-                            icon(R.drawable.ic_error, R.color.accent)
-                        }
-
-                        // revoke the last digit
-                        mainViewModel.deleteDigit()
+                Try {
+                    mainViewModel.append(button.text[0])
+                }.getOrElse {
+                    wordsTextView.snackbar(R.string.too_large_to_spell) {
+                        icon(R.drawable.ic_error, R.color.accent)
                     }
+
+                    // revoke the last digit
+                    mainViewModel.backspace()
+                }
         }
     }
 
@@ -127,8 +128,19 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == RC_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
             val number = data?.getStringExtra("number") ?: ""
             if (number.isNotBlank()) {
-                mainViewModel.resetDigit()
-                mainViewModel.appendDigit(number)
+                Try {
+                    mainViewModel.reset()
+                    number.forEach { digit ->
+                        mainViewModel.append(digit)
+                    }
+                }.getOrElse {
+                    wordsTextView.snackbar(R.string.too_large_to_spell) {
+                        icon(R.drawable.ic_error, R.color.accent)
+                    }
+
+                    mainViewModel.reset()
+                }
+
             }
         }
     }
