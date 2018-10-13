@@ -28,32 +28,21 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import arrow.core.Try
+import com.monkeyapp.numbers.translators.NumberComposer
 import com.monkeyapp.numbers.translators.TranslatorFactory
 import com.monkeyapp.numbers.translators.TranslatorFactory.Translator
 
-class MainViewModel : ViewModel() {
-    private val translator: Translator
+// TODO : support other language translators
+class MainViewModel(private var translator: Translator = TranslatorFactory.getEnglishTranslator()) :
+        ViewModel(), NumberComposer by translator {
+
     private val viewObjLiveData = MutableLiveData<ViewObject>()
 
     init {
-        // TODO : support other language translators
-        translator = TranslatorFactory.getEnglishTranslator { numberText: String, wordsText: String ->
+        translator.observe { numberText: String, wordsText: String ->
             viewObjLiveData.value = ViewObject(numberText, wordsText)
         }
     }
-
-    fun deleteDigit() = translator.deleteDigit()
-
-    fun appendDigit(digit: Char) = Try { translator.appendDigit(digit) }
-
-    fun appendDigit(digits: CharSequence) {
-        digits.forEach {
-            appendDigit(it)
-        }
-    }
-
-    fun resetDigit() = translator.resetDigit()
 
     fun observe(owner: LifecycleOwner, observer: (viewObj: ViewObject?) -> Unit) {
         viewObjLiveData.observe(owner, Observer { observer(it) })

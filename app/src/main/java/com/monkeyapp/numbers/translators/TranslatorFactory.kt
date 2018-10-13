@@ -25,38 +25,20 @@ SOFTWARE.
 package com.monkeyapp.numbers.translators
 
 object TranslatorFactory {
-    fun getEnglishTranslator(onNumberTranslated: (numberText:String, wordsText: String) -> Unit) =
-            Translator(composer = NumberComposer(),
-                       speller = EnglishNumberSpeller(),
-                       onNumberTranslated = onNumberTranslated)
+    fun getEnglishTranslator() =
+            Translator(composer = EnglishNumberComposer(),
+                       speller = EnglishNumberSpeller())
 
-    class Translator(private val composer: NumberComposer,
-                     private val speller: NumberSpeller,
-                     private val onNumberTranslated: (numberText: String, wordsText: String) -> Unit) {
-        fun appendDigit(digit: Char) {
-            if (composer.appendDigit(digit)) {
-                notifyNumberUpdated()
-            }
-        }
+    class Translator(private val composer: NumberComposer.Observable,
+                     private val speller: NumberSpeller) : NumberComposer by composer {
 
-        fun deleteDigit() {
-            if (composer.deleteDigit()) {
-                notifyNumberUpdated()
-            }
-        }
-
-        fun resetDigit() {
-            composer.resetDigit()
-            notifyNumberUpdated()
-        }
-
-        private fun notifyNumberUpdated() {
-            if (composer.numberText.isEmpty()) {
-                onNumberTranslated("","")
-            } else {
-                onNumberTranslated(
-                        composer.numberText,
-                        speller.spellNumber(composer.integers, composer.decimals))
+        fun observe(observerCallback: (numberText:String, wordsText: String) -> Unit) {
+            composer.observe { numberText, integers, decimals ->
+                if (numberText.isEmpty()) {
+                    observerCallback("", "")
+                } else {
+                    observerCallback(numberText, speller.spellNumber(integers, decimals))
+                }
             }
         }
     }

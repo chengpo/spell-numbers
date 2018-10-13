@@ -68,6 +68,6 @@ class EnglishNumberSpeller: NumberSpeller() {
                 else -> throw LargeNumberException()
             }
 
-    override fun spellNumber(integer: Long, decimals: Float) =
-            "${spellInteger(integer)} and ${spellDecimals(decimals)}"
+    override fun spellNumber(integers: Long, decimals: Float) =
+            "${spellInteger(integers)} and ${spellDecimals(decimals)}"
 }
