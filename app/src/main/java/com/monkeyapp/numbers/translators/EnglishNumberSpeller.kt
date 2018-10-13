@@ -31,6 +31,8 @@ class EnglishNumberSpeller: NumberSpeller() {
            "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen",
            "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety")
 
+    private val radixSymbols = listOf("Billion", "Million", "Thousand")
+
     override fun spellNumber(wholeNumber: Long, fraction: Float) =
             "${spellWholeNumber(wholeNumber)} and ${spellFraction(fraction)}"
 
@@ -62,29 +64,21 @@ class EnglishNumberSpeller: NumberSpeller() {
                     }
                 }
 
-                in 1000 until 1000 * 1000 ->
-                    spellWholeNumber(wholeNumber / 1000).apply {
-                        val tail = append("Thousand")
-                        if (wholeNumber % 1000 > 0) {
-                            tail.append(spellWholeNumber(wholeNumber % 1000))
-                        }
+                in 1000 until 1000 * 1000 * 1000 * 1000L -> {
+                    var radix = 1000 * 1000 * 1000L
+                    var radixIndex = 0
+                    while (wholeNumber / radix == 0L) {
+                        radix /= 1000L
+                        radixIndex++
                     }
 
-                in 1000 * 1000 until 1000 * 1000 * 1000 ->
-                    spellWholeNumber(wholeNumber / (1000 * 1000)).apply {
-                        val tail = append("Million")
-                        if (wholeNumber % (1000 * 1000) > 0) {
-                            tail.append(spellWholeNumber(wholeNumber % (1000 * 1000)))
+                    spellWholeNumber(wholeNumber / radix).apply {
+                        val tail = append(radixSymbols[radixIndex])
+                        if (wholeNumber % radix > 0) {
+                            tail.append(spellWholeNumber(wholeNumber % radix))
                         }
                     }
-
-                in 1000 * 1000 * 1000 until 1000 * 1000 * 1000 * 1000L ->
-                    spellWholeNumber(wholeNumber / (1000 * 1000 * 1000)).apply {
-                        val tail = append("Billion")
-                        if (wholeNumber % (1000 * 1000 * 1000) > 0) {
-                            tail.append(spellWholeNumber(wholeNumber % (1000 * 1000 * 1000)))
-                        }
-                    }
+                }
 
                 else -> throw LargeNumberException()
             }
