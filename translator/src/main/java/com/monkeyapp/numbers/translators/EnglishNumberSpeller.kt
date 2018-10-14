@@ -89,7 +89,7 @@ class EnglishNumberSpeller: NumberSpeller() {
          fun append(nextSymbol: String) = append(Node(nextSymbol))
 
          fun append(nextNode: Node): Node {
-             var node:Node? = this
+             var node: Node? = this
              while (node?.next != null) {
                  node = node.next
              }

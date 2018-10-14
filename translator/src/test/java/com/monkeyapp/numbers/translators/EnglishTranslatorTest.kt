@@ -22,8 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers
+package com.monkeyapp.numbers.translators
 
+import com.monkeyapp.numbers.asserts.shouldEqual
 import arrow.core.Try
 import arrow.core.getOrElse
 import com.monkeyapp.numbers.translators.TranslatorFactory

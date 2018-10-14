@@ -22,9 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers
-
-import com.monkeyapp.numbers.translators.EnglishNumberSpeller
+package com.monkeyapp.numbers.translators
+import com.monkeyapp.numbers.asserts.shouldEqual
 import org.junit.Test
 
 class EnglishNumberSpellerTest {

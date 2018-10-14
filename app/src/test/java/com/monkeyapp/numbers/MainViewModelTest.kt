@@ -28,6 +28,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import com.monkeyapp.numbers.asserts.shouldEqual
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule

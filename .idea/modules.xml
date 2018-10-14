@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/spell-numbers.iml" filepath="$PROJECT_DIR$/spell-numbers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/testHelper/testHelper.iml" filepath="$PROJECT_DIR$/testHelper/testHelper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/translator/translator.iml" filepath="$PROJECT_DIR$/translator/translator.iml" />
     </modules>
   </component>
 </project>

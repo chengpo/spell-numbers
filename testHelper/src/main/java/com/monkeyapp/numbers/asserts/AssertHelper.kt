@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers
+package com.monkeyapp.numbers.asserts
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*

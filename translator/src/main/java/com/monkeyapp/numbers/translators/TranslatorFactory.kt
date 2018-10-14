@@ -24,13 +24,23 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.translators
 
-class EnglishNumberComposer(private val composer:NumberComposer.Observable = CommonNumberComposer(),
-                            private val formatter:NumberFormatter = NumberFormatter(',', 3))
-    : NumberComposer.Observable by composer {
+object TranslatorFactory {
+    fun getEnglishTranslator() =
+            Translator(composer = EnglishNumberComposer(),
+                    speller = EnglishNumberSpeller())
 
-    override fun observe(callback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit) {
-        composer.observe { numberText, wholeNumber, fraction ->
-            callback(formatter.format(numberText), wholeNumber, fraction)
+    class Translator(private val composer: NumberComposer.Observable,
+                     private val speller: NumberSpeller) : NumberComposer by composer {
+
+        fun observe(observerCallback: (numberText:String, wordsText: String) -> Unit) {
+            composer.observe { numberText, wholeNumber, fraction ->
+                if (numberText.isEmpty()) {
+                    observerCallback("", "")
+                } else {
+                    observerCallback(numberText, speller.spellNumber(wholeNumber, fraction))
+                }
+            }
         }
     }
 }
+
