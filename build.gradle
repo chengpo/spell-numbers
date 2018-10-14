@@ -26,6 +26,14 @@ allprojects {
         jcenter()
         mavenCentral()
     }
+
+    // show test result in console
+    tasks.withType(Test) {
+        testLogging {
+            exceptionFormat "full"
+            events "skipped", "passed", "failed", "standardOut", "standardError"
+        }
+    }
 }
 
 task clean(type: Delete) {
