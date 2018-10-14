@@ -24,12 +24,13 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
-import org.junit.Assert
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.*
 
 infix fun <T> T.shouldEqual(expect: T) {
-    Assert.assertEquals(expect, this)
+    assertThat(this, equalTo(expect))
 }
 
-infix fun <T> Comparable<T>.shouldLessThan(expect: T) {
-    Assert.assertTrue("should less than $expect", this < expect)
+infix fun <T: Comparable<T>> T.shouldLessThan(expect: T) {
+    assertThat(this, lessThan(expect))
 }

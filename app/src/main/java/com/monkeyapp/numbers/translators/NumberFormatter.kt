@@ -24,13 +24,29 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.translators
 
-class EnglishNumberComposer(private val composer:NumberComposer.Observable = CommonNumberComposer(),
-                            private val formatter:NumberFormatter = NumberFormatter(',', 3))
-    : NumberComposer.Observable by composer {
+import java.lang.StringBuilder
 
-    override fun observe(callback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit) {
-        composer.observe { numberText, wholeNumber, fraction ->
-            callback(formatter.format(numberText), wholeNumber, fraction)
+class NumberFormatter(private val separator: Char, private val separatorWidth: Int) {
+    fun format(numberText: String): String {
+        val dotIndex = numberText.indexOf(".")
+
+        val wholeNumberText = if (dotIndex < 0) numberText else numberText.substring(0, dotIndex)
+        val fractionText = if (dotIndex < 0) null else numberText.substring(dotIndex)
+        val sb = StringBuilder()
+
+        wholeNumberText.reversed().forEachIndexed { index, digit ->
+            if (index > 0 && index % separatorWidth == 0) {
+                sb.append(separator)
+            }
+            sb.append(digit)
         }
+
+        sb.reverse()
+
+        if (fractionText != null) {
+            sb.append(fractionText)
+        }
+
+        return sb.toString()
     }
 }
