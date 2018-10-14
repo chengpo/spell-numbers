@@ -41,6 +41,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_number_word.*
 
 class MainActivity : AppCompatActivity() {
+    private  val requestCodeOcrCapture = 1000
+
     private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,9 +92,7 @@ class MainActivity : AppCompatActivity() {
                     OmniButton.State.Clean ->
                         mainViewModel.reset()
                     OmniButton.State.Camera ->
-                        startActivityForResult(
-                            Intent(INTENT_ACTION_OCR_CAPTURE),
-                            RC_OCR_CAPTURE)
+                        startActivityForResult(ocrIntent, requestCodeOcrCapture)
                 }
 
             button is Button && (button.text[0] == '.' || button.text[0] in '0'..'9') ->
@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == requestCodeOcrCapture && resultCode == Activity.RESULT_OK) {
             val number = data?.getStringExtra("number") ?: ""
             if (number.isNotBlank()) {
                 Try {

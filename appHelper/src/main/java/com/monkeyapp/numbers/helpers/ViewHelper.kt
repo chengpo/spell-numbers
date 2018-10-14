@@ -27,5 +27,8 @@ package com.monkeyapp.numbers.helpers
 import android.content.res.Configuration
 import android.view.View
 
-fun View.isPortraitMode() =
-        resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+val View.isPortraitMode: Boolean
+    get() {
+        return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    }
+

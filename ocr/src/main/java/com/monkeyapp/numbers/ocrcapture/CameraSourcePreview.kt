@@ -108,7 +108,7 @@ class CameraSourcePreview : ViewGroup {
         var previewWidth = size.width
         var previewHeight = size.height
 
-        if (isPortraitMode()) {
+        if (isPortraitMode) {
             val tmp = previewWidth
             previewWidth = previewHeight
             previewHeight = tmp

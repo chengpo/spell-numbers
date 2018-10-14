@@ -79,7 +79,7 @@ class OcrOverlayView : View {
         val captureRectHeight = viewHeight * CAPTURE_RECT_HEIGHT_FACTOR
 
         val rectLeft = (viewWidth - captureRectWidth) / 2F
-        val rectTop = if (isPortraitMode())
+        val rectTop = if (isPortraitMode)
                         (viewHeight/2 - captureRectHeight) / 2F
                       else
                         (viewHeight - captureRectHeight) / 2F
