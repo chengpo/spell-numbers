@@ -66,7 +66,9 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(":appHelper")
     implementation project(':translator')
+    implementation project(':ocr')
 
     implementation 'androidx.annotation:annotation:1.0.0'
     implementation 'androidx.core:core:1.0.0'
@@ -82,10 +84,7 @@ dependencies {
     // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "io.arrow-kt:arrow-core:$arrow_version"
-    // google vision service
-    implementation('com.google.android.gms:play-services-vision:11.8.0') {
-        exclude group: 'com.android.support', module: 'support-v4'
-    }
+
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.19.0'
     testImplementation 'androidx.arch.core:core-testing:2.0.0'

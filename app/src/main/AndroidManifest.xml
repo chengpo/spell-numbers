@@ -5,9 +5,6 @@
     android:installLocation="auto"
     tools:ignore="GoogleAppIndexingWarning"> <!-- TODO : using google app index-->
 
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -19,10 +16,6 @@
         android:appCategory="productivity"
         tools:targetApi="o"
         tools:ignore="AllowBackup">
-
-        <meta-data
-            android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="ocr" />
 
         <activity android:name="com.monkeyapp.numbers.MainActivity">
             <intent-filter>
@@ -47,14 +40,5 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.monkeyapp.numbers.MainActivity" />
         </activity>
-        <activity
-            android:name=".ocrcapture.OcrCaptureActivity"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.monkeyapp.numbers.intent.OCR_CAPTURE"/>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
     </application>
-
 </manifest>

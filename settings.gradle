@@ -1,1 +1,1 @@
-include ':app', ':translator', ':testHelper'
+include ':app', ':translator', ':testHelper', ':ocr', ':appHelper'
