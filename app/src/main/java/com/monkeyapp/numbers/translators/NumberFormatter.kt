@@ -22,14 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers
+package com.monkeyapp.numbers.translators
 
-import org.junit.Assert
+import java.lang.StringBuilder
 
-infix fun <T> T.shouldEqual(expect: T) {
-    Assert.assertEquals(expect, this)
-}
+class NumberFormatter(private val separator: Char, private val separatorWidth: Int) {
+    fun format(numberText: String): String {
+        val dotIndex = numberText.indexOf(".")
 
-infix fun <T> Comparable<T>.shouldLessThan(expect: T) {
-    Assert.assertTrue("should less than $expect", this < expect)
+        val wholeNumberText = if (dotIndex < 0) numberText else numberText.substring(0, dotIndex)
+        val fractionText = if (dotIndex < 0) null else numberText.substring(dotIndex)
+        val sb = StringBuilder()
+
+        wholeNumberText.reversed().forEachIndexed { index, digit ->
+            if (index > 0 && index % separatorWidth == 0) {
+                sb.append(separator)
+            }
+            sb.append(digit)
+        }
+
+        sb.reverse()
+
+        if (fractionText != null) {
+            sb.append(fractionText)
+        }
+
+        return sb.toString()
+    }
 }

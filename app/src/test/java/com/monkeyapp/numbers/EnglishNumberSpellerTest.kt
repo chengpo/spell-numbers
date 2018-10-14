@@ -43,9 +43,9 @@ class EnglishNumberSpellerTest {
     @Test
     fun `englishNumberSpeller should spell number 1 to 19 correctly`() {
         val symbols = listOf("Zero", "One", "Two", "Three", "Four", "Five", "Six",
-                            "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve",
-                             "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
-                             "Eighteen", "Nineteen")
+                "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve",
+                "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+                "Eighteen", "Nineteen")
 
         symbols.mapIndexed { index, symbol ->
             testSample {
@@ -65,7 +65,7 @@ class EnglishNumberSpellerTest {
         val radixSymbols = listOf("", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty",
                 "Seventy", "Eighty", "Ninety")
 
-        (2 .. 9).map { radix ->
+        (2..9).map { radix ->
             symbols.mapIndexed { index, symbol ->
                 testSample {
                     integer = radix * 10L + index
@@ -84,7 +84,7 @@ class EnglishNumberSpellerTest {
                 "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
                 "Eighteen", "Nineteen")
 
-        (1 .. 9).map { hundred ->
+        (1..9).map { hundred ->
             symbols.mapIndexed { index, symbol ->
                 testSample {
                     integer = hundred * 100L + index
@@ -104,11 +104,11 @@ class EnglishNumberSpellerTest {
         val radixSymbols = listOf("", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty",
                 "Seventy", "Eighty", "Ninety")
 
-        (1 .. 9).map { hundred ->
-            (2 .. 9).map { radix ->
+        (1..9).map { hundred ->
+            (2..9).map { radix ->
                 symbols.mapIndexed { index, symbol ->
                     testSample {
-                        integer =  hundred * 100L + radix * 10L + index
+                        integer = hundred * 100L + radix * 10L + index
                         expected = if (index == 0)
                             "${symbols[hundred]} Hundred ${radixSymbols[radix]} and 00 / 100"
                         else
@@ -126,28 +126,28 @@ class EnglishNumberSpellerTest {
         val symbols = listOf("", "One", "Two", "Three", "Four", "Five", "Six",
                 "Seven", "Eight", "Nine")
 
-        for (number in 1 .. 9) {
+        for (number in 1..9) {
             verifySpellIntegers(
-                testSample {
-                    integer = number * 1000L
-                    expected = "${symbols[number]} Thousand and 00 / 100"
-                },
-                testSample {
-                    integer = number * 1000L + 1
-                    expected = "${symbols[number]} Thousand One and 00 / 100"
-                },
-                testSample {
-                    integer = number * 1000L + 12L
-                    expected = "${symbols[number]} Thousand Twelve and 00 / 100"
-                },
-                testSample {
-                    integer = number * 1000L + 21L
-                    expected = "${symbols[number]} Thousand Twenty One and 00 / 100"
-                },
-                testSample {
-                    integer =  number * 1000L + 199L
-                    expected = "${symbols[number]} Thousand One Hundred Ninety Nine and 00 / 100"
-                }
+                    testSample {
+                        integer = number * 1000L
+                        expected = "${symbols[number]} Thousand and 00 / 100"
+                    },
+                    testSample {
+                        integer = number * 1000L + 1
+                        expected = "${symbols[number]} Thousand One and 00 / 100"
+                    },
+                    testSample {
+                        integer = number * 1000L + 12L
+                        expected = "${symbols[number]} Thousand Twelve and 00 / 100"
+                    },
+                    testSample {
+                        integer = number * 1000L + 21L
+                        expected = "${symbols[number]} Thousand Twenty One and 00 / 100"
+                    },
+                    testSample {
+                        integer = number * 1000L + 199L
+                        expected = "${symbols[number]} Thousand One Hundred Ninety Nine and 00 / 100"
+                    }
             )
         }
 
@@ -155,6 +155,14 @@ class EnglishNumberSpellerTest {
                 testSample {
                     integer = 100 * 1000L
                     expected = "One Hundred Thousand and 00 / 100"
+                },
+                testSample {
+                    integer = 210 * 1000L
+                    expected = "Two Hundred Ten Thousand and 00 / 100"
+                },
+                testSample {
+                    integer = 210 * 1000L + 300L + 13L
+                    expected = "Two Hundred Ten Thousand Three Hundred Thirteen and 00 / 100"
                 }
         )
     }
@@ -164,7 +172,7 @@ class EnglishNumberSpellerTest {
         val symbols = listOf("", "One", "Two", "Three", "Four", "Five", "Six",
                 "Seven", "Eight", "Nine")
 
-        for (number in 1 .. 9) {
+        for (number in 1..9) {
             verifySpellIntegers(
                     testSample {
                         integer = number * 1000 * 1000L
@@ -184,6 +192,21 @@ class EnglishNumberSpellerTest {
                     }
             )
         }
+
+        verifySpellIntegers(
+                testSample {
+                    integer = 100 * 1000 * 1000L
+                    expected = "One Hundred Million and 00 / 100"
+                },
+                testSample {
+                    integer = 210 * 1000 * 1000L
+                    expected = "Two Hundred Ten Million and 00 / 100"
+                },
+                testSample {
+                    integer = 210 * 1000 * 1000L + 1000 + 100
+                    expected = "Two Hundred Ten Million One Thousand One Hundred and 00 / 100"
+                }
+        )
     }
 
     @Test
@@ -191,7 +214,7 @@ class EnglishNumberSpellerTest {
         val symbols = listOf("", "One", "Two", "Three", "Four", "Five", "Six",
                 "Seven", "Eight", "Nine")
 
-        for (number in 1 .. 9) {
+        for (number in 1..9) {
             verifySpellIntegers(
                     testSample {
                         integer = number * 1000 * 1000L * 1000L
@@ -211,6 +234,33 @@ class EnglishNumberSpellerTest {
                     }
             )
         }
+
+        verifySpellIntegers(
+                testSample {
+                    integer = 100 * 1000 * 1000 * 1000L
+                    expected = "One Hundred Billion and 00 / 100"
+                },
+                testSample {
+                    integer = 210 * 1000 * 1000 * 1000L
+                    expected = "Two Hundred Ten Billion and 00 / 100"
+                },
+                testSample {
+                    integer = 213 * 1000 * 1000 * 1000L
+                    expected = "Two Hundred Thirteen Billion and 00 / 100"
+                },
+                testSample {
+                    integer = 230 * 1000 * 1000 * 1000L
+                    expected = "Two Hundred Thirty Billion and 00 / 100"
+                },
+                testSample {
+                    integer = 210 * 1000 * 1000 * 1000L + 1000 * 1000 + 1000 + 100
+                    expected = "Two Hundred Ten Billion One Million One Thousand One Hundred and 00 / 100"
+                },
+                testSample {
+                    integer = 210 * 1000 * 1000 * 1000L + 211 * 1000 * 1000 + 1000 + 100
+                    expected = "Two Hundred Ten Billion Two Hundred Eleven Million One Thousand One Hundred and 00 / 100"
+                }
+        )
     }
 
     @Test

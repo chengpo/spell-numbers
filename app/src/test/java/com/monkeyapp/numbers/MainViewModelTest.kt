@@ -22,15 +22,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers.translators
+package com.monkeyapp.numbers
 
-class EnglishNumberComposer(private val composer:NumberComposer.Observable = CommonNumberComposer(),
-                            private val formatter:NumberFormatter = NumberFormatter(',', 3))
-    : NumberComposer.Observable by composer {
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.TestRule
+import org.mockito.Mockito.*
 
-    override fun observe(callback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit) {
-        composer.observe { numberText, wholeNumber, fraction ->
-            callback(formatter.format(numberText), wholeNumber, fraction)
+class MainViewModelTest {
+    @get:Rule
+    val rule: TestRule = InstantTaskExecutorRule()
+
+    @Test
+    fun mainViewModel_should_return_translated_text_correctly() {
+        val viewModel = MainViewModel()
+
+        "100000".forEach { digit ->
+            viewModel.append(digit)
+        }
+
+        val lifecycle = LifecycleRegistry(mock(LifecycleOwner::class.java))
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+
+        val lifecycleOwner = LifecycleOwner { lifecycle }
+
+        viewModel.observe(lifecycleOwner) { viewModelObj ->
+            viewModelObj?.numberText shouldEqual "100,000"
+            viewModelObj?.wordsText shouldEqual "One Hundred Thousand and 00 / 100"
         }
     }
 }

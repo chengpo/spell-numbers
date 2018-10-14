@@ -22,15 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers.translators
+package com.monkeyapp.numbers
 
-class EnglishNumberComposer(private val composer:NumberComposer.Observable = CommonNumberComposer(),
-                            private val formatter:NumberFormatter = NumberFormatter(',', 3))
-    : NumberComposer.Observable by composer {
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.*
 
-    override fun observe(callback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit) {
-        composer.observe { numberText, wholeNumber, fraction ->
-            callback(formatter.format(numberText), wholeNumber, fraction)
-        }
-    }
+infix fun <T> T.shouldEqual(expect: T) {
+    assertThat(this, equalTo(expect))
+}
+
+infix fun <T: Comparable<T>> T.shouldLessThan(expect: T) {
+    assertThat(this, lessThan(expect))
 }

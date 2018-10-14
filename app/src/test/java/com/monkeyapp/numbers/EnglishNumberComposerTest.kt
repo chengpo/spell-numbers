@@ -98,6 +98,12 @@ class EnglishNumberComposerTest {
                     numberText = "1,000.101"
                     wholeNumber = 1000
                     fraction = 0.101F
+                },
+                testSample {
+                    number = "1000000.1016"
+                    numberText = "1,000,000.101"
+                    wholeNumber = 1000000
+                    fraction = 0.101F
                 }
         )
     }

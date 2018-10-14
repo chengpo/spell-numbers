@@ -24,7 +24,6 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.translators
 
-import java.lang.StringBuilder
 
 class EnglishNumberSpeller: NumberSpeller() {
     private val symbols = listOf(
@@ -32,42 +31,86 @@ class EnglishNumberSpeller: NumberSpeller() {
            "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen",
            "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety")
 
-    private fun spellFraction(fraction: Float) =
-            String.format("%02d / 100", Math.round(fraction * 100))
-    
-    private fun spellWholeNumber(wholeNumber: Long): StringBuilder =
-            when (wholeNumber) {
-                in 0 until 20 -> StringBuilder().append(symbols[wholeNumber.toInt()])
-                in 20 until 100 -> {
-                    val index = wholeNumber / 10 - 2
-                    StringBuilder()
-                            .append(symbols[20 + index.toInt()])
-                            .append(if (wholeNumber % 10 > 0) " ${spellWholeNumber(wholeNumber % 10)}" else "")
-                }
-                in 100 until 1000 -> {
-                    val index = wholeNumber / 100
-                    StringBuilder()
-                            .append("${symbols[index.toInt()]} Hundred")
-                            .append(if (wholeNumber % 100 > 0) " ${spellWholeNumber(wholeNumber % 100)}" else "")
-                }
-                in 1000 until 1000 * 1000 -> {
-                    spellWholeNumber(wholeNumber / 1000)
-                            .append(" Thousand")
-                            .append(if (wholeNumber % 1000 > 0) " ${spellWholeNumber(wholeNumber % 1000)}" else "")
-                }
-                in 1000 * 1000 until 1000 * 1000 * 1000 -> {
-                    spellWholeNumber(wholeNumber / (1000 * 1000))
-                            .append(" Million")
-                            .append(if (wholeNumber % (1000 * 1000) > 0) " ${spellWholeNumber(wholeNumber % (1000 * 1000))}" else "")
-                }
-                in 1000 * 1000 * 1000 until 1000 * 1000 * 1000 * 1000L -> {
-                    spellWholeNumber(wholeNumber / (1000 * 1000 * 1000))
-                            .append(" Billion")
-                            .append(if (wholeNumber % (1000 * 1000 * 1000) > 0) " ${spellWholeNumber(wholeNumber % (1000 * 1000 * 1000))}" else "")
-                }
-                else -> throw LargeNumberException()
-            }
+    private val radixSymbols = listOf("Billion", "Million", "Thousand")
+    private val maxNumber = Math.pow(1000.0, (radixSymbols.size + 1).toDouble()).toLong()
+    private val maxRadix = Math.pow(1000.0, radixSymbols.size.toDouble()).toLong()
 
     override fun spellNumber(wholeNumber: Long, fraction: Float) =
             "${spellWholeNumber(wholeNumber)} and ${spellFraction(fraction)}"
+
+    private fun spellFraction(fraction: Float) =
+            String.format("%02d / 100", Math.round(fraction * 100))
+    
+    private fun spellWholeNumber(wholeNumber: Long): Node =
+            when (wholeNumber) {
+                in 0 until 20 -> Node(symbols[wholeNumber.toInt()])
+
+                in 20 until 100 -> {
+                    val index = wholeNumber / 10 - 2
+
+                    Node(symbols[20 + index.toInt()]).apply {
+                        if (wholeNumber % 10 > 0) {
+                            append(spellWholeNumber(wholeNumber % 10))
+                        }
+                    }
+                }
+
+                in 100 until 1000 -> {
+                    val index = wholeNumber / 100
+
+                    Node(symbols[index.toInt()]).apply {
+                        val tail = append("Hundred")
+                        if (wholeNumber % 100 > 0) {
+                            tail.append(spellWholeNumber(wholeNumber % 100))
+                        }
+                    }
+                }
+
+                in 1000 until maxNumber -> {
+                    var radix = maxRadix
+                    var radixIndex = 0
+                    while (wholeNumber / radix == 0L) {
+                        radix /= 1000L
+                        radixIndex++
+                    }
+
+                    spellWholeNumber(wholeNumber / radix).apply {
+                        val tail = append(radixSymbols[radixIndex])
+                        if (wholeNumber % radix > 0) {
+                            tail.append(spellWholeNumber(wholeNumber % radix))
+                        }
+                    }
+                }
+
+                else -> throw LargeNumberException()
+            }
+
+     private class Node(var symbol: String, var next: Node? = null) {
+         fun append(nextSymbol: String) = append(Node(nextSymbol))
+
+         fun append(nextNode: Node): Node {
+             var node:Node? = this
+             while (node?.next != null) {
+                 node = node.next
+             }
+
+             node?.next = nextNode
+             return nextNode
+         }
+
+         override fun toString(): String {
+             val sb = StringBuffer()
+             var node: Node? = this
+             while(true) {
+                 sb.append(node?.symbol)
+                 node = node?.next
+
+                 if (node == null) {
+                     return sb.toString()
+                 }
+
+                 sb.append(" ")
+             }
+         }
+     }
 }

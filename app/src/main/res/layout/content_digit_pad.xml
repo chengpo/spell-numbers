@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Button
         android:id="@+id/btnSeven"
@@ -64,5 +63,5 @@
         android:text="@string/del"
         android:tint="@color/primary_text"
         app:srcCompat="@drawable/ic_backspace"
-        tools:ignore="contentDescription"/>
+        android:contentDescription="@null"/>
 </merge>
