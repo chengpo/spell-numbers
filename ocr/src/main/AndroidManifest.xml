@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.monkeyapp.numbers">
+    package="com.monkeyapp.numbers.ocrcapture">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
@@ -11,9 +11,8 @@
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="ocr" />
 
-
         <activity
-            android:name=".ocrcapture.OcrCaptureActivity"
+            android:name=".OcrCaptureActivity"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.monkeyapp.numbers.intent.OCR_CAPTURE"/>

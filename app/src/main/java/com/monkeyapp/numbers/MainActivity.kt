@@ -36,7 +36,7 @@ import android.widget.Button
 import arrow.core.Try
 import arrow.core.getOrElse
 
-import com.monkeyapp.numbers.helpers.*
+import com.monkeyapp.numbers.apphelpers.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_number_word.*
 

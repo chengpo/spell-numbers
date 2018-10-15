@@ -23,7 +23,7 @@ SOFTWARE.
  */
 
 package com.monkeyapp.numbers.translators
-import com.monkeyapp.numbers.asserts.shouldEqual
+import com.monkeyapp.numbers.testhelpers.shouldEqual
 import org.junit.Test
 
 class EnglishNumberSpellerTest {

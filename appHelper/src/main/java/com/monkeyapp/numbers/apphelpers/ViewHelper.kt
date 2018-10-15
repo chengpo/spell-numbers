@@ -22,17 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers.helpers
+package com.monkeyapp.numbers.apphelpers
 
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
-import androidx.core.graphics.drawable.DrawableCompat
+import android.content.res.Configuration
+import android.view.View
 
-fun Drawable.tintColor(tintColor: Int): Drawable {
-    val drawable = DrawableCompat.wrap(mutate())
+val View.isPortraitMode: Boolean
+    get() {
+        return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    }
 
-    DrawableCompat.setTint(drawable, tintColor)
-    DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN)
-
-    return drawable
-}

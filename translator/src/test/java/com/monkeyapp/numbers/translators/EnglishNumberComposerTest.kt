@@ -23,8 +23,8 @@ SOFTWARE.
  */
 package com.monkeyapp.numbers.translators
 
-import com.monkeyapp.numbers.asserts.shouldEqual
-import com.monkeyapp.numbers.asserts.shouldLessThan
+import com.monkeyapp.numbers.testhelpers.shouldEqual
+import com.monkeyapp.numbers.testhelpers.shouldLessThan
 import org.junit.Test
 
 class EnglishNumberComposerTest {

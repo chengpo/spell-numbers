@@ -44,7 +44,6 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.text.TextBlock
-import com.monkeyapp.numbers.R
 import kotlinx.android.synthetic.main.activity_ocr_capture.*
 import java.util.regex.Pattern
 

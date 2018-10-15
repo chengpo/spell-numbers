@@ -30,8 +30,7 @@ import android.graphics.*
 import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
-import com.monkeyapp.numbers.R
-import com.monkeyapp.numbers.helpers.isPortraitMode
+import com.monkeyapp.numbers.apphelpers.isPortraitMode
 
 private const val CAPTURE_RECT_WIDTH_FACTOR = 0.7f
 private const val CAPTURE_RECT_HEIGHT_FACTOR = 0.1f

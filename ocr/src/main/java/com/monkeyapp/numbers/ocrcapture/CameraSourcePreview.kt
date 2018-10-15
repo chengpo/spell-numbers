@@ -35,7 +35,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.ViewGroup
 import com.google.android.gms.common.images.Size
-import com.monkeyapp.numbers.helpers.isPortraitMode
+import com.monkeyapp.numbers.apphelpers.isPortraitMode
 import java.io.IOException
 
 private const val TAG = "CameraSourcePreview"

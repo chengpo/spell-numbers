@@ -22,15 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers.asserts
+package com.monkeyapp.numbers.apphelpers
 
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
+import androidx.core.graphics.drawable.DrawableCompat
 
-infix fun <T> T.shouldEqual(expect: T) {
-    assertThat(this, equalTo(expect))
-}
+fun Drawable.tintColor(tintColor: Int): Drawable {
+    val drawable = DrawableCompat.wrap(mutate())
 
-infix fun <T: Comparable<T>> T.shouldLessThan(expect: T) {
-    assertThat(this, lessThan(expect))
+    DrawableCompat.setTint(drawable, tintColor)
+    DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN)
+
+    return drawable
 }

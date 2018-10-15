@@ -24,10 +24,9 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.translators
 
-import com.monkeyapp.numbers.asserts.shouldEqual
+import com.monkeyapp.numbers.testhelpers.shouldEqual
 import arrow.core.Try
 import arrow.core.getOrElse
-import com.monkeyapp.numbers.translators.TranslatorFactory
 import org.junit.Test
 
 class EnglishTranslatorTest {

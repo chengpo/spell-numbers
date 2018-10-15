@@ -23,7 +23,7 @@ SOFTWARE.
  */
 
 
-package com.monkeyapp.numbers.helpers
+package com.monkeyapp.numbers.apphelpers
 
 import com.google.android.material.snackbar.Snackbar
 import androidx.core.content.ContextCompat
@@ -32,7 +32,6 @@ import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.monkeyapp.numbers.R
 
 inline fun View.snackbar(stringId: Int, length: Int = Snackbar.LENGTH_SHORT, prepare: Snackbar.() -> Snackbar) =
     Snackbar.make(this, stringId, length).apply {

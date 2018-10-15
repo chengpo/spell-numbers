@@ -31,10 +31,10 @@ import android.view.View
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageButton
-import com.monkeyapp.numbers.helpers.getCompatColor
-import com.monkeyapp.numbers.helpers.getVectorDrawable
-import com.monkeyapp.numbers.helpers.isOcrAvailable
-import com.monkeyapp.numbers.helpers.tintColor
+import com.monkeyapp.numbers.apphelpers.getCompatColor
+import com.monkeyapp.numbers.apphelpers.getVectorDrawable
+import com.monkeyapp.numbers.apphelpers.isOcrAvailable
+import com.monkeyapp.numbers.apphelpers.tintColor
 
 class OmniButton : AppCompatImageButton {
     sealed class State {

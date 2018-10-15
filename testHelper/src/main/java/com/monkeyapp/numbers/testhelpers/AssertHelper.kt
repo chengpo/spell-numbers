@@ -22,13 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package com.monkeyapp.numbers.helpers
+package com.monkeyapp.numbers.testhelpers
 
-import android.content.res.Configuration
-import android.view.View
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.*
 
-val View.isPortraitMode: Boolean
-    get() {
-        return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-    }
+infix fun <T> T.shouldEqual(expect: T) {
+    assertThat(this, equalTo(expect))
+}
 
+infix fun <T: Comparable<T>> T.shouldLessThan(expect: T) {
+    assertThat(this, lessThan(expect))
+}
