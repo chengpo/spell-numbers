@@ -8,6 +8,4 @@
     <color name="divider">#BDBDBD</color>
     <color name="ripple_gray">#DDD</color>
     <color name="black_overlay">#66000000</color>
-    <color name="ocr_overlay_view_bg">#A0000000</color>
-    <color name="ocr_graphic_outline">#009688</color>
 </resources>

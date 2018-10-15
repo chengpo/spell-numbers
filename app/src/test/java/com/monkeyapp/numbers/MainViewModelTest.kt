@@ -28,14 +28,22 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import com.monkeyapp.numbers.testhelpers.shouldEqual
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
+import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.mockito.Mockito.*
+import org.mockito.junit.MockitoJUnitRunner
 
+@RunWith(MockitoJUnitRunner::class)
 class MainViewModelTest {
     @get:Rule
     val rule: TestRule = InstantTaskExecutorRule()
+
+    @Mock
+    lateinit var lifecycleOwner:LifecycleOwner
 
     @Test
     fun mainViewModel_should_return_translated_text_correctly() {
@@ -45,10 +53,10 @@ class MainViewModelTest {
             viewModel.append(digit)
         }
 
-        val lifecycle = LifecycleRegistry(mock(LifecycleOwner::class.java))
+        val lifecycle = LifecycleRegistry(lifecycleOwner)
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
 
-        val lifecycleOwner = LifecycleOwner { lifecycle }
+        doReturn(lifecycle).`when`(lifecycleOwner).lifecycle
 
         viewModel.observe(lifecycleOwner) { viewModelObj ->
             viewModelObj?.numberText shouldEqual "100,000"

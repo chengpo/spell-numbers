@@ -31,7 +31,7 @@ import android.content.Context
 import com.google.android.material.snackbar.Snackbar
 import android.view.View
 import androidx.core.content.edit
-import com.monkeyapp.numbers.helpers.*
+import com.monkeyapp.numbers.apphelpers.*
 
 private const val PREF_NAME_RATE_APP = "SP_RATE_APP"
 private const val PREF_KEY_IS_RATED_BOOLEAN = "SP_KEY_IS_RATED"

@@ -1,0 +1,4 @@
+<resources>
+    <string name="ocr_low_storage_error">Ocr dependencies cannot be downloaded due to low device storage</string>
+    <string name="ocr_keep_numbers_within_box">Keep numbers within box</string>
+</resources>
