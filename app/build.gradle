@@ -22,6 +22,8 @@ android {
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        manifestPlaceholders = [is_ocr_supported: "true"]
+
         resConfigs "en"
         resConfigs "nodpi"
     }
@@ -80,10 +82,11 @@ dependencies {
     // viewModel and liveData
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
-    implementation 'androidx.core:core-ktx:1.0.0'
+
     // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "io.arrow-kt:arrow-core:$arrow_version"
+    implementation 'androidx.core:core-ktx:1.0.0'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.19.0'

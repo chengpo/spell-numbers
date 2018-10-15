@@ -27,6 +27,7 @@ package com.monkeyapp.numbers.helpers
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -34,14 +35,15 @@ import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import java.lang.Exception
 
-const val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
+private const val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
 
 val Context.isOcrAvailable:Boolean
     get() {
         return applicationContext
-                    .packageManager
-                    .queryIntentActivities(ocrIntent, 0)
-                    .isNotEmpty()
+                .packageManager
+                .getApplicationInfo(packageName, PackageManager.GET_META_DATA)
+                .metaData
+                .getBoolean("is_ocr_supported")
     }
 
 val Context.ocrIntent

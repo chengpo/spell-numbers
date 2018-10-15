@@ -40,5 +40,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.monkeyapp.numbers.MainActivity" />
         </activity>
+
+        <meta-data android:name="is_ocr_supported" android:value="${is_ocr_supported}"/>
     </application>
 </manifest>
