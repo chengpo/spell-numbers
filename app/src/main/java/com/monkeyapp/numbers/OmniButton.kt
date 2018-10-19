@@ -149,8 +149,7 @@ class OmniButton : AppCompatImageButton {
     private class OmniDrawable(context: Context): StateListDrawable() {
         init {
             fun stateOf(@AttrRes attrId: Int) = arrayOf(attrId).toIntArray()
-            fun drawableOf(@DrawableRes drawableId: Int) = context.getVectorDrawable(drawableId)!!
-                    .tintColor(context.getCompatColor(R.color.primary_text))
+            fun drawableOf(@DrawableRes drawableId: Int) = context.getVectorDrawable(drawableId)
 
             listOf(R.attr.state_clean to R.drawable.ic_clean,
                     R.attr.state_camera to R.drawable.ic_camera)
@@ -160,6 +159,8 @@ class OmniButton : AppCompatImageButton {
                     .forEach { (state, drawable) ->
                         addState(state, drawable)
                     }
+
+            tintColor(context.getCompatColor(R.color.primary_text))
         }
     }
 }
