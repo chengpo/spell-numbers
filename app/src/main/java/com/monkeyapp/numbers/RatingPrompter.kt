@@ -46,7 +46,7 @@ class RatingPrompter(private val context: Context, private val anchorView: View)
         val lastPromptTime = ratePrefs.getLong(PREF_KEY_LAST_PROMPT_TIME_LONG, pkgInfo.firstInstallTime)
 
         val isRated = ratePrefs.getBoolean(PREF_KEY_IS_RATED_BOOLEAN, false)
-        val shouldPrompt = (!isRated) && (System.currentTimeMillis() - lastPromptTime) > 24 * 60 * 60 * 1000L
+        val shouldPrompt = (!isRated) && System.currentTimeMillis() > lastPromptTime + 12 * Math.random() * 60 * 60 * 1000L
 
         if (shouldPrompt) {
             // prompting user for rating App
