@@ -26,6 +26,7 @@ package com.monkeyapp.numbers
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -52,17 +53,17 @@ class FullScreenActivity : AppCompatActivity() {
 
     private val hidePart2Runnable = Runnable {
         // Delayed removal of status and navigation bar
+        var uiFlags =  View.SYSTEM_UI_FLAG_LOW_PROFILE or
+                View.SYSTEM_UI_FLAG_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 
-        // Note that some of these constants are new as of API 16 (Jelly Bean)
-        // and API 19 (KitKat). It is safe to use them, as they are inlined
-        // at compile-time and do nothing on earlier devices.
-        wordsTextView.systemUiVisibility =
-                        View.SYSTEM_UI_FLAG_LOW_PROFILE or
-                        View.SYSTEM_UI_FLAG_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        if (Build.VERSION.SDK_INT >= 19 ) {
+            uiFlags = uiFlags or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        }
+
+        wordsTextView.systemUiVisibility = uiFlags
     }
 
     private val showPart2Runnable = Runnable {

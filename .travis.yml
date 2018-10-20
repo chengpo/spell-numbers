@@ -10,9 +10,6 @@ android:
 
       - build-tools-28.0.3
       - android-28
-      - android-27
-      - android-26
-
 
       - extra-google-google_play_services
       - extra-google-m2repository
@@ -24,4 +21,4 @@ before_script:
   - echo 'storeFile=xxx' >> keystore.properties
 
 script:
-  - ./gradlew clean testDebugUnitTest
+  - ./gradlew clean lint testDebugUnitTest

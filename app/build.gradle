@@ -54,7 +54,6 @@ android {
     }
     lintOptions {
         check 'NewApi', 'HandlerLeak'
-        ignoreWarnings false
         abortOnError true
     }
     dexOptions {
