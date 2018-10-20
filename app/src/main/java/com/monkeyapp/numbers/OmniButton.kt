@@ -24,10 +24,14 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.drawable.StateListDrawable
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageButton
@@ -37,25 +41,6 @@ import com.monkeyapp.numbers.apphelpers.isOcrAvailable
 import com.monkeyapp.numbers.apphelpers.tintColor
 
 class OmniButton : AppCompatImageButton {
-    sealed class State {
-        object Clean : State() {
-            override fun getDrawableStates(): IntArray =
-                    arrayListOf(R.attr.state_clean).toIntArray()
-        }
-
-        object Camera : State() {
-            override fun getDrawableStates(): IntArray =
-                    arrayListOf(R.attr.state_camera).toIntArray()
-        }
-
-        object None : State() {
-            override fun getDrawableStates(): IntArray =
-                    emptyArray<Int>().toIntArray()
-        }
-
-        abstract fun getDrawableStates(): IntArray
-    }
-
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -64,56 +49,119 @@ class OmniButton : AppCompatImageButton {
 
     var state: State = State.None
         set(value) {
+            val old = field
+
             field = when {
                 value == State.Camera && isOcrAvailable.value -> {
-                    visibility = View.VISIBLE
                     State.Camera
                 }
                 value == State.Camera && !isOcrAvailable.value -> {
                     // hide button when camera is not available
-                    visibility = View.INVISIBLE
                     State.None
                 }
                 value == State.Clean -> {
-                    visibility = View.VISIBLE
                     State.Clean
                 }
-                else -> State.None
+                else -> {
+                    State.None
+                }
             }
 
-            refreshDrawableState()
+            if (old != field) {
+                if (field == State.None) {
+                    fadeOut {
+                        visibility = View.INVISIBLE
+                        refreshDrawableState()
+                    }
+                } else {
+                    fadeOutFadeIn {
+                        visibility = View.VISIBLE
+                        refreshDrawableState()
+                    }
+                }
+            }
         }
 
     init {
-        fun stateOf(@AttrRes attrId: Int) = arrayOf(attrId).toIntArray()
-        fun drawableOf(@DrawableRes drawableId: Int) = context.getVectorDrawable(drawableId)!!
-                .tintColor(context.getCompatColor(R.color.primary_text))
-
-        val omniButtonDrawable = StateListDrawable()
-
-        listOf(R.attr.state_clean to R.drawable.ic_clean,
-               R.attr.state_camera to R.drawable.ic_camera)
-                .map { (attrId, drawableId) ->
-                    stateOf(attrId) to drawableOf(drawableId)
-                }
-                .forEach { (state, drawable) ->
-                    omniButtonDrawable.addState(state, drawable)
-                }
-
-        setImageDrawable(omniButtonDrawable)
-
+        setImageDrawable(OmniDrawable(context))
         state = State.Camera
     }
 
-    override fun onCreateDrawableState(extraSpace: Int): IntArray =
-            when (state) {
-                State.Clean, State.Camera -> {
-                    val drawableState = super.onCreateDrawableState(extraSpace + 1)
-                    View.mergeDrawableStates(drawableState, state.getDrawableStates())
-                }
-                else -> {
-                    visibility = View.INVISIBLE
-                    super.onCreateDrawableState(extraSpace)
-                }
+    private fun fadeOutFadeIn(onStart: () -> Unit) {
+        val fadeOutAnimator = ObjectAnimator.ofFloat(this, View.ALPHA, 1.0F, 0.0F)
+        val fadeInAnimator = ObjectAnimator.ofFloat(this, View.ALPHA, 0.0F, 1.0F)
+        fadeInAnimator.addListener(object: Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) = Unit
+            override fun onAnimationEnd(animation: Animator?) = Unit
+            override fun onAnimationCancel(animation: Animator?) = Unit
+            override fun onAnimationStart(animation: Animator?) = onStart()
+        })
+
+        val animatorSet = AnimatorSet()
+        animatorSet.duration = 300L
+        animatorSet.interpolator = AccelerateDecelerateInterpolator()
+        animatorSet.playSequentially(fadeOutAnimator, fadeInAnimator)
+        animatorSet.start()
+    }
+
+    private fun fadeOut(onEnd: () -> Unit) {
+        val animator = ObjectAnimator.ofFloat(this, View.ALPHA, 1.0F, 0.0F)
+        animator.addListener(object: Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) = Unit
+            override fun onAnimationEnd(animation: Animator?) = onEnd()
+            override fun onAnimationCancel(animation: Animator?) = Unit
+            override fun onAnimationStart(animation: Animator?) = Unit
+        })
+        animator.duration = 300L
+        animator.interpolator = AccelerateDecelerateInterpolator()
+        animator.start()
+    }
+
+    override fun onCreateDrawableState(extraSpace: Int): IntArray {
+        return when (state) {
+            State.Clean, State.Camera -> {
+                val drawableState = super.onCreateDrawableState(extraSpace + 1)
+                View.mergeDrawableStates(drawableState, state.getDrawableStates().toIntArray())
             }
+            else -> {
+                visibility = View.INVISIBLE
+                super.onCreateDrawableState(extraSpace)
+            }
+        }
+    }
+
+    sealed class State {
+        object Clean : State() {
+            override fun getDrawableStates() = listOf(R.attr.state_clean)
+        }
+
+        object Camera : State() {
+            override fun getDrawableStates() = listOf(R.attr.state_camera)
+        }
+
+        object None : State() {
+            override fun getDrawableStates() = emptyList<Int>()
+        }
+
+        abstract fun getDrawableStates(): List<Int>
+    }
+
+    private class OmniDrawable(context: Context): StateListDrawable() {
+        init {
+            fun stateOf(@AttrRes attrId: Int) = arrayOf(attrId).toIntArray()
+            fun drawableOf(@DrawableRes drawableId: Int) = context.getVectorDrawable(drawableId)
+
+            listOf(R.attr.state_clean to R.drawable.ic_clean,
+                    R.attr.state_camera to R.drawable.ic_camera)
+                    .map { (attrId, drawableId) ->
+                        stateOf(attrId) to drawableOf(drawableId)
+                    }
+                    .forEach { (state, drawable) ->
+                        addState(state, drawable)
+                    }
+
+            tintColor(context.getCompatColor(R.color.primary_text))
+        }
+    }
 }
+
