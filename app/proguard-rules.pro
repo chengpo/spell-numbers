@@ -23,8 +23,3 @@
 -keepclassmembers class * extends androidx.appcompat.app.AppCompatActivity.AppCompatActivity {
    public void *(android.view.View);
 }
-
--optimizationpasses 3
--allowaccessmodification
--mergeinterfacesaggressively
--overloadaggressively
