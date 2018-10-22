@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.monkeyapp.numbers.ocrcapture
 
 import android.content.Context
@@ -38,13 +40,13 @@ import java.lang.Exception
 import java.nio.ByteBuffer
 
 private const val DEFAULT_PREVIEW_IMAGE_FORMAT = ImageFormat.NV21
+private const val TAG = "CameraSource"
 
 class CameraSource(private val context: Context,
                    private val processFrameBitmap: (bitmap: Bitmap, frameId:Int) -> Unit,
                    private val requestedPreviewWidth:Int = 800,
                    private val requestedPreviewHeight:Int = 640,
                    private val requestedPreviewFps:Float = 15.0f) {
-    private val TAG by lazy { CameraSource::class.java.simpleName }
 
     var previewSize = Size(requestedPreviewWidth, requestedPreviewHeight)
 
@@ -299,7 +301,7 @@ class CameraSource(private val context: Context,
                 pendingTimeMillis = SystemClock.elapsedRealtime() - startTimeMillis
                 pendingFrameId++
                 pendingFrameData = ByteBuffer.wrap(data)
-                if (!pendingFrameData!!.hasArray() || pendingFrameData!!.array() != data) {
+                if (!pendingFrameData!!.hasArray()) {
                     throw IllegalStateException("failed to create valid buffer for camera")
                 }
 
@@ -336,8 +338,6 @@ class CameraSource(private val context: Context,
                         pendingFrameData = null
                     }
                 }
-
-
             }
         }
     }
@@ -349,17 +349,17 @@ class CameraSource(private val context: Context,
         val yuvToRgbSc = ScriptIntrinsicYuvToRGB.create(rs, Element.U8_4(rs))
 
         val yuvType = Type.Builder(rs, Element.U8(rs)).setX(nv21.size)
-        val _in = Allocation.createTyped(rs, yuvType.create(), Allocation.USAGE_SCRIPT)
+        val input = Allocation.createTyped(rs, yuvType.create(), Allocation.USAGE_SCRIPT)
 
         val rgbaType = Type.Builder(rs, Element.RGBA_8888(rs)).setX(width).setY(height)
-        val _out = Allocation.createTyped(rs, rgbaType.create(), Allocation.USAGE_SCRIPT)
+        val output = Allocation.createTyped(rs, rgbaType.create(), Allocation.USAGE_SCRIPT)
 
-        _in.copyFrom(nv21)
+        input.copyFrom(nv21)
 
-        yuvToRgbSc.setInput(_in)
-        yuvToRgbSc.forEach(_out)
+        yuvToRgbSc.setInput(input)
+        yuvToRgbSc.forEach(output)
 
-        _out.copyTo(bitmap)
+        output.copyTo(bitmap)
 
         val matrix = Matrix()
         matrix.postRotate(rotation.toFloat())
