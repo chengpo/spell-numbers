@@ -11,19 +11,19 @@
         android:label="content_main"
         tools:layout="@layout/activity_main">
 
-        <action android:id="@+id/action_main_activity_to_about_activity"
-            app:destination="@id/aboutActivity"/>
+        <action android:id="@+id/action_main_to_about"
+            app:destination="@id/aboutFragment"/>
 
-        <action android:id="@+id/action_main_activity_to_full_screen_activity"
-            app:destination="@id/fullScreenActivity"/>
+        <action android:id="@+id/action_main_to_full_screen"
+            app:destination="@id/fullScreenFragment"/>
     </activity>
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.monkeyapp.numbers.AboutFragment"
         android:label="@string/about_title"
         tools:layout="@layout/content_about" />
-    <activity
-        android:id="@+id/fullScreenActivity"
+    <fragment
+        android:id="@+id/fullScreenFragment"
         android:name="com.monkeyapp.numbers.FullScreenFragment"
-        android:label="FullScreenActivity" />
+        android:label="" />
 </navigation>

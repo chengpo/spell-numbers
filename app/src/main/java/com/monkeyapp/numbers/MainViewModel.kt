@@ -24,10 +24,7 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.monkeyapp.numbers.translators.NumberComposer
 import com.monkeyapp.numbers.translators.TranslatorFactory
 import com.monkeyapp.numbers.translators.TranslatorFactory.Translator
@@ -47,6 +44,8 @@ class MainViewModel(private var translator: Translator = TranslatorFactory.getEn
     fun observe(owner: LifecycleOwner, observer: (viewObj: ViewObject?) -> Unit) {
         viewObjLiveData.observe(owner, Observer { observer(it) })
     }
+
+    fun getViewObjLiveData() = viewObjLiveData as LiveData<ViewObject>
 
     data class ViewObject(val numberText: String, val wordsText: String)
 }

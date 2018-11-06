@@ -33,6 +33,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.content_full_screen.*
 
 class FullScreenFragment : Fragment() {
@@ -105,7 +106,9 @@ class FullScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        wordsTextView.text = arguments?.getString("number_words")
+        val mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
+
+        wordsTextView.text = mainViewModel.getViewObjLiveData().value?.wordsText
         wordsTextView.setOnClickListener {
             // toggle system ui visibility
             systemUiVisible = !systemUiVisible

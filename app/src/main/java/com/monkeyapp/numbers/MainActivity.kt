@@ -24,125 +24,15 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
-import android.app.Activity
-import androidx.lifecycle.ViewModelProviders
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.Button
-import arrow.core.Try
-import arrow.core.getOrElse
-
-import com.monkeyapp.numbers.apphelpers.*
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_number_word.*
 
 class MainActivity : AppCompatActivity() {
-    private  val requestCodeOcrCapture = 1000
-
-    private lateinit var mainViewModel: MainViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
-
-        // bind lifecycle to rating helper
-        lifecycle.addObserver(RatingPrompter(this, wordsTextView))
-
-        mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        mainViewModel.observe(this) { viewObj ->
-            viewObj?.let {
-                numberTextView.text = it.numberText
-                omniButton.state = if (it.numberText.isEmpty())
-                    OmniButton.State.Camera
-                else
-                    OmniButton.State.Clean
-
-                wordsTextView.text = it.wordsText
-            }
-        }
-
-        wordsTextView.setOnClickListener {
-            val wordsText = wordsTextView.text.toString()
-            if (wordsText.isNotBlank()) {
-                rippleView.stopRippleAnimation {
-                    FullScreenFragment.show(this, wordsText)
-                }
-            }
-        }
-
-        wordsTextView.setOnTouchListener { _, event ->
-            rippleView.startRippleAnimation(event.x, event.y)
-            false
-        }
-    }
-
-    fun onButtonClicked(button: View) {
-        when {
-            button.id == R.id.btnDel ->
-                mainViewModel.backspace()
-
-            button is OmniButton ->
-                when (button.state) {
-                    OmniButton.State.Clean ->
-                        mainViewModel.reset()
-                    OmniButton.State.Camera ->
-                        startActivityForResult(ocrIntent, requestCodeOcrCapture)
-                }
-
-            button is Button && (button.text[0] == '.' || button.text[0] in '0'..'9') ->
-                Try {
-                    mainViewModel.append(button.text[0])
-                }.getOrElse {
-                    wordsTextView.snackbar(R.string.too_large_to_spell) {
-                        icon(R.drawable.ic_error, R.color.accent)
-                    }
-
-                    // revoke the last digit
-                    mainViewModel.backspace()
-                }
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?) =
-            when (item?.itemId) {
-                R.id.action_about -> {
-                // TODO: convert about activity to fragment
-                //    NavHostFragment.findNavController(my_nav_host_fragment)
-                //            .navigate(R.id.action_main_activity_to_about_activity)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == requestCodeOcrCapture && resultCode == Activity.RESULT_OK) {
-            val number = data?.getStringExtra("number") ?: ""
-            if (number.isNotBlank()) {
-                Try {
-                    mainViewModel.reset()
-                    number.forEach { digit ->
-                        mainViewModel.append(digit)
-                    }
-                }.getOrElse {
-                    wordsTextView.snackbar(R.string.too_large_to_spell) {
-                        icon(R.drawable.ic_error, R.color.accent)
-                    }
-
-                    mainViewModel.reset()
-                }
-            }
-        }
     }
 }
