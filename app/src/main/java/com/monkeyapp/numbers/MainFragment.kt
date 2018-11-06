@@ -31,11 +31,14 @@ import android.view.*
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.NavHostFragment
 import arrow.core.Try
 import arrow.core.getOrElse
+import com.monkeyapp.numbers.R.id.my_nav_host_fragment
 import com.monkeyapp.numbers.apphelpers.icon
 import com.monkeyapp.numbers.apphelpers.ocrIntent
 import com.monkeyapp.numbers.apphelpers.snackbar
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_number_word.*
 
 class MainFragment : Fragment() {
@@ -45,6 +48,8 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setHasOptionsMenu(true)
 
         mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
         mainViewModel.observe(this) { viewObj ->
@@ -71,8 +76,8 @@ class MainFragment : Fragment() {
             val wordsText = wordsTextView.text.toString()
             if (wordsText.isNotBlank()) {
                 rippleView.stopRippleAnimation {
-                    // FIXME : open full screen fragment
-                    //  FullScreenFragment.show(this, wordsText)
+                    NavHostFragment.findNavController(my_nav_host_fragment)
+                            .navigate(R.id.action_main_to_full_screen)
                 }
             }
         }
@@ -86,9 +91,9 @@ class MainFragment : Fragment() {
         lifecycle.addObserver(RatingPrompter(context!!, wordsTextView))
     }
 
-    fun onButtonClicked(button: View) {
+    fun onButtonClick(button: View?) {
         when {
-            button.id == R.id.btnDel ->
+            button?.id == R.id.btnDel ->
                 mainViewModel.backspace()
 
             button is OmniButton ->
@@ -136,15 +141,13 @@ class MainFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.main, menu)
-        return
     }
 
     override fun onOptionsItemSelected(item: MenuItem?) =
             when (item?.itemId) {
                 R.id.action_about -> {
-                    // TODO: convert about activity to fragment
-                    //    NavHostFragment.findNavController(my_nav_host_fragment)
-                    //            .navigate(R.id.action_main_activity_to_about_activity)
+                    NavHostFragment.findNavController(my_nav_host_fragment)
+                              .navigate(R.id.action_main_to_about)
                     true
                 }
                 else -> super.onOptionsItemSelected(item)
