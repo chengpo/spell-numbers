@@ -33,7 +33,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import androidx.navigation.fragment.NavHostFragment
 import arrow.core.Try
 import arrow.core.getOrElse
 
@@ -72,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             val wordsText = wordsTextView.text.toString()
             if (wordsText.isNotBlank()) {
                 rippleView.stopRippleAnimation {
-                    FullScreenActivity.show(this, wordsText)
+                    FullScreenFragment.show(this, wordsText)
                 }
             }
         }
@@ -118,7 +117,6 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?) =
             when (item?.itemId) {
                 R.id.action_about -> {
-                    AboutActivity.show(this)
                 // TODO: convert about activity to fragment
                 //    NavHostFragment.findNavController(my_nav_host_fragment)
                 //            .navigate(R.id.action_main_activity_to_about_activity)

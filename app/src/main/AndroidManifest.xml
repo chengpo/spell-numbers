@@ -5,7 +5,6 @@
     android:installLocation="auto"
     tools:ignore="GoogleAppIndexingWarning"> <!-- TODO : using google app index-->
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_round"
@@ -22,23 +21,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="com.monkeyapp.numbers.AboutActivity"
-            android:label="@string/about_activity_title"
-            android:parentActivityName="com.monkeyapp.numbers.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.monkeyapp.numbers.MainActivity" />
-        </activity>
-        <activity
-            android:name="com.monkeyapp.numbers.FullScreenActivity"
-            android:screenOrientation="userLandscape"
-            android:parentActivityName="com.monkeyapp.numbers.MainActivity"
-            android:theme="@style/FullscreenTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.monkeyapp.numbers.MainActivity" />
         </activity>
 
         <meta-data android:name="is_ocr_supported" android:value="${is_ocr_supported}"/>

@@ -25,27 +25,20 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_about.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.content_about.*
 
-class AboutActivity : AppCompatActivity() {
-    companion object {
-        fun show(context: Context) {
-            context.startActivity(Intent(context, AboutActivity::class.java))
-        }
+class AboutFragment : Fragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.content_about, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
-
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         appVersionView.text = getString(R.string.about_app_version, BuildConfig.VERSION_NAME)
     }
 }

@@ -24,27 +24,18 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
-import android.content.Context
-import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
-import androidx.core.app.NavUtils
-import android.view.MenuItem
-import kotlinx.android.synthetic.main.activity_full_screen.*
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.content_full_screen.*
 
-class FullScreenActivity : AppCompatActivity() {
-    companion object {
-        fun show(context: Context, wordsText: String) {
-            val intent = Intent(context, FullScreenActivity::class.java)
-            intent.putExtra("number_words", wordsText)
-            context.startActivity(intent)
-        }
-    }
-
+class FullScreenFragment : Fragment() {
     private val hideHandler = Handler(Looper.getMainLooper())
 
     private val hideRunnable = Runnable {
@@ -68,7 +59,7 @@ class FullScreenActivity : AppCompatActivity() {
 
     private val showPart2Runnable = Runnable {
         // Delayed display of UI elements
-        supportActionBar?.show()
+        (activity as AppCompatActivity).supportActionBar?.show()
     }
 
     private var systemUiVisible: Boolean = true
@@ -94,7 +85,7 @@ class FullScreenActivity : AppCompatActivity() {
                 field = false
 
                 // Hide UI first
-                supportActionBar?.hide()
+                (activity as AppCompatActivity).supportActionBar?.hide()
 
                 // Schedule a runnable to remove the status and navigation bar after a delay
                 hideHandler.removeCallbacks(showPart2Runnable)
@@ -107,13 +98,14 @@ class FullScreenActivity : AppCompatActivity() {
                 hide()
         }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_full_screen)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.content_full_screen, container, false)
+    }
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        wordsTextView.text = intent.getStringExtra("number_words")
+        wordsTextView.text = arguments?.getString("number_words")
         wordsTextView.setOnClickListener {
             // toggle system ui visibility
             systemUiVisible = !systemUiVisible
@@ -123,8 +115,8 @@ class FullScreenActivity : AppCompatActivity() {
         delayedHide(3000L)
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
@@ -140,14 +132,4 @@ class FullScreenActivity : AppCompatActivity() {
         hideHandler.removeCallbacks(hideRunnable)
         hideHandler.postDelayed(hideRunnable, delayMillis)
     }
-
-    override fun onOptionsItemSelected(item: MenuItem) =
-            when(item.itemId) {
-                android.R.id.home -> {
-                    // This ID represents the Home or Up button.
-                    NavUtils.navigateUpFromSameTask(this)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
 }
