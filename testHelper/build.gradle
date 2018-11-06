@@ -24,9 +24,8 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation 'junit:junit:4.12'
-    implementation 'org.hamcrest:hamcrest-junit:2.0.0.0'
+    compileOnly 'junit:junit:4.12'
+    compileOnly 'org.hamcrest:hamcrest-junit:2.0.0.0'
 }

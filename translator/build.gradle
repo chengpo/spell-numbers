@@ -29,11 +29,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "io.arrow-kt:arrow-core:$arrow_version"
 
+    testImplementation project(':testHelper')
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.19.0'
+    testImplementation 'org.mockito:mockito-core:2.22.0'
     testImplementation 'androidx.arch.core:core-testing:2.0.0'
     testImplementation 'org.hamcrest:hamcrest-junit:2.0.0.0'
-    testImplementation project(':testHelper')
 }
 repositories {
     mavenCentral()
