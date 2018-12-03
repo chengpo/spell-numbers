@@ -29,16 +29,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
 import arrow.core.Try
 import arrow.core.getOrElse
-import com.monkeyapp.numbers.R.id.my_nav_host_fragment
 import com.monkeyapp.numbers.apphelpers.icon
 import com.monkeyapp.numbers.apphelpers.ocrIntent
 import com.monkeyapp.numbers.apphelpers.snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.content_number_word.*
 
 class MainFragment : Fragment() {
@@ -72,6 +73,12 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        digitPadView.forEach {
+            it.setOnClickListener { _v ->
+                onButtonClicked(_v)
+            }
+        }
+
         wordsTextView.setOnClickListener {
             val wordsText = wordsTextView.text.toString()
             if (wordsText.isNotBlank()) {
@@ -91,7 +98,7 @@ class MainFragment : Fragment() {
         lifecycle.addObserver(RatingPrompter(context!!, wordsTextView))
     }
 
-    fun onButtonClick(button: View?) {
+    private fun onButtonClicked(button: View?) {
         when {
             button?.id == R.id.btnDel ->
                 mainViewModel.backspace()

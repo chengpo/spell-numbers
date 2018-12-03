@@ -25,7 +25,6 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -35,17 +34,5 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
-    }
-
-    // FIXME : use data-binding
-    fun onButtonClicked(button: View) {
-        supportFragmentManager.fragments.forEach {
-            it.childFragmentManager.fragments.forEach { child ->
-                if (child is MainFragment) {
-                    child.onButtonClick(button)
-                    return
-                }
-            }
-        }
     }
 }

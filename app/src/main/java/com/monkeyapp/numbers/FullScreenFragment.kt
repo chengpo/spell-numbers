@@ -28,6 +28,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -113,6 +114,18 @@ class FullScreenFragment : Fragment() {
             // toggle system ui visibility
             systemUiVisible = !systemUiVisible
         }
+
+        wordsTextView.setOnKeyListener { _, keyCode, event ->
+            if( keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+                wordsTextView.systemUiVisibility =
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+
+                (activity as AppCompatActivity).supportActionBar?.show()
+            }
+
+            false
+         }
 
         // Wait after user interaction before hiding the system UI.
         delayedHide(3000L)
