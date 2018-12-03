@@ -73,14 +73,35 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        digitPadView.forEach {
-            it.setOnClickListener { _v ->
-                onButtonClicked(_v)
+        omniButtonView.setOnClickListener {
+            when ((it as OmniButton).state) {
+                OmniButton.State.Clean ->
+                    mainViewModel.reset()
+
+                OmniButton.State.Camera ->
+                    startActivityForResult(context!!.ocrIntent, requestCodeOcrCapture)
             }
         }
 
-        omniButtonView.setOnClickListener {
-            onButtonClicked(it)
+        digitPadView.forEach {
+            it.setOnClickListener { button ->
+                when {
+                    button?.id == R.id.btnDel ->
+                        mainViewModel.backspace()
+
+                    button is Button && (button.text[0] == '.' || button.text[0] in '0'..'9') ->
+                        Try {
+                            mainViewModel.append(button.text[0])
+                        }.getOrElse {
+                            wordsTextView.snackbar(R.string.too_large_to_spell) {
+                                icon(R.drawable.ic_error, R.color.accent)
+                            }
+
+                            // revoke the last digit
+                            mainViewModel.backspace()
+                        }
+                }
+            }
         }
 
         wordsTextView.setOnClickListener {
@@ -100,33 +121,6 @@ class MainFragment : Fragment() {
 
         // bind lifecycle to rating helper
         lifecycle.addObserver(RatingPrompter(context!!, wordsTextView))
-    }
-
-    private fun onButtonClicked(button: View?) {
-        when {
-            button?.id == R.id.btnDel ->
-                mainViewModel.backspace()
-
-            button is OmniButton ->
-                when (button.state) {
-                    OmniButton.State.Clean ->
-                        mainViewModel.reset()
-                    OmniButton.State.Camera ->
-                        startActivityForResult(context!!.ocrIntent, requestCodeOcrCapture)
-                }
-
-            button is Button && (button.text[0] == '.' || button.text[0] in '0'..'9') ->
-                Try {
-                    mainViewModel.append(button.text[0])
-                }.getOrElse {
-                    wordsTextView.snackbar(R.string.too_large_to_spell) {
-                        icon(R.drawable.ic_error, R.color.accent)
-                    }
-
-                    // revoke the last digit
-                    mainViewModel.backspace()
-                }
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
