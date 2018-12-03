@@ -56,7 +56,7 @@ class MainFragment : Fragment() {
         mainViewModel.observe(this) { viewObj ->
             viewObj?.let {
                 numberTextView.text = it.numberText
-                omniButton.state = if (it.numberText.isEmpty())
+                omniButtonView.state = if (it.numberText.isEmpty())
                     OmniButton.State.Camera
                 else
                     OmniButton.State.Clean
@@ -77,6 +77,10 @@ class MainFragment : Fragment() {
             it.setOnClickListener { _v ->
                 onButtonClicked(_v)
             }
+        }
+
+        omniButtonView.setOnClickListener {
+            onButtonClicked(it)
         }
 
         wordsTextView.setOnClickListener {

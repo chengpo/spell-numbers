@@ -8,10 +8,9 @@
     tools:context=".MainActivity">
 
     <com.monkeyapp.numbers.OmniButton
-        android:id="@+id/omniButton"
+        android:id="@+id/omniButtonView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onButtonClicked"
         android:tint="@color/primary_text"
         android:background="?selectableItemBackgroundBorderless"
         style="@style/Widget.AppCompat.Button.Borderless"/>
