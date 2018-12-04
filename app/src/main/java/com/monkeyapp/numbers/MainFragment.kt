@@ -54,15 +54,25 @@ class MainFragment : Fragment() {
 
         mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
         mainViewModel.observe(this) { viewObj ->
-            viewObj?.let {
-                numberTextView.text = it.numberText
-                omniButtonView.state = if (it.numberText.isEmpty())
-                    OmniButton.State.Camera
-                else
-                    OmniButton.State.Clean
+            updateView(viewObj)
+        }
+    }
 
-                wordsTextView.text = it.wordsText
-            }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        updateView(mainViewModel.getViewObjLiveData().value)
+    }
+
+    private fun updateView(viewObj: MainViewModel.ViewObject?) {
+        viewObj?.let {
+            numberTextView.text = it.numberText
+            omniButtonView.state = if (it.numberText.isEmpty())
+                OmniButton.State.Camera
+            else
+                OmniButton.State.Clean
+
+            wordsTextView.text = it.wordsText
         }
     }
 

@@ -8,14 +8,14 @@
     android:orientation="vertical"
     tools:context="com.monkeyapp.numbers.MainActivity">
 
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_margin="5dp">
 
         <include layout="@layout/content_number_word"/>
-    </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/digitPadView"
