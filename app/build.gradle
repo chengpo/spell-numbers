@@ -70,7 +70,7 @@ dependencies {
     implementation project(':translator')
     implementation project(':ocr')
 
-    implementation 'androidx.annotation:annotation:1.0.0'
+    implementation 'androidx.annotation:annotation:1.0.1'
     implementation 'androidx.core:core:1.0.1'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -83,7 +83,7 @@ dependencies {
     kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
 
     // navigation
-    implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha07'
+    implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha08'
 
     // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
