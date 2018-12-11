@@ -12,7 +12,9 @@
         tools:layout="@layout/content_main">
 
         <action android:id="@+id/action_main_to_about"
-            app:destination="@id/aboutFragment"/>
+            app:destination="@id/aboutFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_right" />
 
         <action android:id="@+id/action_main_to_full_screen"
             app:destination="@id/fullScreenFragment"/>
