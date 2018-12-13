@@ -32,7 +32,6 @@ import android.widget.Button
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import arrow.core.Try
 import arrow.core.getOrElse
