@@ -32,6 +32,7 @@ import android.widget.Button
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import arrow.core.Try
 import arrow.core.getOrElse
@@ -115,9 +116,9 @@ class MainFragment : Fragment() {
         }
 
         wordsTextView.setOnClickListener {
-            val wordsText = wordsTextView.text.toString()
-            if (wordsText.isNotBlank()) {
-                rippleView.stopRippleAnimation {
+            rippleView.stopRippleAnimation {
+                val wordsText = wordsTextView.text.toString()
+                if (wordsText.isNotBlank()) {
                     NavHostFragment.findNavController(my_nav_host_fragment)
                             .navigate(R.id.action_main_to_full_screen)
                 }

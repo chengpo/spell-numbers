@@ -119,6 +119,7 @@ class RippleView : View {
         if (animatorSet == null) {
             onAnimationEndAction()
         } else {
+            animatorSet?.removeAllListeners()
             animatorSet?.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator?) = Unit
                 override fun onAnimationCancel(animation: Animator?) = Unit
