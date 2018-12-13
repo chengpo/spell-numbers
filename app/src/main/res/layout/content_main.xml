@@ -11,7 +11,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
+        android:padding="5dp"
         app:layout_behavior="com.monkeyapp.numbers.HalfScreenBehavior">
 
         <include layout="@layout/content_number_word"/>
@@ -21,7 +21,6 @@
         android:id="@+id/digitPadView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
         app:alignmentMode="alignBounds"
         app:columnCount="3"
         app:rowOrderPreserved="true"
