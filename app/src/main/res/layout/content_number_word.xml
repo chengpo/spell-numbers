@@ -35,12 +35,6 @@
         android:layout_marginStart="10dp"
         android:background="@color/divider" />
 
-    <com.monkeyapp.numbers.RippleView
-        android:id="@+id/rippleView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/divider" />
-
     <TextView
         android:id="@+id/wordsTextView"
         android:layout_width="match_parent"
@@ -55,5 +49,11 @@
         android:textAppearance="@style/WordTextAppearance"
         android:textIsSelectable="true"
         tools:text="One Thousands One Hundred Ninty Eight and 00 / 100" />
+
+    <com.monkeyapp.numbers.RippleView
+        android:id="@+id/rippleView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/divider" />
 </RelativeLayout>
 

@@ -27,6 +27,7 @@ package com.monkeyapp.numbers
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Button
 import androidx.core.view.forEach
@@ -118,8 +119,12 @@ class MainFragment : Fragment() {
             rippleView.stopRippleAnimation {
                 val wordsText = wordsTextView.text.toString()
                 if (wordsText.isNotBlank()) {
-                    NavHostFragment.findNavController(my_nav_host_fragment)
-                            .navigate(R.id.action_main_to_full_screen)
+                    try {
+                        NavHostFragment.findNavController(my_nav_host_fragment)
+                                .navigate(R.id.action_main_to_full_screen)
+                    } catch (e: IllegalArgumentException) {
+                        Log.e("MainFragment", "navigation failed", e)
+                    }
                 }
             }
         }

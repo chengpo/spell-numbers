@@ -79,7 +79,6 @@ class RippleView : View {
 
                 value.interpolator = AccelerateDecelerateInterpolator()
                 value.playTogether(animators)
-                value.start()
             }
 
             field = value
@@ -113,13 +112,13 @@ class RippleView : View {
         cx = x
         cy = y
         animatorSet = AnimatorSet()
+        animatorSet?.start()
     }
 
     fun stopRippleAnimation(onAnimationEndAction: () -> Unit) {
         if (animatorSet == null) {
             onAnimationEndAction()
         } else {
-            animatorSet?.removeAllListeners()
             animatorSet?.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator?) = Unit
                 override fun onAnimationCancel(animation: Animator?) = Unit
