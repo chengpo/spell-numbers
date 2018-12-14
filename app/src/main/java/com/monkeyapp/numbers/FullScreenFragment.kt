@@ -111,7 +111,7 @@ class FullScreenFragment : Fragment() {
 
         wordsTextView.text = mainViewModel.getViewObjLiveData().value?.wordsText
         wordsTextView.setOnClickListener {
-            // toggle system ui visibility
+            // Toggle system ui visibility
             systemUiVisible = !systemUiVisible
         }
 
@@ -140,6 +140,11 @@ class FullScreenFragment : Fragment() {
         delayedHide(100L)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        (activity as AppCompatActivity).supportActionBar?.show()
+    }
+
     /**
      * Schedules a call to hide() in [delayMillis], canceling any
      * previously scheduled calls.
@@ -148,4 +153,5 @@ class FullScreenFragment : Fragment() {
         hideHandler.removeCallbacks(hideRunnable)
         hideHandler.postDelayed(hideRunnable, delayMillis)
     }
+
 }

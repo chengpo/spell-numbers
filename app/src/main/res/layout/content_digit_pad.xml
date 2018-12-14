@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<androidx.gridlayout.widget.GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/digitPadView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:alignmentMode="alignBounds"
+    app:columnCount="3"
+    app:rowOrderPreserved="true"
+    app:useDefaultMargins="false"
+    app:layout_behavior="com.monkeyapp.numbers.HalfScreenBehavior"
+    tools:context=".MainActivity">
 
     <Button
         android:id="@+id/btnSeven"
@@ -64,4 +76,4 @@
         android:tint="@color/primary_text"
         app:srcCompat="@drawable/ic_backspace"
         android:contentDescription="@null"/>
-</merge>
+</androidx.gridlayout.widget.GridLayout>

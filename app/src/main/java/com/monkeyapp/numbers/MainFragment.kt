@@ -34,13 +34,14 @@ import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.onNavDestinationSelected
 import arrow.core.Try
 import arrow.core.getOrElse
 import com.monkeyapp.numbers.apphelpers.icon
 import com.monkeyapp.numbers.apphelpers.ocrIntent
 import com.monkeyapp.numbers.apphelpers.snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.content_digit_pad.*
 import kotlinx.android.synthetic.main.content_number_word.*
 
 class MainFragment : Fragment() {
@@ -163,13 +164,8 @@ class MainFragment : Fragment() {
         inflater?.inflate(R.menu.main, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?) =
-            when (item?.itemId) {
-                R.id.action_about -> {
-                    NavHostFragment.findNavController(my_nav_host_fragment)
-                              .navigate(R.id.action_main_to_about)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val navController = NavHostFragment.findNavController(my_nav_host_fragment)
+        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
+    }
 }

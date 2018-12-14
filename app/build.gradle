@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: "androidx.navigation.safeargs"
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
@@ -74,7 +75,7 @@ dependencies {
     implementation 'androidx.core:core:1.0.1'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
 
@@ -83,7 +84,12 @@ dependencies {
     kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
 
     // navigation
-    implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha08'
+    implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "android.arch.navigation:navigation-ui-ktx:$nav_version"
+
+    // optional - Test helpers
+    // this library depends on the Kotlin standard library
+    androidTestImplementation "android.arch.navigation:navigation-testing:$nav_version"
 
     // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

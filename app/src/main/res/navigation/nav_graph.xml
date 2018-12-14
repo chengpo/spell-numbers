@@ -3,31 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/main_fragment">
 
     <fragment
-        android:id="@+id/mainFragment"
+        android:id="@+id/main_fragment"
         android:name="com.monkeyapp.numbers.MainFragment"
         android:label="@string/app_name"
         tools:layout="@layout/content_main">
 
         <action android:id="@+id/action_main_to_about"
-            app:destination="@id/aboutFragment"
+            app:destination="@id/about_fragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_right" />
 
         <action android:id="@+id/action_main_to_full_screen"
-            app:destination="@id/fullScreenFragment"/>
+            app:destination="@id/full_screen_fragment"/>
     </fragment>
 
     <fragment
-        android:id="@+id/aboutFragment"
+        android:id="@+id/about_fragment"
         android:name="com.monkeyapp.numbers.AboutFragment"
         android:label="@string/about_title"
         tools:layout="@layout/content_about" />
 
     <fragment
-        android:id="@+id/fullScreenFragment"
+        android:id="@+id/full_screen_fragment"
         android:name="com.monkeyapp.numbers.FullScreenFragment"
-        android:label="" />
+        android:label="@string/app_name" />
 </navigation>
