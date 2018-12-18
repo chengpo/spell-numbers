@@ -32,12 +32,14 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.content_full_screen.*
 
 class FullScreenFragment : Fragment() {
+    private var supportActionBar: ActionBar? = null
     private val hideHandler = Handler(Looper.getMainLooper())
 
     private val hideRunnable = Runnable {
@@ -61,7 +63,7 @@ class FullScreenFragment : Fragment() {
 
     private val showPart2Runnable = Runnable {
         // Delayed display of UI elements
-        (activity as AppCompatActivity).supportActionBar?.show()
+        supportActionBar?.show()
     }
 
     private var systemUiVisible: Boolean = true
@@ -87,7 +89,7 @@ class FullScreenFragment : Fragment() {
                 field = false
 
                 // Hide UI first
-                (activity as AppCompatActivity).supportActionBar?.hide()
+                supportActionBar?.hide()
 
                 // Schedule a runnable to remove the status and navigation bar after a delay
                 hideHandler.removeCallbacks(showPart2Runnable)
@@ -138,11 +140,14 @@ class FullScreenFragment : Fragment() {
         // created, to briefly hint to the user that UI controls
         // are available.
         delayedHide(100L)
+
+        supportActionBar =  (activity as AppCompatActivity).supportActionBar
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        (activity as AppCompatActivity).supportActionBar?.show()
+        supportActionBar?.show()
+        supportActionBar = null
     }
 
     /**
@@ -153,5 +158,4 @@ class FullScreenFragment : Fragment() {
         hideHandler.removeCallbacks(hideRunnable)
         hideHandler.postDelayed(hideRunnable, delayMillis)
     }
-
 }
