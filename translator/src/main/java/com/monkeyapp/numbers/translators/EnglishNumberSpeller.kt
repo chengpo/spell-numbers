@@ -79,20 +79,21 @@ class EnglishNumberSpeller: NumberSpeller() {
     }
 
     private fun spellHundreds(num: Long, words: StringBuilder) {
-        val hundred = num / 100
+        val hundred = (num / 100).toInt()
         if (hundred > 0) {
-            words.append("${symbols[hundred.toInt()]} ${radixSymbols[0]} ")
+            words.append("${symbols[hundred]} ${radixSymbols[0]} ")
         }
 
-        var reminders = num % 100
-        when (reminders) {
-            in 1 until 20 -> words.append("${symbols[reminders.toInt()]} ")
+        var remainders = (num % 100).toInt()
+        when (remainders) {
+            in 1 until 20 -> words.append("${symbols[remainders]} ")
             in 20 until 100 -> {
-                val index = reminders / 10 - 2
-                words.append("${symbols[20 + index.toInt()]} ")
-                reminders %= 10
-                if (reminders > 0) {
-                    words.append("${symbols[reminders.toInt()]} ")
+                val index = 20 + remainders / 10 - 2
+                words.append("${symbols[index]} ")
+
+                remainders %= 10
+                if (remainders > 0) {
+                    words.append("${symbols[remainders]} ")
                 }
             }
         }
