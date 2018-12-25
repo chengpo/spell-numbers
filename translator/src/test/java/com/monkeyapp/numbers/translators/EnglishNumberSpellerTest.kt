@@ -236,6 +236,10 @@ class EnglishNumberSpellerTest {
 
         verifySpellIntegers(
                 testSample {
+                    integer = 100 * 1000 * 1000 * 1000L + 1
+                    expected = "One Hundred Billion One and 00 / 100"
+                },
+                testSample {
                     integer = 100 * 1000 * 1000 * 1000L
                     expected = "One Hundred Billion and 00 / 100"
                 },

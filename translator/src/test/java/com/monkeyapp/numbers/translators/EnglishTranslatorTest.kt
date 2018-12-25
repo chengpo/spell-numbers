@@ -56,9 +56,10 @@ class EnglishTranslatorTest {
     fun `EnglishTranslator throws exception for too large number`() {
         val translator = TranslatorFactory.getEnglishTranslator()
         var getException = false
+        val largeNumber = (Math.pow(1000.0, 5.0) * 10).toLong()
 
         Try {
-            "9999999999999".forEach { digit ->
+            largeNumber.toString().forEach { digit ->
                 translator.append(digit)
             }
 
