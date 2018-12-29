@@ -46,14 +46,14 @@ class RatingPrompter(private val context: Context, private val anchorView: View)
         val lastPromptTime = ratePrefs.getLong(PREF_KEY_LAST_PROMPT_TIME_LONG, pkgInfo.firstInstallTime)
 
         val isRated = ratePrefs.getBoolean(PREF_KEY_IS_RATED_BOOLEAN, false)
-        val shouldPrompt = (!isRated) && System.currentTimeMillis() > lastPromptTime + (1 + 5 * Math.random()) * 60 * 60 * 1000L
+        val shouldPrompt = (!isRated) && System.currentTimeMillis() > lastPromptTime + (Math.random() * 1000.0).toLong() * 2L * 60L * 60L
 
         if (shouldPrompt) {
             // prompting user for rating App
             anchorView.snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE) {
                 icon(R.drawable.ic_rate_app, R.color.accent)
 
-                action(R.string.rate_sure, View.OnClickListener { _ ->
+                action(R.string.rate_sure, View.OnClickListener {
                     browse(url = "market://details?id=com.monkeyapp.numbers",
                            newTask = true,
                            onError = {

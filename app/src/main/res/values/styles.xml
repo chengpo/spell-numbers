@@ -27,6 +27,7 @@
         <item name="layout_gravity">fill</item>
         <item name="layout_rowWeight">1</item>
         <item name="layout_columnWeight">1</item>
+        <item name="android:contentDescription">@null</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

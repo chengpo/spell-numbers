@@ -74,6 +74,5 @@
         style="@style/PadButtonStyle"
         android:text="@string/del"
         android:tint="@color/primary_text"
-        app:srcCompat="@drawable/ic_backspace"
-        android:contentDescription="@null"/>
+        app:srcCompat="@drawable/ic_backspace"/>
 </androidx.gridlayout.widget.GridLayout>
