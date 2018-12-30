@@ -47,18 +47,22 @@ class FullScreenFragment : Fragment() {
     }
 
     private val hidePart2Runnable = Runnable {
-        // Delayed removal of status and navigation bar
-        var uiFlags =  View.SYSTEM_UI_FLAG_LOW_PROFILE or
-                View.SYSTEM_UI_FLAG_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        try {
+            // Delayed removal of status and navigation bar
+            var uiFlags = View.SYSTEM_UI_FLAG_LOW_PROFILE or
+                    View.SYSTEM_UI_FLAG_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 
-        if (Build.VERSION.SDK_INT >= 19 ) {
-            uiFlags = uiFlags or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            if (Build.VERSION.SDK_INT >= 19) {
+                uiFlags = uiFlags or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            }
+
+            wordsTextView.systemUiVisibility = uiFlags
+        } catch (e: IllegalStateException) {
+            // ignore exception
         }
-
-        wordsTextView.systemUiVisibility = uiFlags
     }
 
     private val showPart2Runnable = Runnable {
