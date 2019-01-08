@@ -31,7 +31,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.children
+import androidx.core.view.forEach
 import androidx.gridlayout.widget.GridLayout
 import com.monkeyapp.numbers.apphelpers.isPortraitMode
 
@@ -39,7 +39,7 @@ class HalfScreenBehavior(context: Context?, attrs: AttributeSet?): CoordinatorLa
     override fun onMeasureChild(parent: CoordinatorLayout, child: ViewGroup, parentWidthMeasureSpec: Int, widthUsed: Int, parentHeightMeasureSpec: Int, heightUsed: Int): Boolean {
         var extraHeight = 0
 
-        parent.children.forEach {
+        parent.forEach {
             if (it !is RelativeLayout && it !is GridLayout) {
                 extraHeight += it.measuredHeight
             }
