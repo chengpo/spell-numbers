@@ -31,24 +31,40 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.children
 import androidx.gridlayout.widget.GridLayout
 import com.monkeyapp.numbers.apphelpers.isPortraitMode
 
 class HalfScreenBehavior(context: Context?, attrs: AttributeSet?): CoordinatorLayout.Behavior<ViewGroup>(context, attrs) {
     override fun onMeasureChild(parent: CoordinatorLayout, child: ViewGroup, parentWidthMeasureSpec: Int, widthUsed: Int, parentHeightMeasureSpec: Int, heightUsed: Int): Boolean {
+        var extraHeight = 0
+
+        parent.children.forEach {
+            if (it !is RelativeLayout && it !is GridLayout) {
+                extraHeight += it.measuredHeight
+            }
+        }
+
         if (parent.isPortraitMode) {
-           val height = View.MeasureSpec.getSize(parentHeightMeasureSpec) / 2
-           parent.onMeasureChild(child, parentWidthMeasureSpec, widthUsed, View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY), heightUsed)
+            var height = View.MeasureSpec.getSize(parentHeightMeasureSpec) / 2
+            if (child is RelativeLayout) {
+                height -= extraHeight
+            }
+
+            parent.onMeasureChild(child,
+                    parentWidthMeasureSpec, widthUsed,
+                    View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY), heightUsed)
         } else {
-           val width = View.MeasureSpec.getSize(parentWidthMeasureSpec) / 2
-            parent.onMeasureChild(child, View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), widthUsed, parentHeightMeasureSpec, heightUsed)
+            var height = View.MeasureSpec.getSize(parentHeightMeasureSpec)
+            height -= extraHeight
+
+            val width = View.MeasureSpec.getSize(parentWidthMeasureSpec) / 2
+            parent.onMeasureChild(child,
+                    View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), widthUsed,
+                    View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY), heightUsed)
         }
 
         return true
-    }
-
-    override fun onDependentViewChanged(parent: CoordinatorLayout, child: ViewGroup, dependency: View): Boolean {
-        return child is GridLayout && dependency is RelativeLayout
     }
 
     override fun onLayoutChild(parent: CoordinatorLayout, child: ViewGroup, layoutDirection: Int): Boolean {
@@ -61,6 +77,23 @@ class HalfScreenBehavior(context: Context?, attrs: AttributeSet?): CoordinatorLa
                     Gravity.BOTTOM
                 } else {
                     Gravity.END
+                }
+            }
+
+            parent.onLayoutChild(child, layoutDirection)
+            return true
+        }
+
+        if (child is RelativeLayout) {
+            val lp = child.layoutParams
+
+            if (lp is CoordinatorLayout.LayoutParams) {
+                lp.dodgeInsetEdges = Gravity.BOTTOM
+
+                lp.gravity = if (parent.isPortraitMode) {
+                    Gravity.TOP
+                } else {
+                    Gravity.START
                 }
             }
 

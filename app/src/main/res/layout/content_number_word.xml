@@ -51,6 +51,10 @@
         android:lineSpacingMultiplier="1.2"
         android:padding="10dp"
         android:textAppearance="@style/WordTextAppearance"
+        app:autoSizeMinTextSize="12sp"
+        app:autoSizeMaxTextSize="@dimen/abc_text_size_large_material"
+        app:autoSizeStepGranularity="2sp"
+        app:autoSizeTextType="uniform"
         android:textIsSelectable="true"
         tools:text="One Thousands One Hundred Ninty Eight and 00 / 100" />
 
