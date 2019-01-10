@@ -28,6 +28,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import android.content.Context
+import android.content.SharedPreferences
 import com.google.android.material.snackbar.Snackbar
 import android.view.View
 import androidx.core.content.edit
@@ -38,38 +39,48 @@ private const val PREF_KEY_IS_RATED_BOOLEAN = "SP_KEY_IS_RATED"
 private const val PREF_KEY_LAST_PROMPT_TIME_LONG = "SP_KEY_LAST_PROMPT_TIME"
 
 class RatingPrompter(private val context: Context, private val anchorView: View) : LifecycleObserver {
+    private val ratePrefs: SharedPreferences
+        get() = context.getSharedPreferences(PREF_NAME_RATE_APP, 0)
+
+    private val isRated: Boolean
+        get() = ratePrefs.getBoolean(PREF_KEY_IS_RATED_BOOLEAN, false)
+
+    private val shouldPrompt: Boolean
+        get() {
+            val firstInstallTime = context.packageManager.getPackageInfo(context.packageName, 0).firstInstallTime
+            val lastPromptTime = ratePrefs.getLong(PREF_KEY_LAST_PROMPT_TIME_LONG, firstInstallTime)
+
+            val timeout = (0.5 + Math.random() / 2) * 1000L * 60L * 60L
+            return System.currentTimeMillis() > lastPromptTime + timeout
+        }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() = context.run {
-        val pkgInfo = packageManager.getPackageInfo(packageName, 0)
+    fun onCreate() {
+        if (!isRated && shouldPrompt) {
+            promptRating()
+        }
+    }
 
-        val ratePrefs = getSharedPreferences(PREF_NAME_RATE_APP, 0)
-        val lastPromptTime = ratePrefs.getLong(PREF_KEY_LAST_PROMPT_TIME_LONG, pkgInfo.firstInstallTime)
+    private fun promptRating() {
+        anchorView.snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE) {
+            icon(R.drawable.ic_rate_app, R.color.accent)
 
-        val isRated = ratePrefs.getBoolean(PREF_KEY_IS_RATED_BOOLEAN, false)
-        val shouldPrompt = (!isRated) && System.currentTimeMillis() > lastPromptTime + (Math.random() * 1000.0).toLong() * 2L * 60L * 60L
+            action(R.string.rate_sure, View.OnClickListener {
+                context.browse(url = "market://details?id=com.monkeyapp.numbers",
+                        newTask = true,
+                        onError = {
+                            context.browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
+                                    newTask = true)
+                        })
 
-        if (shouldPrompt) {
-            // prompting user for rating App
-            anchorView.snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE) {
-                icon(R.drawable.ic_rate_app, R.color.accent)
+                ratePrefs.edit {
+                    putBoolean(PREF_KEY_IS_RATED_BOOLEAN, true)
+                }
+            })
 
-                action(R.string.rate_sure, View.OnClickListener {
-                    browse(url = "market://details?id=com.monkeyapp.numbers",
-                           newTask = true,
-                           onError = {
-                                browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
-                                        newTask = true)
-                           })
-
-                    ratePrefs.edit {
-                        putBoolean(PREF_KEY_IS_RATED_BOOLEAN, true)
-                    }
-                })
-
-                dismissCallback {
-                    ratePrefs.edit {
-                        putLong(PREF_KEY_LAST_PROMPT_TIME_LONG, System.currentTimeMillis())
-                    }
+            dismissCallback {
+                ratePrefs.edit {
+                    putLong(PREF_KEY_LAST_PROMPT_TIME_LONG, System.currentTimeMillis())
                 }
             }
         }
