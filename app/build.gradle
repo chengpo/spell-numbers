@@ -14,8 +14,8 @@ android {
 
     defaultConfig {
         applicationId "com.monkeyapp.numbers"
-        versionCode 24
-        versionName '1.0.12.201812141747'
+        versionCode 25
+        versionName '1.0.13.201901112254'
 
         minSdkVersion min_sdk
         targetSdkVersion target_sdk
