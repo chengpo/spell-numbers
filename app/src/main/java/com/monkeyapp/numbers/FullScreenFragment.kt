@@ -28,12 +28,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.content_full_screen.*
@@ -47,22 +45,18 @@ class FullScreenFragment : Fragment() {
     }
 
     private val hidePart2Runnable = Runnable {
-        try {
-            // Delayed removal of status and navigation bar
-            var uiFlags = View.SYSTEM_UI_FLAG_LOW_PROFILE or
-                    View.SYSTEM_UI_FLAG_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        // Delayed removal of status and navigation bar
+        var uiFlags = View.SYSTEM_UI_FLAG_LOW_PROFILE or
+                View.SYSTEM_UI_FLAG_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 
-            if (Build.VERSION.SDK_INT >= 19) {
-                uiFlags = uiFlags or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            }
-
-            wordsTextView.systemUiVisibility = uiFlags
-        } catch (e: IllegalStateException) {
-            // ignore exception
+        if (Build.VERSION.SDK_INT >= 19) {
+            uiFlags = uiFlags or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         }
+
+        wordsTextView.systemUiVisibility = uiFlags
     }
 
     private val showPart2Runnable = Runnable {
@@ -121,18 +115,6 @@ class FullScreenFragment : Fragment() {
             systemUiVisible = !systemUiVisible
         }
 
-        wordsTextView.setOnKeyListener { _, keyCode, event ->
-            if( keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-                wordsTextView.systemUiVisibility =
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
-                (activity as AppCompatActivity).supportActionBar?.show()
-            }
-
-            false
-         }
-
         // Wait after user interaction before hiding the system UI.
         delayedHide(3000L)
     }
@@ -145,11 +127,14 @@ class FullScreenFragment : Fragment() {
         // are available.
         delayedHide(100L)
 
-        supportActionBar =  (activity as AppCompatActivity).supportActionBar
+        supportActionBar = (activity as MainActivity).supportActionBar
     }
 
     override fun onDestroy() {
         super.onDestroy()
+
+        hideHandler.removeCallbacksAndMessages(null)
+
         supportActionBar?.show()
         supportActionBar = null
     }
