@@ -58,6 +58,6 @@ fun Snackbar.icon(@DrawableRes drawableId: Int, @ColorRes tintColorId: Int): Sna
     snackText.setCompoundDrawablesWithIntrinsicBounds(errorDrawable, null, null, null)
     snackText.compoundDrawablePadding = context.resources.getDimensionPixelOffset(R.dimen.snackbar_icon_padding)
 
-    view.setBackgroundColor(ContextCompat.getColor(context, R.color.primary_dark))
+    view.setBackgroundColor(ContextCompat.getColor(context, R.color.snackbar_background))
     return this
 }

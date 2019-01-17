@@ -1,0 +1,10 @@
+<resources>
+
+<style name="BaseAppThemeV23" parent="BaseAppThemeV21">
+    <item name="android:windowLightStatusBar">true</item>
+</style>
+
+<style name="AppTheme" parent="BaseAppThemeV23">
+</style>
+
+</resources>

@@ -58,7 +58,7 @@
         android:text="@string/about_app_project"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColorLink="@color/primary_dark"
+        android:textColorLink="@color/primary_text"
         android:textStyle="normal"
         app:layout_constraintBottom_toTopOf="@id/copyright"
         app:layout_constraintEnd_toEndOf="parent"
