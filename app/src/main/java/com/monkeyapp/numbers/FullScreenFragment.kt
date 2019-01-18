@@ -24,6 +24,9 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -54,6 +57,10 @@ class FullScreenFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.copy_to_clipboard) {
+            val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+            val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView.text)
+            clipboard?.primaryClip = clip
+
             wordsTextView.snackbar(R.string.full_screen_copied_to_clipboard)
         }
 
