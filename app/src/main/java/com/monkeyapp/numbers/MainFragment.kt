@@ -44,9 +44,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_digit_pad.*
 import kotlinx.android.synthetic.main.content_number_word.*
 
-class MainFragment : Fragment() {
-    private  val requestCodeOcrCapture = 1000
+private const val REQUEST_CODE_OCR_CAPTURE = 1000
 
+class MainFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,7 +91,7 @@ class MainFragment : Fragment() {
                     mainViewModel.reset()
 
                 OmniButton.State.Camera ->
-                    startActivityForResult(context!!.ocrIntent, requestCodeOcrCapture)
+                    startActivityForResult(context!!.ocrIntent, REQUEST_CODE_OCR_CAPTURE)
             }
         }
 
@@ -117,22 +117,15 @@ class MainFragment : Fragment() {
         }
 
         wordsTextView.setOnClickListener {
-            rippleView.stopRippleAnimation {
-                val wordsText = wordsTextView.text.toString()
-                if (wordsText.isNotBlank()) {
-                    try {
-                        NavHostFragment.findNavController(my_nav_host_fragment)
-                                .navigate(R.id.action_main_to_full_screen)
-                    } catch (e: IllegalArgumentException) {
-                        Log.e("MainFragment", "navigation failed", e)
-                    }
+            val wordsText = wordsTextView.text.toString()
+            if (wordsText.isNotBlank()) {
+                try {
+                    NavHostFragment.findNavController(my_nav_host_fragment)
+                            .navigate(R.id.action_main_to_full_screen)
+                } catch (e: IllegalArgumentException) {
+                    Log.e("MainFragment", "navigation failed", e)
                 }
             }
-        }
-
-        wordsTextView.setOnTouchListener { _, event ->
-            rippleView.startRippleAnimation(event.x, event.y)
-            false
         }
 
         // bind lifecycle to rating helper
@@ -141,7 +134,7 @@ class MainFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == requestCodeOcrCapture && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
             val number = data?.getStringExtra("number") ?: ""
             if (number.isNotBlank()) {
                 Try {

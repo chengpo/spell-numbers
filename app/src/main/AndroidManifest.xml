@@ -16,8 +16,7 @@
         tools:targetApi="o"
         tools:ignore="AllowBackup">
 
-        <activity android:name="com.monkeyapp.numbers.MainActivity"
-                  android:theme="@style/FullscreenTheme">
+        <activity android:name="com.monkeyapp.numbers.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

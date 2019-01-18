@@ -44,24 +44,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/divider"
-        android:focusableInTouchMode="true"
-        android:clickable="true"
-        android:focusable="true"
         android:lineSpacingExtra="5dp"
         android:lineSpacingMultiplier="1.2"
         android:padding="10dp"
         android:textAppearance="@style/WordTextAppearance"
+        android:background="?selectableItemBackgroundBorderless"
         app:autoSizeMinTextSize="12sp"
         app:autoSizeMaxTextSize="@dimen/abc_text_size_large_material"
         app:autoSizeStepGranularity="2sp"
         app:autoSizeTextType="uniform"
-        android:textIsSelectable="true"
         tools:text="One Thousands One Hundred Ninty Eight and 00 / 100" />
-
-    <com.monkeyapp.numbers.RippleView
-        android:id="@+id/rippleView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/divider" />
 </RelativeLayout>
 
