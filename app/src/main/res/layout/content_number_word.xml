@@ -47,7 +47,7 @@
         android:focusableInTouchMode="true"
         android:clickable="true"
         android:focusable="true"
-        android:lineSpacingExtra="4dp"
+        android:lineSpacingExtra="5dp"
         android:lineSpacingMultiplier="1.2"
         android:padding="10dp"
         android:textAppearance="@style/WordTextAppearance"

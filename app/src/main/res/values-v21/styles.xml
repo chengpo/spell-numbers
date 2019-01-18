@@ -1,8 +1,0 @@
-<resources>
-    <style name="BaseAppThemeV21" parent="BaseAppTheme">
-        <item name="android:navigationBarColor">@color/primary</item>
-    </style>
-
-    <style name="AppTheme" parent="BaseAppThemeV21">
-    </style>
-</resources>
