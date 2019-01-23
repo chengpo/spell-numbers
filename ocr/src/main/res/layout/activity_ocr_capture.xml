@@ -23,7 +23,7 @@
         android:layout_marginTop="-5dp"
         android:layout_gravity="top"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:indeterminateTint="#009688"
+        android:indeterminateTint="#bdbdbd"
         android:indeterminate="true"
         android:scaleY="1.5"
         tools:targetApi="lollipop" />

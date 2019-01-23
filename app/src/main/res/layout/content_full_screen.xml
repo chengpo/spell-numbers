@@ -18,6 +18,8 @@
         android:gravity="center"
         android:keepScreenOn="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/primary_text"
+        android:background="?selectableItemBackgroundBorderless"
         app:autoSizeMinTextSize="12sp"
         app:autoSizeMaxTextSize="34sp"
         app:autoSizeStepGranularity="2sp"

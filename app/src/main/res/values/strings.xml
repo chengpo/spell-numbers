@@ -7,7 +7,7 @@
     <string name="about_app_project">Visit project repository to get latest source code or report issues.\n\n\nhttps://github.com/chengpo/spell-numbers</string>
 
     <string name="full_screen_copy">Copy</string>
-    <string name="full_screen_copied_to_clipboard">Copied to clipboard!</string>
+    <string name="full_screen_copied_to_clipboard">Number text is copied to clipboard!</string>
 
     <string name="digit_zero">0</string>
     <string name="digit_one">1</string>

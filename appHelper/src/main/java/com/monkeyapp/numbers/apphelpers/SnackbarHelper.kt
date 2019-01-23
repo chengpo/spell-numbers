@@ -25,6 +25,7 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.apphelpers
 
+import android.util.TypedValue
 import com.google.android.material.snackbar.Snackbar
 import androidx.core.content.ContextCompat
 import android.view.View
@@ -37,8 +38,13 @@ inline fun View.snackbar(stringId: Int, length: Int = Snackbar.LENGTH_SHORT, pre
     Snackbar.make(this, stringId, length).apply {
         val snackText = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
         if (snackText != null) {
-            snackText.compoundDrawablePadding = context.resources.getDimensionPixelOffset(R.dimen.snackbar_icon_padding)
-            view.setBackgroundColor(ContextCompat.getColor(context, R.color.snackbar_background))
+            val snackbarIconPadding = TypedValue()
+            context.theme.resolveAttribute(R.attr.snackbarIconPadding, snackbarIconPadding, true)
+            snackText.compoundDrawablePadding = context.resources.getDimensionPixelOffset(snackbarIconPadding.resourceId)
+
+            val snackbarBgColor = TypedValue()
+            context.theme.resolveAttribute(R.attr.snackbarBackground, snackbarBgColor, true)
+            view.setBackgroundColor(ContextCompat.getColor(context, snackbarBgColor.resourceId))
         }
 
         prepare()

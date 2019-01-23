@@ -1,9 +1,8 @@
 <resources>
     <style name="BaseAppThemeV27" parent="BaseAppThemeV23">
-        <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:navigationBarColor">@color/navigation_bar_background</item>
+        <item name="android:windowLightNavigationBar">@bool/light_navigation_bar</item>
+        <item name="android:navigationBarColor">?android:windowBackground</item>
     </style>
 
-    <style name="AppTheme" parent="BaseAppThemeV27">
-    </style>
+    <style name="AppTheme" parent="BaseAppThemeV27"/>
 </resources>

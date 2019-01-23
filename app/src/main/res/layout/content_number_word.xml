@@ -14,7 +14,6 @@
         android:id="@+id/omniButtonView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:tint="@color/primary_text"
         android:background="?selectableItemBackgroundBorderless"
         android:contentDescription="@null"
         style="@style/Widget.AppCompat.Button.Borderless"/>

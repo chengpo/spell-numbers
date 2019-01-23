@@ -1,11 +1,10 @@
 <resources>
 
 <style name="BaseAppThemeV23" parent="BaseAppTheme">
-    <item name="android:windowLightStatusBar">true</item>
-    <item name="android:statusBarColor">@color/status_bar_background</item>
+    <item name="android:windowLightStatusBar">@bool/light_status_bar</item>
+    <item name="android:statusBarColor">?android:windowBackground</item>
 </style>
 
-<style name="AppTheme" parent="BaseAppThemeV23">
-</style>
+<style name="AppTheme" parent="BaseAppThemeV23"/>
 
 </resources>

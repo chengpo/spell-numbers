@@ -160,7 +160,7 @@ class OmniButton : AppCompatImageButton {
                         addState(state, drawable)
                     }
 
-            tintColor(context.getCompatColor(R.color.primary_text))
+            tintColor(context.getCompatColor(R.color.control_normal))
         }
     }
 }

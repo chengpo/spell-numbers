@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="snackbarBackground" format="color"/>
+    <attr name="snackbarIconPadding" format="dimension"/>
+</resources>

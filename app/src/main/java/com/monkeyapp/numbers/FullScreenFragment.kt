@@ -49,6 +49,10 @@ class FullScreenFragment : Fragment() {
 
         val mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
         wordsTextView.text = mainViewModel.getViewObjLiveData().value?.wordsText
+
+        wordsTextView.setOnClickListener {
+            copyToClipboard()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -57,13 +61,17 @@ class FullScreenFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.copy_to_clipboard) {
-            val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-            val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView.text)
-            clipboard?.primaryClip = clip
-
-            wordsTextView.snackbar(R.string.full_screen_copied_to_clipboard)
+            copyToClipboard()
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun copyToClipboard() {
+        val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+        val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView.text)
+        clipboard?.primaryClip = clip
+
+        wordsTextView.snackbar(R.string.full_screen_copied_to_clipboard)
     }
 }

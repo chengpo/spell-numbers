@@ -6,8 +6,8 @@
     <color name="toolbar_background">#fffafafa</color>
     <color name="navigation_bar_background">#fffafafa</color>
     <color name="accent">#ffbb00</color>
-    <color name="primary_text">#4c4c4c</color>
-    <color name="secondary_text">#757575</color>
-    <color name="divider">#bdbdbd</color>
-    <color name="control_normal">#4c4c4c</color>
+    <color name="primary_text">#ebebeb</color>
+    <color name="secondary_text">#a6a6a6</color>
+    <color name="divider">#ebebeb</color>
+    <color name="control_normal">#ebebeb</color>
 </resources>
