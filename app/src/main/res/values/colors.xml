@@ -2,9 +2,6 @@
 <resources>
     <color name="primary">#757575</color>
     <color name="primary_dark">#4c4c4c</color>
-    <color name="status_bar_background">#fffafafa</color>
-    <color name="toolbar_background">#fffafafa</color>
-    <color name="navigation_bar_background">#fffafafa</color>
     <color name="accent">#ffbb00</color>
     <color name="primary_text">#4c4c4c</color>
     <color name="secondary_text">#757575</color>
