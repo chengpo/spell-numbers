@@ -1,0 +1,9 @@
+<resources>
+    <style name="BaseAppThemeV21" parent="BaseAppTheme"/>
+    <style name="AppTheme" parent="BaseAppThemeV21"/>
+
+    <style name="AppTheme.AppBar" parent="Widget.AppCompat.ActionBar">
+        <item name="colorPrimary">?android:windowBackground</item>
+        <item name="colorControlNormal">@color/control_normal</item>
+    </style>
+</resources>

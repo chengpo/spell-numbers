@@ -83,8 +83,9 @@ class OmniButton : AppCompatImageButton {
         }
 
     init {
-        setImageDrawable(OmniDrawable(context))
         state = State.Camera
+        scaleType = ScaleType.FIT_XY
+        setImageDrawable(OmniDrawable(context))
     }
 
     private fun fadeOutFadeIn(onStart: () -> Unit) {

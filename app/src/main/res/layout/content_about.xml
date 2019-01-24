@@ -59,6 +59,7 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textStyle="normal"
+        android:fontFamily="sans-serif"
         app:layout_constraintBottom_toTopOf="@id/copyright"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
