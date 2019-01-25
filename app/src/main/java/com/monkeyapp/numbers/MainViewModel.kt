@@ -30,7 +30,7 @@ import com.monkeyapp.numbers.translators.TranslatorFactory
 import com.monkeyapp.numbers.translators.TranslatorFactory.Translator
 
 // TODO : support other language translators
-class MainViewModel(private var translator: Translator = TranslatorFactory.getEnglishTranslator()) :
+class MainViewModel(private val translator: Translator = TranslatorFactory.getEnglishTranslator()) :
         ViewModel(), NumberComposer by translator {
 
     private val viewObjLiveData = MutableLiveData<ViewObject>()

@@ -143,7 +143,7 @@ class MainFragment : Fragment() {
                         mainViewModel.append(digit)
                     }
                 }.getOrElse {
-                    wordsTextView.snackbar(R.string.too_large_to_spell) {
+                    digitPadView.snackbar(R.string.too_large_to_spell) {
                         icon(R.drawable.ic_error, R.color.accent)
                     }
 
