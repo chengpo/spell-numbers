@@ -38,7 +38,9 @@ private const val PREF_NAME_RATE_APP = "SP_RATE_APP"
 private const val PREF_KEY_IS_RATED_BOOLEAN = "SP_KEY_IS_RATED"
 private const val PREF_KEY_LAST_PROMPT_TIME_LONG = "SP_KEY_LAST_PROMPT_TIME"
 
-class RatingPrompter(private val context: Context, private val anchorView: View) : LifecycleObserver {
+class RatingPrompter(private val anchorView: View) : LifecycleObserver {
+    private val context: Context = anchorView.context.applicationContext
+
     private val ratePrefs: SharedPreferences
         get() = context.getSharedPreferences(PREF_NAME_RATE_APP, 0)
 
@@ -54,8 +56,8 @@ class RatingPrompter(private val context: Context, private val anchorView: View)
             return System.currentTimeMillis() > lastPromptTime + timeout
         }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
         if (!isRated && shouldPrompt) {
             promptRating()
         }

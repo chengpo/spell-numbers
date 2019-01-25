@@ -64,6 +64,9 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         updateView(mainViewModel.getViewObjLiveData().value)
+
+        // bind lifecycle to rating helper
+        lifecycle.addObserver(RatingPrompter(digitPadView))
     }
 
     private fun updateView(viewObj: MainViewModel.ViewObject?) {
@@ -105,7 +108,7 @@ class MainFragment : Fragment() {
                         Try {
                             mainViewModel.append(button.text[0])
                         }.getOrElse {
-                            wordsTextView.snackbar(R.string.too_large_to_spell) {
+                            digitPadView.snackbar(R.string.too_large_to_spell) {
                                 icon(R.drawable.ic_error, R.color.accent)
                             }
 
@@ -127,9 +130,6 @@ class MainFragment : Fragment() {
                 }
             }
         }
-
-        // bind lifecycle to rating helper
-        lifecycle.addObserver(RatingPrompter(context!!, wordsTextView))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
