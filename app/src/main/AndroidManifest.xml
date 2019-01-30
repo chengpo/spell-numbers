@@ -20,13 +20,15 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6498719425690429~1480158317"/>
 
+        <meta-data
+            android:name="is_ocr_supported"
+            android:value="${is_ocr_supported}"/>
+
         <activity android:name="com.monkeyapp.numbers.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <meta-data android:name="is_ocr_supported" android:value="${is_ocr_supported}"/>
     </application>
 </manifest>
