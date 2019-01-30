@@ -31,6 +31,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -44,6 +47,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        MobileAds.initialize(this, "ca-app-pub-6498719425690429~1480158317")
+        adView.loadAd(AdRequest.Builder().build())
 
         val navController = Navigation.findNavController(this, R.id.my_nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(navController.graph)

@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Spell Numbers</string>
+    <string name="ad_unit_id">ca-app-pub-6498719425690429/8783933260</string>
+
     <string name="action_about">About</string>
     <string name="about_title">About</string>
     <string name="about_app_copyright">MIT License\nCopyright &#169; 2019 Po Cheng</string>

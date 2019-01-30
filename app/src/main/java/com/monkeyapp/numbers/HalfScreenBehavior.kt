@@ -29,7 +29,7 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.forEach
 import androidx.gridlayout.widget.GridLayout
@@ -40,14 +40,14 @@ class HalfScreenBehavior(context: Context?, attrs: AttributeSet?): CoordinatorLa
         var extraHeight = 0
 
         parent.forEach {
-            if (it !is RelativeLayout && it !is GridLayout) {
+            if (it !is ConstraintLayout && it !is GridLayout) {
                 extraHeight += it.measuredHeight
             }
         }
 
         if (parent.isPortraitMode) {
             var height = View.MeasureSpec.getSize(parentHeightMeasureSpec) / 2
-            if (child is RelativeLayout) {
+            if (child is ConstraintLayout) {
                 height -= extraHeight
             }
 
@@ -84,7 +84,7 @@ class HalfScreenBehavior(context: Context?, attrs: AttributeSet?): CoordinatorLa
             return true
         }
 
-        if (child is RelativeLayout) {
+        if (child is ConstraintLayout) {
             val lp = child.layoutParams
 
             if (lp is CoordinatorLayout.LayoutParams) {
