@@ -20,6 +20,7 @@ android {
 
         minSdkVersion min_sdk
         targetSdkVersion target_sdk
+        multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -71,6 +72,8 @@ dependencies {
     implementation project(":appHelper")
     implementation project(':translator')
     implementation project(':ocr')
+
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation 'androidx.annotation:annotation:1.0.1'
     implementation 'androidx.core:core:1.0.1'
