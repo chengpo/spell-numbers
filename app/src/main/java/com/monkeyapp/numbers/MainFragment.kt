@@ -37,7 +37,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
 import arrow.core.Try
 import arrow.core.getOrElse
-import com.google.android.gms.ads.AdRequest
 import com.monkeyapp.numbers.apphelpers.icon
 import com.monkeyapp.numbers.apphelpers.ocrIntent
 import com.monkeyapp.numbers.apphelpers.snackbar
