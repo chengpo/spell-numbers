@@ -75,30 +75,30 @@ dependencies {
 
     implementation 'androidx.multidex:multidex:2.0.1'
 
-    implementation 'androidx.annotation:annotation:1.0.1'
+    implementation 'androidx.annotation:annotation:1.0.2'
     implementation 'androidx.core:core:1.0.1'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
 
     // admob
-    implementation 'com.google.android.gms:play-services-ads:17.1.2'
+    implementation 'com.google.android.gms:play-services-ads:17.2.0'
 
     // viewModel and liveData
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
 
-    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.google.firebase:firebase-core:16.0.8'
 
     // navigation
-    implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "android.arch.navigation:navigation-ui-ktx:$nav_version"
+    implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0"
+    implementation "android.arch.navigation:navigation-ui-ktx:1.0.0"
 
     // optional - Test helpers
     // this library depends on the Kotlin standard library
-    androidTestImplementation "android.arch.navigation:navigation-testing:$nav_version"
+    androidTestImplementation "android.arch.navigation:navigation-testing:1.0.0-alpha08"
 
     // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
