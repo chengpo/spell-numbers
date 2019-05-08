@@ -99,6 +99,13 @@ class MainFragment : Fragment() {
         }
 
         digitPadView.forEach {
+            if ( it.id == R.id.btnDel) {
+                it.setOnLongClickListener{
+                    mainViewModel.reset()
+                    true
+                }
+            }
+
             it.setOnClickListener { button ->
                 when {
                     button?.id == R.id.btnDel ->
