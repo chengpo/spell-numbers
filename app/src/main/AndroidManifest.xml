@@ -17,6 +17,8 @@
         tools:targetApi="o"
         tools:ignore="AllowBackup">
 
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6498719425690429~1480158317"/>
