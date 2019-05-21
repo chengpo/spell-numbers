@@ -26,9 +26,19 @@ package com.monkeyapp.numbers.apphelpers
 
 import android.content.res.Configuration
 import android.view.View
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 val View.isPortraitMode: Boolean
     get() {
         return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     }
 
+fun View.onClick(action: suspend (view: View) -> Unit) {
+    setOnClickListener { view ->
+        GlobalScope.launch(Dispatchers.Main) {
+            action(view)
+        }
+    }
+}

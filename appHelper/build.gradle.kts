@@ -32,6 +32,10 @@ dependencies {
     implementation(Config.Libs.appCompat)
     implementation(Config.Libs.kotlin)
 
+    // coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1")
+
     androidTestImplementation("androidx.test:runner:1.1.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0-alpha4", {
         exclude(group = "com.android.support", module = "support-annotations")

@@ -39,6 +39,7 @@ import arrow.core.Try
 import arrow.core.getOrElse
 import com.monkeyapp.numbers.apphelpers.icon
 import com.monkeyapp.numbers.apphelpers.ocrIntent
+import com.monkeyapp.numbers.apphelpers.onClick
 import com.monkeyapp.numbers.apphelpers.snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_digit_pad.*
@@ -88,7 +89,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        omniButtonView.setOnClickListener {
+        omniButtonView.onClick {
             when ((it as OmniButton).state) {
                 OmniButton.State.Clean ->
                     mainViewModel.reset()
@@ -106,9 +107,9 @@ class MainFragment : Fragment() {
                 }
             }
 
-            it.setOnClickListener { button ->
+            it.onClick { button ->
                 when {
-                    button?.id == R.id.btnDel ->
+                    button.id == R.id.btnDel ->
                         mainViewModel.backspace()
 
                     button is Button && (button.text[0] == '.' || button.text[0] in '0'..'9') ->
@@ -126,7 +127,7 @@ class MainFragment : Fragment() {
             }
         }
 
-        wordsTextView.setOnClickListener {
+        wordsTextView.onClick {
             val wordsText = wordsTextView.text.toString()
             if (wordsText.isNotBlank()) {
                 try {
