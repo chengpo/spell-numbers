@@ -1,3 +1,8 @@
+import org.gradle.api.Project
+import java.io.File
+import java.io.FileInputStream
+import java.util.*
+
 object Versions {
     const val buildTool = "28.0.3"
     const val androidPlugin = "3.4.1"
@@ -24,5 +29,28 @@ object Android {
     const val minSdk = 17
     const val targetSdk = 28
 }
+
+data class KeyStore(
+        val keyAlias: String,
+        val keyPassword: String,
+        val storeFile: File,
+        val storePassword: String
+) {
+    companion object {
+        fun load(project: Project): KeyStore {
+            val keystorePropertiesFile = project.file("keystore.properties")
+            val keystoreProperties = Properties()
+            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
+            return KeyStore(
+                    keyAlias = keystoreProperties["keyAlias"] as String,
+                    keyPassword = keystoreProperties["keyPassword"] as String,
+                    storeFile = project.file(keystoreProperties["storeFile"] as String),
+                    storePassword = keystoreProperties["storePassword"] as String
+            )
+        }
+    }
+}
+
 
 

@@ -13,10 +13,6 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-val keystorePropertiesFile = rootProject.file("keystore.properties")
-val keystoreProperties = Properties()
-keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-
 android {
     buildToolsVersion(Config.Versions.buildTool)
     compileSdkVersion(Config.Android.compileSdk)
@@ -40,10 +36,13 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias =  keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
+            val keystore = Config.KeyStore.load(rootProject)
+            logger.lifecycle("keystore = $keystore")
+
+            keyAlias =  keystore.keyAlias
+            keyPassword = keystore.keyPassword
+            storeFile = keystore.storeFile
+            storePassword = keystore.storePassword
         }
     }
 
