@@ -29,7 +29,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.Observer
-import com.monkeyapp.numbers.testhelpers.shouldEqual
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
@@ -49,7 +48,16 @@ class MainViewModelTest {
 
     @Test
     fun mainViewModel_should_return_translated_text_correctly() {
+        // ----- Given -----
+        val lifecycle = LifecycleRegistry(lifecycleOwner)
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        doReturn(lifecycle).`when`(lifecycleOwner).lifecycle
+
+        val mockObserver = mock(Observer::class.java) as Observer<NumberWords>
+
+        // ----- When -----
         val viewModel = MainViewModel()
+        viewModel.numberWords.observe(lifecycleOwner, mockObserver)
 
         runBlocking {
             "100000".forEach { digit ->
@@ -57,14 +65,9 @@ class MainViewModelTest {
             }
         }
 
-        val lifecycle = LifecycleRegistry(lifecycleOwner)
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
-
-        doReturn(lifecycle).`when`(lifecycleOwner).lifecycle
-
-        viewModel.numberWords.observe(lifecycleOwner, Observer {
-            it?.numberText shouldEqual "100,000"
-            it?.wordsText shouldEqual "One Hundred Thousand and 00 / 100"
-        })
+        // ----- Then -----
+        val numberWords = NumberWords(numberText = "100,000",
+                                      wordsText = "One Hundred Thousand and 00 / 100")
+        verify(mockObserver, timeout(300).times(1)).onChanged(eq(numberWords))
     }
 }
