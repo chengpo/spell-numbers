@@ -32,11 +32,10 @@ import android.view.*
 import android.widget.Button
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
-import arrow.core.Try
-import arrow.core.getOrElse
 import com.monkeyapp.numbers.apphelpers.icon
 import com.monkeyapp.numbers.apphelpers.ocrIntent
 import com.monkeyapp.numbers.apphelpers.onClick
@@ -56,22 +55,29 @@ class MainFragment : Fragment() {
         setHasOptionsMenu(true)
 
         mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
-        mainViewModel.observe(this) { viewObj ->
-            updateView(viewObj)
-        }
+
+        mainViewModel.numberWords.observe(this, Observer { numberWords ->
+            updateView(numberWords)
+        })
+
+        mainViewModel.error.observe(this, Observer {
+            digitPadView.snackbar(R.string.too_large_to_spell) {
+                icon(R.drawable.ic_error, R.color.accent)
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        updateView(mainViewModel.getViewObjLiveData().value)
+        updateView(mainViewModel.numberWords.value)
 
         // bind lifecycle to rating helper
         lifecycle.addObserver(RatingPrompter(digitPadView))
     }
 
-    private fun updateView(viewObj: MainViewModel.ViewObject?) {
-        viewObj?.let {
+    private fun updateView(numberWords: NumberWords?) {
+        numberWords?.let {
             numberTextView.text = it.numberText
             omniButtonView.state = if (it.numberText.isEmpty())
                 OmniButton.State.Camera
@@ -113,16 +119,7 @@ class MainFragment : Fragment() {
                         mainViewModel.backspace()
 
                     button is Button && (button.text[0] == '.' || button.text[0] in '0'..'9') ->
-                        Try {
-                            mainViewModel.append(button.text[0])
-                        }.getOrElse {
-                            digitPadView.snackbar(R.string.too_large_to_spell) {
-                                icon(R.drawable.ic_error, R.color.accent)
-                            }
-
-                            // revoke the last digit
-                            mainViewModel.backspace()
-                        }
+                        mainViewModel.append(button.text[0])
                 }
             }
         }
@@ -145,17 +142,9 @@ class MainFragment : Fragment() {
         if (requestCode == REQUEST_CODE_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
             val number = data?.getStringExtra("number") ?: ""
             if (number.isNotBlank()) {
-                Try {
-                    mainViewModel.reset()
-                    number.forEach { digit ->
-                        mainViewModel.append(digit)
-                    }
-                }.getOrElse {
-                    digitPadView.snackbar(R.string.too_large_to_spell) {
-                        icon(R.drawable.ic_error, R.color.accent)
-                    }
-
-                    mainViewModel.reset()
+                mainViewModel.reset()
+                number.forEach { digit ->
+                    mainViewModel.append(digit)
                 }
             }
         }

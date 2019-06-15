@@ -24,9 +24,9 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.translators
 
-class EnglishNumberComposer(private val composer: NumberComposer.Observable = CommonNumberComposer(),
+class EnglishNumberComposer(private val composer: ObservableNumberComposer = CommonNumberComposer(),
                             private val formatter: NumberFormatter = NumberFormatter(',', 3))
-    : NumberComposer.Observable by composer {
+    : ObservableNumberComposer by composer {
 
     override fun observe(callback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit) {
         composer.observe { numberText, wholeNumber, fraction ->

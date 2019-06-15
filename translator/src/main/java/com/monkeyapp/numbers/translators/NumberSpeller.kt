@@ -26,6 +26,6 @@ package com.monkeyapp.numbers.translators
 
 abstract class NumberSpeller {
     abstract fun spellNumber(wholeNumber: Long, fraction: Float): String
-
-    class LargeNumberException : IllegalArgumentException("Number is too large to spellInteger")
 }
+
+class LargeNumberException : IllegalArgumentException("Number is too large to spellInteger")

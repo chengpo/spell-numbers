@@ -26,7 +26,7 @@ package com.monkeyapp.numbers.translators
 
 import java.util.*
 
-class CommonNumberComposer: NumberComposer.Observable {
+class CommonNumberComposer: ObservableNumberComposer {
     private var observerCallback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit = { _, _, _ -> }
     private var wholeNumberDigits = Stack<Char>()
     private var fractionDigits = Stack<Char>()

@@ -24,29 +24,61 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.monkeyapp.numbers.translators.NumberComposer
 import com.monkeyapp.numbers.translators.TranslatorFactory
 import com.monkeyapp.numbers.translators.TranslatorFactory.Translator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-// TODO : support other language translators
-class MainViewModel(private val translator: Translator = TranslatorFactory.getEnglishTranslator()) :
-        ViewModel(), NumberComposer by translator {
+class MainViewModel(private val translator: Translator = TranslatorFactory.englishTranslator) :
+        ViewModel(), NumberComposer {
 
-    private val viewObjLiveData = MutableLiveData<ViewObject>()
+    private val numberWordsLiveData = MutableLiveData<NumberWords>()
+    private val errorLiveData = MutableLiveData<Exception>()
+
+    val numberWords: LiveData<NumberWords>
+        get() = numberWordsLiveData
+
+    val error: LiveData<Exception>
+        get() = errorLiveData
 
     init {
         translator.observe { numberText: String, wordsText: String ->
-            viewObjLiveData.value = ViewObject(numberText, wordsText)
+            numberWordsLiveData.postValue(NumberWords(numberText, wordsText))
         }
     }
 
-    fun observe(owner: LifecycleOwner, observer: (viewObj: ViewObject?) -> Unit) {
-        viewObjLiveData.observe(owner, Observer { observer(it) })
+    override fun append(digit: Char) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                translator.append(digit)
+            } catch (e: Exception) {
+                translator.backspace()
+                errorLiveData.postValue(e)
+            }
+        }
     }
 
-    fun getViewObjLiveData() = viewObjLiveData as LiveData<ViewObject>
+    override fun backspace() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                translator.backspace()
+            } catch (e: Exception) {
+                errorLiveData.postValue(e)
+            }
+        }
+    }
 
-    data class ViewObject(val numberText: String, val wordsText: String)
+    override fun reset() {
+        viewModelScope.launch(Dispatchers.IO) {
+            translator.reset()
+        }
+    }
 }
+
+data class NumberWords(val numberText: String, val wordsText: String)
 

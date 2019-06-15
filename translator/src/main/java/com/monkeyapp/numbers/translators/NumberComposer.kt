@@ -25,12 +25,15 @@ SOFTWARE.
 package com.monkeyapp.numbers.translators
 
 interface NumberComposer {
+    @Throws(LargeNumberException::class)
     fun append(digit: Char)
-    fun backspace()
-    fun reset()
 
-    interface Observable: NumberComposer {
-        fun observe(callback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit)
-    }
+    @Throws(LargeNumberException::class)
+    fun backspace()
+
+    fun reset()
 }
 
+interface ObservableNumberComposer: NumberComposer {
+    fun observe(callback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit)
+}

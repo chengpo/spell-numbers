@@ -48,7 +48,7 @@ class FullScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
-        wordsTextView.text = mainViewModel.getViewObjLiveData().value?.wordsText
+        wordsTextView.text = mainViewModel.numberWords.value?.wordsText
 
         wordsTextView.setOnClickListener {
             copyToClipboard()

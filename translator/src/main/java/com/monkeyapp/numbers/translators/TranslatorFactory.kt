@@ -24,15 +24,18 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.translators
 
+// TODO : support other language translators
 object TranslatorFactory {
-    fun getEnglishTranslator() =
-            Translator(composer = EnglishNumberComposer(),
+    val englishTranslator: Translator
+        get() {
+            return Translator(composer = EnglishNumberComposer(),
                     speller = EnglishNumberSpeller())
+        }
 
-    class Translator(private val composer: NumberComposer.Observable,
+    class Translator(private val composer: ObservableNumberComposer,
                      private val speller: NumberSpeller) : NumberComposer by composer {
 
-        fun observe(observerCallback: (numberText:String, wordsText: String) -> Unit) {
+        fun observe(observerCallback: (numberText: String, wordsText: String) -> Unit) {
             composer.observe { numberText, wholeNumber, fraction ->
                 if (numberText.isEmpty()) {
                     observerCallback("", "")

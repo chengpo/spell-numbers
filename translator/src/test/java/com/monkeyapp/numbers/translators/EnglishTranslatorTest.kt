@@ -27,12 +27,14 @@ package com.monkeyapp.numbers.translators
 import com.monkeyapp.numbers.testhelpers.shouldEqual
 import arrow.core.Try
 import arrow.core.getOrElse
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 
 class EnglishTranslatorTest {
     @Test
     fun `EnglishTranslator should translate number correctly`() {
-        val translator = TranslatorFactory.getEnglishTranslator()
+        val translator = TranslatorFactory.englishTranslator
         "1000".forEach { digit ->
             translator.append(digit)
         }
@@ -45,7 +47,7 @@ class EnglishTranslatorTest {
 
     @Test
     fun `EnglishTranslator returns blank string for empty input`() {
-        val translator = TranslatorFactory.getEnglishTranslator()
+        val translator = TranslatorFactory.englishTranslator
         translator.observe { numberText, wordsText ->
             numberText shouldEqual ""
             wordsText shouldEqual ""
@@ -54,7 +56,7 @@ class EnglishTranslatorTest {
 
     @Test
     fun `EnglishTranslator throws exception for too large number`() {
-        val translator = TranslatorFactory.getEnglishTranslator()
+        val translator = TranslatorFactory.englishTranslator
         var getException = false
         val largeNumber = (Math.pow(1000.0, 5.0) * 10).toLong()
 

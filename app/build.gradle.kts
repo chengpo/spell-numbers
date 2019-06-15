@@ -92,8 +92,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-ads:17.2.0")
 
     // viewModel and liveData
-    implementation("androidx.lifecycle:lifecycle-extensions:2.0.0")
-    kapt("androidx.lifecycle:lifecycle-compiler:2.0.0")
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0-alpha01")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha01")
+    kapt("androidx.lifecycle:lifecycle-compiler:2.2.0-alpha01")
 
     implementation("com.google.firebase:firebase-core:16.0.9")
 
@@ -108,6 +109,10 @@ dependencies {
     // kotlin
     implementation(Config.Libs.kotlin)
     implementation(Config.Libs.arrow)
+
+    // coroutines
+    implementation(Config.Libs.coroutinesCore)
+    implementation(Config.Libs.coroutinesAndroid)
 
     implementation("androidx.core:core-ktx:1.0.2")
 

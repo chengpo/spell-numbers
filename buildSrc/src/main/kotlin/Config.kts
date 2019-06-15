@@ -9,6 +9,7 @@ object Versions {
     const val kotlin = "1.3.31"
     const val arrow = "0.7.3"
     const val appcompat = "1.0.2"
+    const val coroutines = "1.3.0-M1"
 }
 
 object Plugins {
@@ -22,6 +23,8 @@ object Libs {
     const val appCompat = "androidx.appcompat:appcompat:${Versions.appcompat}"
     const val kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}"
     const val arrow = "io.arrow-kt:arrow-core:${Versions.arrow}"
+    const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
+    const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
 }
 
 object Android {
