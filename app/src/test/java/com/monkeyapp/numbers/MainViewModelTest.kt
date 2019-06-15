@@ -28,7 +28,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Observer
 import com.monkeyapp.numbers.testhelpers.shouldEqual
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -49,8 +51,10 @@ class MainViewModelTest {
     fun mainViewModel_should_return_translated_text_correctly() {
         val viewModel = MainViewModel()
 
-        "100000".forEach { digit ->
-            viewModel.append(digit)
+        runBlocking {
+            "100000".forEach { digit ->
+                viewModel.append(digit)
+            }
         }
 
         val lifecycle = LifecycleRegistry(lifecycleOwner)
@@ -58,9 +62,9 @@ class MainViewModelTest {
 
         doReturn(lifecycle).`when`(lifecycleOwner).lifecycle
 
-        viewModel.observe(lifecycleOwner) { viewModelObj ->
-            viewModelObj?.numberText shouldEqual "100,000"
-            viewModelObj?.wordsText shouldEqual "One Hundred Thousand and 00 / 100"
-        }
+        viewModel.numberWords.observe(lifecycleOwner, Observer {
+            it?.numberText shouldEqual "100,000"
+            it?.wordsText shouldEqual "One Hundred Thousand and 00 / 100"
+        })
     }
 }
