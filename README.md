@@ -4,7 +4,7 @@
 
 <img src="/pictures/web_hi_res_512.png" alt="Spell Numbers logo" height="128" width="128"> </img>
 
-**Spell Numbers** converts numbers to words.<br>
+**Spell Numbers** converts number to words.<br>
 It is a handy tool for writing checks, filling forms.
 
 <a href='https://play.google.com/store/apps/details?id=com.monkeyapp.numbers&utm_source=github&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'  width="246" /></a>
@@ -17,6 +17,7 @@ Spell Numbers is based on following technologies:
 - Google Mobile Vision Text Recognition API
 - Renderscript
 - Android Architecture Components - ViewModel, LiveData and Navigation
+- Kotlin Coroutines
 
 
 ## Screenshot
