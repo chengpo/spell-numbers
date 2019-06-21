@@ -27,7 +27,6 @@ package com.monkeyapp.numbers
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import androidx.core.view.forEach
@@ -43,49 +42,45 @@ import com.monkeyapp.numbers.apphelpers.snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_digit_pad.*
 import kotlinx.android.synthetic.main.content_number_word.*
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.error
 
 private const val REQUEST_CODE_OCR_CAPTURE = 1000
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), AnkoLogger {
     private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
-
-        mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
-
-        mainViewModel.numberWords.observe(this, Observer { numberWords ->
-            updateView(numberWords)
-        })
-
-        mainViewModel.error.observe(this, Observer {
-            digitPadView.snackbar(R.string.too_large_to_spell) {
-                icon(R.drawable.ic_error, R.color.accent)
-            }
-        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        updateView(mainViewModel.numberWords.value)
+        mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
+
+        mainViewModel.numberWords.observe(viewLifecycleOwner, Observer { numberWords ->
+            numberWords?.let {
+                numberTextView.text = it.numberText
+                omniButtonView.state = if (it.numberText.isEmpty())
+                    OmniButton.State.Camera
+                else
+                    OmniButton.State.Clean
+
+                wordsTextView.text = it.wordsText
+            }
+        })
+
+        mainViewModel.error.observe(viewLifecycleOwner, Observer {
+            digitPadView.snackbar(R.string.too_large_to_spell) {
+                icon(R.drawable.ic_error, R.color.accent)
+            }
+        })
 
         // bind lifecycle to rating helper
-        lifecycle.addObserver(RatingPrompter(digitPadView))
-    }
-
-    private fun updateView(numberWords: NumberWords?) {
-        numberWords?.let {
-            numberTextView.text = it.numberText
-            omniButtonView.state = if (it.numberText.isEmpty())
-                OmniButton.State.Camera
-            else
-                OmniButton.State.Clean
-
-            wordsTextView.text = it.wordsText
-        }
+        viewLifecycleOwner.lifecycle.addObserver(RatingPrompter(digitPadView))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -131,7 +126,7 @@ class MainFragment : Fragment() {
                     NavHostFragment.findNavController(my_nav_host_fragment)
                             .navigate(R.id.action_main_to_full_screen)
                 } catch (e: IllegalArgumentException) {
-                    Log.e("MainFragment", "navigation failed", e)
+                    error("navigation failed", e)
                 }
             }
         }

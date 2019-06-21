@@ -109,6 +109,7 @@ dependencies {
     // kotlin
     implementation(Config.Libs.kotlin)
     implementation(Config.Libs.arrow)
+    implementation(Config.Libs.anko)
 
     // coroutines
     implementation(Config.Libs.coroutinesCore)
