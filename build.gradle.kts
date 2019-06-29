@@ -7,6 +7,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven(url = "https://plugins.gradle.org/m2/")
     }
 
     dependencies {
@@ -14,9 +15,14 @@ buildscript {
         classpath(Config.Plugins.kotlin)
         classpath(Config.Plugins.navigation)
         classpath(Config.Plugins.googleService)
+        classpath(Config.Plugins.detekt)
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+}
+
+plugins {
+    id("io.gitlab.arturbosch.detekt").version(Config.Versions.detektPlugin)
 }
 
 allprojects {
@@ -26,11 +32,19 @@ allprojects {
         mavenCentral()
     }
 
+    apply {
+        plugin("io.gitlab.arturbosch.detekt")
+    }
+
     tasks.withType(Test::class) {
         testLogging {
             exceptionFormat = TestExceptionFormat.FULL
-            events = mutableSetOf(TestLogEvent.SKIPPED, TestLogEvent.PASSED,
-                        TestLogEvent.FAILED, TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR)
+            events = mutableSetOf(
+                    TestLogEvent.SKIPPED,
+                    TestLogEvent.PASSED,
+                    TestLogEvent.FAILED,
+                    TestLogEvent.STANDARD_OUT,
+                    TestLogEvent.STANDARD_ERROR)
         }
     }
 }
