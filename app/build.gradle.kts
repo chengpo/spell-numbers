@@ -79,24 +79,24 @@ dependencies {
 
     implementation("androidx.multidex:multidex:2.0.1")
 
-    implementation("androidx.annotation:annotation:1.0.2")
+    implementation("androidx.annotation:annotation:1.1.0")
     implementation("androidx.core:core:1.0.2")
     implementation("com.google.android.material:material:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
     implementation(Config.Libs.appCompat)
     implementation("androidx.gridlayout:gridlayout:1.0.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.0-beta1")
+    implementation("androidx.constraintlayout:constraintlayout:2.0.0-beta2")
 
     // admob
-    implementation("com.google.android.gms:play-services-ads:17.2.0")
+    implementation("com.google.android.gms:play-services-ads:18.1.1")
 
     // viewModel and liveData
-    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0-alpha01")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha01")
-    kapt("androidx.lifecycle:lifecycle-compiler:2.2.0-alpha01")
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0-alpha02")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha02")
+    kapt("androidx.lifecycle:lifecycle-compiler:2.2.0-alpha02")
 
-    implementation("com.google.firebase:firebase-core:16.0.9")
+    implementation("com.google.firebase:firebase-core:17.0.1")
 
     // navigation
     implementation("android.arch.navigation:navigation-fragment-ktx:1.0.0")
@@ -117,8 +117,8 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.0.2")
 
-    androidTestImplementation("androidx.arch.core:core-testing:2.0.0")
-    androidTestImplementation("androidx.test:runner:1.1.1")
+    androidTestImplementation("androidx.arch.core:core-testing:2.0.1")
+    androidTestImplementation("androidx.test:runner:1.2.0")
 
     androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0-alpha4", {
         exclude(group = "com.android.support", module = "support-annotations")
@@ -128,6 +128,6 @@ dependencies {
 
     testImplementation("junit:junit:4.12")
     testImplementation("org.mockito:mockito-core:2.22.0")
-    testImplementation("androidx.arch.core:core-testing:2.0.0")
+    testImplementation("androidx.arch.core:core-testing:2.0.1")
     testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0")
 }

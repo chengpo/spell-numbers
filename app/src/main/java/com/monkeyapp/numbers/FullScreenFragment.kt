@@ -55,12 +55,12 @@ class FullScreenFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.full_screen, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.full_screen, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.copy_to_clipboard) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.copy_to_clipboard) {
             copyToClipboard()
         }
 
