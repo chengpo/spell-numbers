@@ -79,7 +79,7 @@ dependencies {
 
     implementation("androidx.multidex:multidex:2.0.1")
 
-    implementation("androidx.annotation:annotation:1.1.0")
+    implementation("androidx.annotation:annotation:1.0.2")
     implementation("androidx.core:core:1.0.2")
     implementation("com.google.android.material:material:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
@@ -117,7 +117,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.0.2")
 
-    androidTestImplementation("androidx.arch.core:core-testing:2.0.1")
+    androidTestImplementation("androidx.arch.core:core-testing:2.0.0")
     androidTestImplementation("androidx.test:runner:1.2.0")
 
     androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0-alpha4", {
@@ -128,6 +128,6 @@ dependencies {
 
     testImplementation("junit:junit:4.12")
     testImplementation("org.mockito:mockito-core:2.22.0")
-    testImplementation("androidx.arch.core:core-testing:2.0.1")
+    testImplementation("androidx.arch.core:core-testing:2.0.0")
     testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0")
 }
