@@ -32,10 +32,15 @@ import com.monkeyapp.numbers.translators.NumberComposer
 import com.monkeyapp.numbers.translators.TranslatorFactory
 import com.monkeyapp.numbers.translators.TranslatorFactory.Translator
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.concurrent.Executors
 
 class MainViewModel(private val translator: Translator = TranslatorFactory.englishTranslator) :
         ViewModel(), NumberComposer {
+
+    private val translatorContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
     private val numberWordsLiveData = MutableLiveData<NumberWords>()
     private val errorLiveData = MutableLiveData<Exception>()
@@ -48,33 +53,45 @@ class MainViewModel(private val translator: Translator = TranslatorFactory.engli
 
     init {
         translator.observe { numberText: String, wordsText: String ->
-            numberWordsLiveData.postValue(NumberWords(numberText, wordsText))
+            viewModelScope.launch(Dispatchers.Main) {
+                numberWordsLiveData.value = NumberWords(numberText, wordsText)
+            }
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        translatorContext.close()
+    }
+
     override fun append(digit: Char) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(translatorContext) {
             try {
                 translator.append(digit)
             } catch (e: Exception) {
                 translator.backspace()
-                errorLiveData.postValue(e)
+
+                withContext(Dispatchers.Main) {
+                    errorLiveData.value = e
+                }
             }
         }
     }
 
     override fun backspace() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(translatorContext) {
             try {
                 translator.backspace()
             } catch (e: Exception) {
-                errorLiveData.postValue(e)
+                withContext(Dispatchers.Main) {
+                    errorLiveData.value = e
+                }
             }
         }
     }
 
     override fun reset() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(translatorContext) {
             translator.reset()
         }
     }
