@@ -31,8 +31,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.MobileAds
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -47,7 +48,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        MobileAds.initialize(this, "ca-app-pub-6498719425690429~1480158317")
+        adView.adListener = object : AdListener() {
+            override fun onAdFailedToLoad(errorCode: Int) {
+                super.onAdFailedToLoad(errorCode)
+
+                val bundle = Bundle()
+                bundle.putString("ErrorCode", errorCode.toString())
+                FirebaseAnalytics.getInstance(this@MainActivity).logEvent("AdLoadingFailed", bundle)
+            }
+        }
+
         adView.loadAd(AdRequest.Builder().build())
 
         val navController = Navigation.findNavController(this, R.id.my_nav_host_fragment)
@@ -55,6 +65,21 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Toolbar>(R.id.toolbar)
                 .setupWithNavController(navController, appBarConfiguration)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        adView.resume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        adView.pause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        adView.destroy()
     }
 
     override fun onSupportNavigateUp() =

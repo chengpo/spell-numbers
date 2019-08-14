@@ -97,6 +97,7 @@ dependencies {
     kapt("androidx.lifecycle:lifecycle-compiler:2.2.0-alpha02")
 
     implementation("com.google.firebase:firebase-core:17.0.1")
+    implementation("com.google.firebase:firebase-analytics:17.0.1")
 
     // navigation
     implementation("android.arch.navigation:navigation-fragment-ktx:1.0.0")
