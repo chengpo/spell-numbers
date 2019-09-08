@@ -32,7 +32,7 @@ import android.widget.Button
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
 import com.monkeyapp.numbers.apphelpers.icon
@@ -59,7 +59,7 @@ class MainFragment : Fragment(), AnkoLogger {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProvider(activity!!).get(MainViewModel::class.java)
 
         mainViewModel.numberWords.observe(viewLifecycleOwner, Observer { numberWords ->
             numberWords?.let {

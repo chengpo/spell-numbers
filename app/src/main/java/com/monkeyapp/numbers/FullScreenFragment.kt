@@ -30,7 +30,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.monkeyapp.numbers.apphelpers.snackbar
 import kotlinx.android.synthetic.main.content_full_screen.*
 
@@ -47,7 +47,7 @@ class FullScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
+        val mainViewModel = ViewModelProvider(activity!!).get(MainViewModel::class.java)
         wordsTextView.text = mainViewModel.numberWords.value?.wordsText
 
         wordsTextView.setOnClickListener {
