@@ -31,13 +31,11 @@ import androidx.lifecycle.viewModelScope
 import com.monkeyapp.numbers.translators.NumberComposer
 import com.monkeyapp.numbers.translators.TranslatorFactory
 import com.monkeyapp.numbers.translators.TranslatorFactory.Translator
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import javax.inject.Provider
 import kotlin.coroutines.CoroutineContext
 
 class MainViewModel(private val translator: Translator = TranslatorFactory.englishTranslator) :
@@ -80,7 +78,7 @@ class MainViewModel(private val translator: Translator = TranslatorFactory.engli
             } catch (e: Exception) {
                 translator.backspace()
 
-                withContext(Dispatchers.Main) {
+                withContext(coroutineContextMain) {
                     errorLiveData.value = e
                 }
             }
@@ -92,7 +90,7 @@ class MainViewModel(private val translator: Translator = TranslatorFactory.engli
             try {
                 translator.backspace()
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
+                withContext(coroutineContextMain) {
                     errorLiveData.value = e
                 }
             }
