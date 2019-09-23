@@ -29,7 +29,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -37,6 +40,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
+import kotlin.coroutines.CoroutineContext
 
 @RunWith(MockitoJUnitRunner::class)
 class MainViewModelTest {
@@ -45,6 +49,24 @@ class MainViewModelTest {
 
     @Mock
     lateinit var lifecycleOwner:LifecycleOwner
+
+    @Before
+    fun setup() {
+        val mainComponent = DaggerMainComponent.builder()
+                .coroutineContextModule(object: CoroutineContextModule(){
+                    override fun provideMain(): CoroutineContext {
+                        return Dispatchers.Unconfined
+                    }
+                })
+                .build()
+
+        Injector._instance = Injector(mainComponent)
+    }
+
+    @After
+    fun tearDown() {
+        Injector._instance = null
+    }
 
     @Test
     fun mainViewModel_should_return_translated_text_correctly() {

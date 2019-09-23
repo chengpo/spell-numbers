@@ -36,11 +36,17 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
+import javax.inject.Inject
+import javax.inject.Provider
+import kotlin.coroutines.CoroutineContext
 
 class MainViewModel(private val translator: Translator = TranslatorFactory.englishTranslator) :
         ViewModel(), NumberComposer {
 
-    private val translatorContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    @Inject
+    lateinit var coroutineContextMain: CoroutineContext
+
+    private val coroutineContextWorker = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
     private val numberWordsLiveData = MutableLiveData<NumberWords>()
     private val errorLiveData = MutableLiveData<Exception>()
@@ -52,8 +58,11 @@ class MainViewModel(private val translator: Translator = TranslatorFactory.engli
         get() = errorLiveData
 
     init {
+
+        Injector.getInstance().inject(this)
+
         translator.observe { numberText: String, wordsText: String ->
-            viewModelScope.launch(Dispatchers.Main) {
+            viewModelScope.launch(coroutineContextMain) {
                 numberWordsLiveData.value = NumberWords(numberText, wordsText)
             }
         }
@@ -61,11 +70,11 @@ class MainViewModel(private val translator: Translator = TranslatorFactory.engli
 
     override fun onCleared() {
         super.onCleared()
-        translatorContext.close()
+        coroutineContextWorker.close()
     }
 
     override fun append(digit: Char) {
-        viewModelScope.launch(translatorContext) {
+        viewModelScope.launch(coroutineContextWorker) {
             try {
                 translator.append(digit)
             } catch (e: Exception) {
@@ -79,7 +88,7 @@ class MainViewModel(private val translator: Translator = TranslatorFactory.engli
     }
 
     override fun backspace() {
-        viewModelScope.launch(translatorContext) {
+        viewModelScope.launch(coroutineContextWorker) {
             try {
                 translator.backspace()
             } catch (e: Exception) {
@@ -91,7 +100,7 @@ class MainViewModel(private val translator: Translator = TranslatorFactory.engli
     }
 
     override fun reset() {
-        viewModelScope.launch(translatorContext) {
+        viewModelScope.launch(coroutineContextWorker) {
             translator.reset()
         }
     }

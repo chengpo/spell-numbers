@@ -116,6 +116,10 @@ dependencies {
     implementation(Config.Libs.coroutinesCore)
     implementation(Config.Libs.coroutinesAndroid)
 
+    // dagger2
+    implementation("com.google.dagger:dagger:2.24")
+    kapt("com.google.dagger:dagger-compiler:2.24")
+
     implementation("androidx.core:core-ktx:1.0.2")
 
     androidTestImplementation("androidx.arch.core:core-testing:2.0.0")
