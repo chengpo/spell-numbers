@@ -7,9 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import java.util.concurrent.Executors
-import javax.inject.Inject
 import javax.inject.Named
-import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
 
 
