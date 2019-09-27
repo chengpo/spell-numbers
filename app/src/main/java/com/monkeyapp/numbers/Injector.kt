@@ -4,6 +4,12 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.asCoroutineDispatcher
+import java.util.concurrent.Executors
+import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
 
 
@@ -27,8 +33,11 @@ class Injector(private val mainComponent: MainComponent) : MainComponent by main
 
 @Module
 open class CoroutineContextModule {
-    @Provides
-    open fun provideMain(): CoroutineContext = Dispatchers.Main
+    @Provides @Named("coroutineMainContext")
+    open fun provideMainContext(): CoroutineContext = Dispatchers.Main
+
+    @Provides @Named("coroutineWorkerContext")
+    open fun provideWorkerContext(): ExecutorCoroutineDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 }
 
 @Component(modules = [CoroutineContextModule::class])

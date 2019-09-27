@@ -31,20 +31,21 @@ import androidx.lifecycle.viewModelScope
 import com.monkeyapp.numbers.translators.NumberComposer
 import com.monkeyapp.numbers.translators.TranslatorFactory
 import com.monkeyapp.numbers.translators.TranslatorFactory.Translator
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.concurrent.Executors
 import javax.inject.Inject
+import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
 class MainViewModel(private val translator: Translator = TranslatorFactory.englishTranslator) :
         ViewModel(), NumberComposer {
 
-    @Inject
+    @field:[Inject Named("coroutineMainContext")]
     lateinit var coroutineContextMain: CoroutineContext
 
-    private val coroutineContextWorker = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    @field:[Inject Named("coroutineWorkerContext")]
+    lateinit var coroutineContextWorker: ExecutorCoroutineDispatcher
 
     private val numberWordsLiveData = MutableLiveData<NumberWords>()
     private val errorLiveData = MutableLiveData<Exception>()
@@ -56,7 +57,6 @@ class MainViewModel(private val translator: Translator = TranslatorFactory.engli
         get() = errorLiveData
 
     init {
-
         Injector.getInstance().inject(this)
 
         translator.observe { numberText: String, wordsText: String ->
