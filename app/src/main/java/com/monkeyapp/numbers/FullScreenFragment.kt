@@ -70,7 +70,8 @@ class FullScreenFragment : Fragment() {
     private fun copyToClipboard() {
         val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
         val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView.text)
-        clipboard?.primaryClip = clip
+
+        clipboard?.setPrimaryClip(clip)
 
         wordsTextView.snackbar(R.string.full_screen_copied_to_clipboard)
     }
