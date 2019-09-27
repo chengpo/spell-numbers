@@ -28,40 +28,40 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.monkeyapp.numbers.translators.NumberComposer
+import com.monkeyapp.numbers.translators.LargeNumberException
 import com.monkeyapp.numbers.translators.TranslatorFactory
 import com.monkeyapp.numbers.translators.TranslatorFactory.Translator
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
-class MainViewModel(private val translator: Translator = TranslatorFactory.englishTranslator) :
-        ViewModel(), NumberComposer {
-
+class MainViewModel : ViewModel() {
     @field:[Inject Named("coroutineMainContext")]
     lateinit var coroutineContextMain: CoroutineContext
 
     @field:[Inject Named("coroutineWorkerContext")]
     lateinit var coroutineContextWorker: ExecutorCoroutineDispatcher
 
-    private val numberWordsLiveData = MutableLiveData<NumberWords>()
-    private val errorLiveData = MutableLiveData<Exception>()
+    private val translator: Translator = TranslatorFactory.englishTranslator
+
+    private val _numberWords = MutableLiveData<NumberWords>()
+    private val _error = MutableLiveData<Throwable>()
 
     val numberWords: LiveData<NumberWords>
-        get() = numberWordsLiveData
+        get() = _numberWords
 
-    val error: LiveData<Exception>
-        get() = errorLiveData
+    val error: LiveData<Throwable>
+        get() = _error
 
     init {
         Injector.getInstance().inject(this)
 
         translator.observe { numberText: String, wordsText: String ->
             viewModelScope.launch(coroutineContextMain) {
-                numberWordsLiveData.value = NumberWords(numberText, wordsText)
+                _numberWords.value = NumberWords(numberText, wordsText)
             }
         }
     }
@@ -71,33 +71,30 @@ class MainViewModel(private val translator: Translator = TranslatorFactory.engli
         coroutineContextWorker.close()
     }
 
-    override fun append(digit: Char) {
-        viewModelScope.launch(coroutineContextWorker) {
+    private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, exception ->
+        viewModelScope.launch(coroutineContextMain) {
+            _error.value = exception
+        }
+    }
+
+    fun append(digit: Char) {
+        viewModelScope.launch(coroutineContextWorker + exceptionHandler) {
             try {
                 translator.append(digit)
-            } catch (e: Exception) {
+            } catch (e: LargeNumberException) {
                 translator.backspace()
-
-                withContext(coroutineContextMain) {
-                    errorLiveData.value = e
-                }
+                throw e
             }
         }
     }
 
-    override fun backspace() {
-        viewModelScope.launch(coroutineContextWorker) {
-            try {
-                translator.backspace()
-            } catch (e: Exception) {
-                withContext(coroutineContextMain) {
-                    errorLiveData.value = e
-                }
-            }
+    fun backspace() {
+        viewModelScope.launch(coroutineContextWorker + exceptionHandler) {
+            translator.backspace()
         }
     }
 
-    override fun reset() {
+    fun reset() {
         viewModelScope.launch(coroutineContextWorker) {
             translator.reset()
         }
@@ -105,4 +102,3 @@ class MainViewModel(private val translator: Translator = TranslatorFactory.engli
 }
 
 data class NumberWords(val numberText: String, val wordsText: String)
-
