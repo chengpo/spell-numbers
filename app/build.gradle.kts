@@ -82,6 +82,7 @@ dependencies {
     implementation("androidx.annotation:annotation:1.1.0")
     implementation("androidx.core:core:1.1.0")
     implementation("androidx.core:core-ktx:1.1.0")
+    implementation("androidx.activity:activity-ktx:1.1.0-alpha03")
     implementation("com.google.android.material:material:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
 

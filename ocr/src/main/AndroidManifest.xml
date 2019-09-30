@@ -13,7 +13,6 @@
 
         <activity
             android:name=".OcrCaptureActivity"
-            android:configChanges="uiMode"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.monkeyapp.numbers.intent.OCR_CAPTURE"/>
