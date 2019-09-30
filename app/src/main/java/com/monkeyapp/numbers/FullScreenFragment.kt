@@ -30,11 +30,22 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.monkeyapp.numbers.apphelpers.snackbar
 import kotlinx.android.synthetic.main.content_full_screen.*
 
 class FullScreenFragment : Fragment() {
+    private val mainViewModel: MainViewModel by viewModels({ activity!! }){
+                object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                        @Suppress("UNCHECKED_CAST")
+                        return MainViewModel() as T
+                    }
+                }
+            }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -47,7 +58,6 @@ class FullScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mainViewModel = ViewModelProvider(activity!!).get(MainViewModel::class.java)
         wordsTextView.text = mainViewModel.numberWords.value?.wordsText
 
         wordsTextView.setOnClickListener {

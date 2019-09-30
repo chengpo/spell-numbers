@@ -31,7 +31,9 @@ import android.view.*
 import android.widget.Button
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
@@ -48,7 +50,14 @@ import org.jetbrains.anko.error
 private const val REQUEST_CODE_OCR_CAPTURE = 1000
 
 class MainFragment : Fragment(), AnkoLogger {
-    private lateinit var mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel by viewModels({ activity!! }){
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return MainViewModel() as T
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,8 +67,6 @@ class MainFragment : Fragment(), AnkoLogger {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        mainViewModel = ViewModelProvider(activity!!).get(MainViewModel::class.java)
 
         mainViewModel.numberWords.observe(viewLifecycleOwner, Observer { numberWords ->
             numberWords?.let {
