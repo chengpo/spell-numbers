@@ -9,7 +9,7 @@ object Versions {
     const val detektPlugin = "1.0.0-RC15"
     const val kotlin = "1.3.50"
     const val arrow = "0.7.3"
-    const val appcompat = "1.0.2"
+    const val appcompat = "1.1.0"
     const val coroutines = "1.3.0"
     const val anko = "0.10.8"
 }

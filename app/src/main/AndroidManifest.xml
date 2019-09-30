@@ -28,7 +28,8 @@
             android:name="is_ocr_supported"
             android:value="${is_ocr_supported}"/>
 
-        <activity android:name="com.monkeyapp.numbers.MainActivity">
+        <activity android:name="com.monkeyapp.numbers.MainActivity"
+            android:configChanges="uiMode">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

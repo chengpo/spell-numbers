@@ -54,7 +54,7 @@ class MainViewModelTest {
     fun setup() {
         val mainComponent = DaggerMainComponent.builder()
                 .coroutineContextModule(object: CoroutineContextModule(){
-                    override fun provideMain(): CoroutineContext {
+                    override fun provideMainContext(): CoroutineContext {
                         return Dispatchers.Unconfined
                     }
                 })
