@@ -24,10 +24,8 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.app.Application
+import androidx.lifecycle.*
 import com.monkeyapp.numbers.translators.LargeNumberException
 import com.monkeyapp.numbers.translators.TranslatorFactory
 import com.monkeyapp.numbers.translators.TranslatorFactory.Translator

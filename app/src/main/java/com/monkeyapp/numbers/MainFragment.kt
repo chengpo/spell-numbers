@@ -33,8 +33,6 @@ import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
 import com.monkeyapp.numbers.apphelpers.icon
@@ -50,14 +48,7 @@ import org.jetbrains.anko.error
 private const val REQUEST_CODE_OCR_CAPTURE = 1000
 
 class MainFragment : Fragment(), AnkoLogger {
-    private val mainViewModel: MainViewModel by viewModels({ activity!! }){
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return MainViewModel() as T
-            }
-        }
-    }
+    private val mainViewModel: MainViewModel by viewModels({ activity!! })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
