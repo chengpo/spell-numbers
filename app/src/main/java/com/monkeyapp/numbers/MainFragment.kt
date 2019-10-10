@@ -48,7 +48,8 @@ import org.jetbrains.anko.error
 private const val REQUEST_CODE_OCR_CAPTURE = 1000
 
 class MainFragment : Fragment(), AnkoLogger {
-    private val mainViewModel: MainViewModel by viewModels({ activity!! })
+    private val mainViewModel: MainViewModel
+            by viewModels(this::requireActivity) { MainViewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

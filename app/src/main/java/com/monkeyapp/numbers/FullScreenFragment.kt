@@ -35,7 +35,8 @@ import com.monkeyapp.numbers.apphelpers.snackbar
 import kotlinx.android.synthetic.main.content_full_screen.*
 
 class FullScreenFragment : Fragment() {
-    private val mainViewModel: MainViewModel by viewModels({ activity!! })
+    private val mainViewModel: MainViewModel
+            by viewModels(this::requireActivity) { MainViewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
