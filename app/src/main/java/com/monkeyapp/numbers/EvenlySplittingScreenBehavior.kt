@@ -35,7 +35,7 @@ import androidx.core.view.forEach
 import androidx.gridlayout.widget.GridLayout
 import com.monkeyapp.numbers.apphelpers.isPortraitMode
 
-class HalfScreenBehavior(context: Context?, attrs: AttributeSet?): CoordinatorLayout.Behavior<ViewGroup>(context, attrs) {
+class EvenlySplittingScreenBehavior(context: Context?, attrs: AttributeSet?): CoordinatorLayout.Behavior<ViewGroup>(context, attrs) {
     override fun onMeasureChild(parent: CoordinatorLayout, child: ViewGroup, parentWidthMeasureSpec: Int, widthUsed: Int, parentHeightMeasureSpec: Int, heightUsed: Int): Boolean {
         var extraHeight = 0
 
