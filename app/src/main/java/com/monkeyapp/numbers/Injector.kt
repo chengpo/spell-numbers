@@ -1,5 +1,6 @@
 package com.monkeyapp.numbers
 
+import androidx.annotation.VisibleForTesting
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -10,22 +11,23 @@ import java.util.concurrent.Executors
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
-
-class Injector(private val mainComponent: MainComponent) : MainComponent by mainComponent {
+class Injector(mainComponent: MainComponent) : MainComponent by mainComponent {
     companion object {
+        @VisibleForTesting
         var _instance: Injector? = null
 
-        fun getInstance(): Injector {
-            if (_instance == null) {
-                val mainComponent = DaggerMainComponent.builder()
-                        .coroutineContextModule(CoroutineContextModule())
-                        .build()
+        val instance: Injector
+            get() {
+                if (_instance == null) {
+                    val mainComponent = DaggerMainComponent.builder()
+                            .coroutineContextModule(CoroutineContextModule())
+                            .build()
 
-                _instance = Injector(mainComponent)
+                    _instance = Injector(mainComponent)
+                }
+
+                return _instance!!
             }
-
-            return _instance!!
-        }
     }
 }
 

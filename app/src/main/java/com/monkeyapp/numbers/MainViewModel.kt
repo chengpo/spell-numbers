@@ -24,7 +24,6 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.monkeyapp.numbers.translators.LargeNumberException
 import com.monkeyapp.numbers.translators.TranslatorFactory
@@ -55,7 +54,7 @@ class MainViewModel : ViewModel() {
         get() = _error
 
     init {
-        Injector.getInstance().inject(this)
+        Injector.instance.inject(this)
 
         translator.observe { numberText: String, wordsText: String ->
             viewModelScope.launch(coroutineContextMain) {
@@ -69,7 +68,7 @@ class MainViewModel : ViewModel() {
         coroutineContextWorker.close()
     }
 
-    private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, exception ->
+    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
         viewModelScope.launch(coroutineContextMain) {
             _error.value = exception
         }
