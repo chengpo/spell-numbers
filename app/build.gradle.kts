@@ -134,7 +134,7 @@ dependencies {
     testImplementation(project(":testHelper"))
 
     testImplementation("junit:junit:4.12")
-    testImplementation("org.mockito:mockito-core:3.0.0")
+    testImplementation("org.mockito:mockito-core:1.10.19")
     testImplementation("androidx.arch.core:core-testing:2.1.0")
     testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0")
 }
