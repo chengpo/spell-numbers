@@ -4,7 +4,7 @@ import java.io.FileInputStream
 import java.util.*
 
 object Versions {
-    const val buildTool = "29.0.0"
+    const val buildTool = "29.0.2"
     const val androidPlugin = "3.5.0"
     const val detektPlugin = "1.0.0-RC15"
     const val kotlin = "1.3.50"

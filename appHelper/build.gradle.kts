@@ -33,8 +33,8 @@ dependencies {
     implementation(Config.Libs.kotlin)
 
     // coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1")
+    implementation(Config.Libs.coroutinesCore)
+    implementation(Config.Libs.coroutinesAndroid)
 
     androidTestImplementation("androidx.test:runner:1.2.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0-alpha4") {

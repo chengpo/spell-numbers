@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    buildToolsVersion("28.0.3")
-    compileSdkVersion(28)
+    buildToolsVersion(Config.Versions.buildTool)
+    compileSdkVersion(Config.Android.compileSdk)
 
     defaultConfig {
-        minSdkVersion(17)
-        targetSdkVersion(28)
+        minSdkVersion(Config.Android.minSdk)
+        targetSdkVersion(Config.Android.targetSdk)
 
         versionCode = 1
         versionName = "1.0"
@@ -28,13 +28,13 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.31")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.50")
     implementation("io.arrow-kt:arrow-core:0.7.3")
 
     testImplementation(project(":testHelper"))
     testImplementation("junit:junit:4.12")
-    testImplementation("org.mockito:mockito-core:2.22.0")
-    testImplementation("androidx.arch.core:core-testing:2.0.0")
+    testImplementation("org.mockito:mockito-core:3.0.0")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
     testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0")
 }
 repositories {
