@@ -26,8 +26,7 @@ package com.monkeyapp.numbers
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.Toolbar
+import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -37,34 +36,25 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    companion object {
-        init {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        val navController = Navigation.findNavController(this, R.id.my_nav_host_fragment)
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+
+        toolbar.setupWithNavController(navController, appBarConfiguration)
+
+        // load ad
         adView.adListener = object : AdListener() {
             override fun onAdFailedToLoad(errorCode: Int) {
-                super.onAdFailedToLoad(errorCode)
-
-                val bundle = Bundle()
-                bundle.putString("ErrorCode", errorCode.toString())
-                FirebaseAnalytics.getInstance(this@MainActivity).logEvent("AdLoadingFailed", bundle)
+                FirebaseAnalytics.getInstance(applicationContext)
+                        .logEvent("AdLoadingFailed", bundleOf("ErrorCode" to errorCode.toString()))
             }
         }
 
         adView.loadAd(AdRequest.Builder().build())
-
-        val navController = Navigation.findNavController(this, R.id.my_nav_host_fragment)
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-
-        findViewById<Toolbar>(R.id.toolbar)
-                .setupWithNavController(navController, appBarConfiguration)
     }
 
     override fun onResume() {
