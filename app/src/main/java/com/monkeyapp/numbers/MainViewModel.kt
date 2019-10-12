@@ -32,14 +32,6 @@ import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
-object MainViewModelFactory : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        @Suppress("UNCHECKED_CAST")
-        return MainViewModel(coroutineMainContext = Dispatchers.Main,
-                             coroutineWorkerContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()) as T
-    }
-}
-
 class MainViewModel(private val coroutineMainContext: CoroutineContext,
                     private val coroutineWorkerContext: ExecutorCoroutineDispatcher) : ViewModel() {
 
@@ -95,6 +87,20 @@ class MainViewModel(private val coroutineMainContext: CoroutineContext,
             translator.reset()
         }
     }
+
+    class MainViewModelFactory : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            @Suppress("UNCHECKED_CAST")
+            return MainViewModel(coroutineMainContext = Dispatchers.Main,
+                    coroutineWorkerContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()) as T
+        }
+    }
+
+    data class NumberWords(val numberText: String, val wordsText: String)
+
+    companion object {
+        val factory: MainViewModelFactory
+            get() = MainViewModelFactory()
+    }
 }
 
-data class NumberWords(val numberText: String, val wordsText: String)

@@ -11,7 +11,6 @@ object Versions {
     const val arrow = "0.7.3"
     const val appcompat = "1.1.0"
     const val coroutines = "1.3.0"
-    const val anko = "0.10.8"
 }
 
 object Plugins {
@@ -28,7 +27,6 @@ object Libs {
     const val arrow = "io.arrow-kt:arrow-core:${Versions.arrow}"
     const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
     const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
-    const val anko = "org.jetbrains.anko:anko-commons:${Versions.anko}"
 }
 
 object Android {

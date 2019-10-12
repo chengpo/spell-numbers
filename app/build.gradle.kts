@@ -98,6 +98,7 @@ dependencies {
     // viewModel and liveData
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0-beta01")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-beta01")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-beta01")
     kapt("androidx.lifecycle:lifecycle-compiler:2.2.0-beta01")
 
     implementation("com.google.firebase:firebase-core:17.2.0")
@@ -114,7 +115,6 @@ dependencies {
     // kotlin
     implementation(Config.Libs.kotlin)
     implementation(Config.Libs.arrow)
-    implementation(Config.Libs.anko)
 
     // coroutines
     implementation(Config.Libs.coroutinesCore)

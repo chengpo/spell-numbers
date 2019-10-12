@@ -27,6 +27,7 @@ package com.monkeyapp.numbers
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Button
 import androidx.core.view.forEach
@@ -42,14 +43,10 @@ import com.monkeyapp.numbers.apphelpers.snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_digit_pad.*
 import kotlinx.android.synthetic.main.content_number_word.*
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.error
 
-private const val REQUEST_CODE_OCR_CAPTURE = 1000
-
-class MainFragment : Fragment(), AnkoLogger {
+class MainFragment : Fragment() {
     private val mainViewModel: MainViewModel
-            by viewModels(this::requireActivity) { MainViewModelFactory }
+            by viewModels(this::requireActivity) { MainViewModel.factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,7 +122,7 @@ class MainFragment : Fragment(), AnkoLogger {
                     NavHostFragment.findNavController(my_nav_host_fragment)
                             .navigate(R.id.action_main_to_full_screen)
                 } catch (e: IllegalArgumentException) {
-                    error("navigation failed", e)
+                    Log.e("MainFragment", "navigation failed", e)
                 }
             }
         }
@@ -151,5 +148,9 @@ class MainFragment : Fragment(), AnkoLogger {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val navController = NavHostFragment.findNavController(my_nav_host_fragment)
         return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
+    }
+
+    private companion object {
+        const val REQUEST_CODE_OCR_CAPTURE = 1000
     }
 }

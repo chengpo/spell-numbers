@@ -26,17 +26,18 @@ package com.monkeyapp.numbers
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.os.Bundle
 import android.view.*
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.monkeyapp.numbers.apphelpers.onClick
 import com.monkeyapp.numbers.apphelpers.snackbar
 import kotlinx.android.synthetic.main.content_full_screen.*
 
 class FullScreenFragment : Fragment() {
     private val mainViewModel: MainViewModel
-            by viewModels(this::requireActivity) { MainViewModelFactory }
+            by viewModels(this::requireActivity) { MainViewModel.factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,10 +52,7 @@ class FullScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         wordsTextView.text = mainViewModel.numberWords.value?.wordsText
-
-        wordsTextView.setOnClickListener {
-            copyToClipboard()
-        }
+        wordsTextView.onClick { copyToClipboard() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -62,19 +60,21 @@ class FullScreenFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.copy_to_clipboard) {
-            copyToClipboard()
+        return when (item.itemId) {
+            R.id.copy_to_clipboard -> copyToClipboard()
+            else -> super.onOptionsItemSelected(item)
         }
-
-        return super.onOptionsItemSelected(item)
     }
 
-    private fun copyToClipboard() {
-        val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-        val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView.text)
+    private fun copyToClipboard(): Boolean {
+        getSystemService(requireContext(), ClipboardManager::class.java)?.let { clipboard ->
+            val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView.text)
+            clipboard.setPrimaryClip(clip)
 
-        clipboard?.setPrimaryClip(clip)
+            wordsTextView.snackbar(R.string.full_screen_copied_to_clipboard)
+            return true
+        }
 
-        wordsTextView.snackbar(R.string.full_screen_copied_to_clipboard)
+        return false
     }
 }
