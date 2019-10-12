@@ -31,7 +31,6 @@ import android.view.*
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.monkeyapp.numbers.apphelpers.onClick
 import com.monkeyapp.numbers.apphelpers.snackbar
 import kotlinx.android.synthetic.main.content_full_screen.*
 
@@ -52,7 +51,7 @@ class FullScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         wordsTextView.text = mainViewModel.numberWords.value?.wordsText
-        wordsTextView.onClick { copyToClipboard() }
+        wordsTextView.setOnClickListener { copyToClipboard() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
