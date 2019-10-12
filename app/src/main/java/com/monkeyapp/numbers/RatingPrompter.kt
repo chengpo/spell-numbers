@@ -32,29 +32,29 @@ import android.content.SharedPreferences
 import com.google.android.material.snackbar.Snackbar
 import android.view.View
 import androidx.core.content.edit
+import androidx.lifecycle.LifecycleOwner
 import com.monkeyapp.numbers.apphelpers.*
 
-private const val PREF_NAME_RATE_APP = "SP_RATE_APP"
-private const val PREF_KEY_IS_RATED_BOOLEAN = "SP_KEY_IS_RATED"
-private const val PREF_KEY_LAST_PROMPT_TIME_LONG = "SP_KEY_LAST_PROMPT_TIME"
-
-class RatingPrompter(private val anchorView: View) : LifecycleObserver {
-    private val context: Context = anchorView.context.applicationContext
-
+class RatingPrompter(private val contextProvider: () -> Context,
+                     private val anchorViewProvider: () -> View) : LifecycleObserver {
     private val ratePrefs: SharedPreferences
-        get() = context.getSharedPreferences(PREF_NAME_RATE_APP, 0)
+        get() = contextProvider().getSharedPreferences(PREF_NAME_RATE_APP, 0)
 
     private val isRated: Boolean
         get() = ratePrefs.getBoolean(PREF_KEY_IS_RATED_BOOLEAN, false)
 
     private val shouldPrompt: Boolean
         get() {
-            val firstInstallTime = context.packageManager.getPackageInfo(context.packageName, 0).firstInstallTime
+            val firstInstallTime = contextProvider().packageManager.getPackageInfo(contextProvider().packageName, 0).firstInstallTime
             val lastPromptTime = ratePrefs.getLong(PREF_KEY_LAST_PROMPT_TIME_LONG, firstInstallTime)
 
             val timeout = (0.5 + Math.random() / 2) * 1000L * 60L * 60L
             return System.currentTimeMillis() > lastPromptTime + timeout
         }
+
+    fun attach(lifecycleOwner: LifecycleOwner) {
+        lifecycleOwner.lifecycle.addObserver(this)
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
@@ -64,7 +64,7 @@ class RatingPrompter(private val anchorView: View) : LifecycleObserver {
     }
 
     private fun promptRating() {
-        anchorView.snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE) {
+        anchorViewProvider().snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE) {
             icon(R.drawable.ic_rate_app, R.color.accent)
 
             action(R.string.rate_sure, View.OnClickListener {
@@ -86,5 +86,11 @@ class RatingPrompter(private val anchorView: View) : LifecycleObserver {
                 }
             }
         }
+    }
+
+    private companion object {
+        const val PREF_NAME_RATE_APP = "SP_RATE_APP"
+        const val PREF_KEY_IS_RATED_BOOLEAN = "SP_KEY_IS_RATED"
+        const val PREF_KEY_LAST_PROMPT_TIME_LONG = "SP_KEY_LAST_PROMPT_TIME"
     }
 }

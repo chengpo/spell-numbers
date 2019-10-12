@@ -48,35 +48,12 @@ class MainFragment : Fragment() {
     private val mainViewModel: MainViewModel
             by viewModels(this::requireActivity) { MainViewModel.factory }
 
+    private val ratingPrompter: RatingPrompter = RatingPrompter(this::requireContext) { digitPadView }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        mainViewModel.numberWords.observe(viewLifecycleOwner, Observer { numberWords ->
-            numberWords?.let {
-                numberTextView.text = it.numberText
-                omniButtonView.state = if (it.numberText.isEmpty())
-                    OmniButton.State.Camera
-                else
-                    OmniButton.State.Clean
-
-                wordsTextView.text = it.wordsText
-            }
-        })
-
-        mainViewModel.error.observe(viewLifecycleOwner, Observer {
-            digitPadView.snackbar(R.string.too_large_to_spell) {
-                icon(R.drawable.ic_error, R.color.accent)
-            }
-        })
-
-        // bind lifecycle to rating helper
-        viewLifecycleOwner.lifecycle.addObserver(RatingPrompter(digitPadView))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -97,7 +74,7 @@ class MainFragment : Fragment() {
         }
 
         digitPadView.forEach {
-            if ( it.id == R.id.btnDel) {
+            if (it.id == R.id.btnDel) {
                 it.setOnLongClickListener{
                     mainViewModel.reset()
                     true
@@ -126,6 +103,28 @@ class MainFragment : Fragment() {
                 }
             }
         }
+
+        mainViewModel.numberWords.observe(viewLifecycleOwner, Observer { numberWords ->
+            numberWords?.let {
+                numberTextView.text = it.numberText
+                omniButtonView.state = if (it.numberText.isEmpty()) {
+                    OmniButton.State.Camera
+                } else {
+                    OmniButton.State.Clean
+                }
+
+                wordsTextView.text = it.wordsText
+            }
+        })
+
+        mainViewModel.error.observe(viewLifecycleOwner, Observer {
+            digitPadView.snackbar(R.string.too_large_to_spell) {
+                icon(R.drawable.ic_error, R.color.accent)
+            }
+        })
+
+        // attach rating prompter
+        ratingPrompter.attach(viewLifecycleOwner)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
