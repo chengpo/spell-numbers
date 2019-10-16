@@ -30,13 +30,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.monkeyapp.numbers.apphelpers.snackbar
 import kotlinx.android.synthetic.main.content_full_screen.*
 
 class FullScreenFragment : Fragment() {
-    private val mainViewModel: MainViewModel
-            by viewModels(this::requireActivity) { MainViewModel.factory }
+    private val mainViewModel: MainViewModel by activityViewModels { MainViewModel.factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

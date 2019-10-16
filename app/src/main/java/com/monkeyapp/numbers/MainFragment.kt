@@ -32,7 +32,7 @@ import android.view.*
 import android.widget.Button
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
@@ -44,8 +44,7 @@ import kotlinx.android.synthetic.main.content_digit_pad.*
 import kotlinx.android.synthetic.main.content_number_word.*
 
 class MainFragment : Fragment() {
-    private val mainViewModel: MainViewModel
-            by viewModels(this::requireActivity) { MainViewModel.factory }
+    private val mainViewModel: MainViewModel by activityViewModels { MainViewModel.factory }
 
     private val ratingPrompter: RatingPrompter = RatingPrompter(this::requireContext) { digitPadView }
 
