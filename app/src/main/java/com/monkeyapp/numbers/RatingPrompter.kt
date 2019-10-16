@@ -37,6 +37,9 @@ import com.monkeyapp.numbers.apphelpers.*
 
 class RatingPrompter(private val contextProvider: () -> Context,
                      private val anchorViewProvider: () -> View) : LifecycleObserver {
+    private var snackbar: Snackbar? = null
+    private var dismissCallback: Snackbar.Callback? = null
+
     private val ratePrefs: SharedPreferences
         get() = contextProvider().getSharedPreferences(PREF_NAME_RATE_APP, 0)
 
@@ -63,15 +66,26 @@ class RatingPrompter(private val contextProvider: () -> Context,
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() {
+        snackbar?.let {
+            it.removeCallback(dismissCallback!!)
+            it.dismiss()
+        }
+
+        snackbar = null
+        dismissCallback = null
+    }
+
     private fun promptRating() {
-        anchorViewProvider().snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE) {
+        snackbar = anchorViewProvider().snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE) {
             icon(R.drawable.ic_rate_app, R.color.accent)
 
             action(R.string.rate_sure, View.OnClickListener {
-                context.browse(url = "market://details?id=com.monkeyapp.numbers",
+                contextProvider().browse(url = "market://details?id=com.monkeyapp.numbers",
                         newTask = true,
                         onError = {
-                            context.browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
+                            contextProvider().browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
                                     newTask = true)
                         })
 
@@ -80,11 +94,15 @@ class RatingPrompter(private val contextProvider: () -> Context,
                 }
             })
 
-            dismissCallback {
-                ratePrefs.edit {
-                    putLong(PREF_KEY_LAST_PROMPT_TIME_LONG, System.currentTimeMillis())
+            dismissCallback = object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    ratePrefs.edit {
+                        putLong(PREF_KEY_LAST_PROMPT_TIME_LONG, System.currentTimeMillis())
+                    }
                 }
             }
+
+            addCallback(dismissCallback!!)
         }
     }
 

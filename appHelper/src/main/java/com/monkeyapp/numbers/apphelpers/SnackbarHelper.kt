@@ -53,14 +53,6 @@ inline fun View.snackbar(stringId: Int, length: Int = Snackbar.LENGTH_SHORT, pre
 
 fun Snackbar.action(@StringRes stringId: Int, onClickListener: View.OnClickListener) = setAction(stringId, onClickListener)
 
-inline fun Snackbar.dismissCallback(crossinline callback: () -> Unit) =
-    addCallback(object : Snackbar.Callback() {
-        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-            super.onDismissed(transientBottomBar, event)
-            callback()
-        }
-    })
-
 fun Snackbar.icon(@DrawableRes drawableId: Int, @ColorRes tintColorId: Int): Snackbar {
     val snackText = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
     if (snackText != null) {
