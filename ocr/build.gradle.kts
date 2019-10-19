@@ -40,9 +40,9 @@ dependencies {
 
     androidTestImplementation("androidx.arch.core:core-testing:2.0.0")
     androidTestImplementation("androidx.test:runner:1.2.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0-alpha4", {
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0-alpha4") {
         exclude(group = "com.android.support", module = "support-annotations")
-    })
+    }
 
     testImplementation("junit:junit:4.12")
 }

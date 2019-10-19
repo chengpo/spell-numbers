@@ -37,6 +37,3 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.1.0")
     testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0")
 }
-repositories {
-    mavenCentral()
-}
