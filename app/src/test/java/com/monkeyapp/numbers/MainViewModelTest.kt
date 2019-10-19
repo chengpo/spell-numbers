@@ -32,7 +32,6 @@ import androidx.lifecycle.Observer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,15 +50,18 @@ class MainViewModelTest {
     @Mock
     lateinit var lifecycleOwner:LifecycleOwner
 
-    @Test
-    fun mainViewModel_should_return_translated_text_correctly() {
-        // ----- Given -----
+    @Before
+    fun setup() {
         val lifecycle = LifecycleRegistry(lifecycleOwner)
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         doReturn(lifecycle).`when`(lifecycleOwner).lifecycle
+    }
 
+    @Test
+    fun mainViewModel_should_return_translated_text_correctly() {
+        // ----- Given -----
         @Suppress("UNCHECKED_CAST")
-        val mockObserver = mock(Observer::class.java) as Observer<NumberWords>
+        val mockObserver = mock(Observer::class.java) as Observer<MainViewModel.NumberWords>
 
         val coroutineMainContext = Dispatchers.Unconfined
         val coroutineWorkerContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
@@ -75,8 +77,8 @@ class MainViewModelTest {
         }
 
         // ----- Then -----
-        val numberWords = NumberWords(numberText = "100,000",
-                                      wordsText = "One Hundred Thousand and 00 / 100")
+        val numberWords = MainViewModel.NumberWords(numberText = "100,000",
+                wordsText = "One Hundred Thousand and 00 / 100")
         verify(mockObserver, timeout(300).times(1)).onChanged(eq(numberWords))
     }
 }
