@@ -24,7 +24,6 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.ocrcapture
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import androidx.core.content.ContextCompat
@@ -35,11 +34,33 @@ import com.monkeyapp.numbers.apphelpers.isPortraitMode
 private const val CAPTURE_RECT_WIDTH_FACTOR = 0.7f
 private const val CAPTURE_RECT_HEIGHT_FACTOR = 0.1f
 
-class OcrOverlayView : View {
+class OcrOverlayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+    : View(context, attrs, defStyleAttr) {
+
     private val viewRect = RectF()
-    private val rectPaint = Paint()
-    private val shadowPaint = Paint()
-    private val ocrGraphicPaint = Paint()
+
+    private val rectPaint by lazy {
+        Paint().apply {
+            color = Color.WHITE
+            style = Paint.Style.STROKE
+            strokeWidth = 6.0f
+        }
+    }
+
+    private val shadowPaint by lazy {
+        Paint().apply {
+            color = ContextCompat.getColor(context, R.color.ocr_overlay_view_bg)
+            style = Paint.Style.FILL
+        }
+    }
+
+    private val ocrGraphicPaint by lazy {
+        Paint().apply {
+            color = ContextCompat.getColor(context, R.color.ocr_graphic_outline)
+            style = Paint.Style.STROKE
+            strokeWidth = 6.0f
+        }
+    }
 
     private var captureRect = RectF()
     var ocrGraphicList: List<OcrGraphic> = emptyList()
@@ -53,25 +74,6 @@ class OcrOverlayView : View {
                 invalidate()
             }
         }
-
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    @SuppressLint("NewApi")
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
-
-    init {
-        rectPaint.color = Color.WHITE
-        rectPaint.style = Paint.Style.STROKE
-        rectPaint.strokeWidth = 6.0f
-
-        shadowPaint.color = ContextCompat.getColor(context, R.color.ocr_overlay_view_bg)
-        shadowPaint.style = Paint.Style.FILL
-
-        ocrGraphicPaint.color = ContextCompat.getColor(context, R.color.ocr_graphic_outline)
-        ocrGraphicPaint.style = Paint.Style.STROKE
-        ocrGraphicPaint.strokeWidth = 6.0f
-    }
 
     fun calculateCaptureRect(viewWidth:Int, viewHeight:Int): RectF {
         val captureRectWidth = viewWidth * CAPTURE_RECT_WIDTH_FACTOR

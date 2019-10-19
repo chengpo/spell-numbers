@@ -51,7 +51,7 @@ class CameraSource(private val context: Context,
     var previewSize = Size(requestedPreviewWidth, requestedPreviewHeight)
 
     private var rotation = 0
-    private val frameProcessor = FrameProcessor()
+    private val frameProcessor: FrameProcessor by lazy { FrameProcessor() }
     private var frameProcessorThread: Thread? = null
 
     private val cameraLock = Object()

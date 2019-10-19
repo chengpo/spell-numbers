@@ -43,18 +43,14 @@ private const val DEFAULT_VIEW_WIDTH = 320
 private const val DEFAULT_VIEW_HEIGHT = 240
 @JvmField val DEFAULT_VIEW_SIZE = Size(DEFAULT_VIEW_WIDTH, DEFAULT_VIEW_HEIGHT)
 
-class CameraSourcePreview : ViewGroup {
+class CameraSourcePreview @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+    : ViewGroup(context, attrs, defStyleAttr) {
+
     private val surfaceView = SurfaceView(context)
 
     private var cameraSource: CameraSource? = null
     private var isSurfaceAvailable: Boolean = false
     private var isStartRequested: Boolean = false
-
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    @SuppressLint("NewApi")
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     init {
         surfaceView.holder.addCallback(object: SurfaceHolder.Callback {
