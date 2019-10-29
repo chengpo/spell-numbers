@@ -36,9 +36,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
+import arrow.core.Either
 import com.monkeyapp.numbers.apphelpers.icon
 import com.monkeyapp.numbers.apphelpers.ocrIntent
 import com.monkeyapp.numbers.apphelpers.snackbar
+import com.monkeyapp.numbers.translators.SpellerError
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_digit_pad.*
 import kotlinx.android.synthetic.main.content_number_word.*
@@ -102,22 +104,28 @@ class MainFragment : Fragment() {
             }
         }
 
-        mainViewModel.numberWords.observe(viewLifecycleOwner, Observer { numberWords ->
-            numberWords?.let {
-                numberTextView.text = it.numberText
-                omniButtonView.state = if (it.numberText.isEmpty()) {
-                    OmniButton.State.Camera
-                } else {
-                    OmniButton.State.Clean
-                }
+        mainViewModel.formattedNumberText.observe(viewLifecycleOwner, Observer {
+            numberTextView.text = it
 
-                wordsTextView.text = it.wordsText
+            omniButtonView.state = if (it.isEmpty()) {
+                OmniButton.State.Camera
+            } else {
+                OmniButton.State.Clean
             }
         })
 
-        mainViewModel.error.observe(viewLifecycleOwner, Observer {
-            digitPadView.snackbar(R.string.too_large_to_spell) {
-                icon(R.drawable.ic_error, R.color.accent)
+        mainViewModel.numberWordsText.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Either.Right -> wordsTextView.text = it.b
+                is Either.Left -> {
+                    when (it.a) {
+                        SpellerError.NUMBER_IS_TOO_LARGE -> {
+                            digitPadView.snackbar(R.string.too_large_to_spell) {
+                                icon(R.drawable.ic_error, R.color.accent)
+                            }
+                        }
+                    }
+                }
             }
         })
 

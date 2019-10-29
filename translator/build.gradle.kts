@@ -28,8 +28,8 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.50")
-    implementation("io.arrow-kt:arrow-core:0.7.3")
+    implementation(Config.Libs.kotlin)
+    implementation(Config.Libs.arrow)
 
     testImplementation(project(":testHelper"))
     testImplementation("junit:junit:4.12")

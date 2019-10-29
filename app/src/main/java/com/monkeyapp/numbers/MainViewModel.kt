@@ -25,78 +25,62 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 import androidx.lifecycle.*
-import com.monkeyapp.numbers.translators.LargeNumberException
-import com.monkeyapp.numbers.translators.TranslatorFactory
-import com.monkeyapp.numbers.translators.TranslatorFactory.Translator
+import arrow.core.Either
+import com.monkeyapp.numbers.translators.*
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
-import kotlin.coroutines.CoroutineContext
 
-class MainViewModel(private val coroutineMainContext: CoroutineContext,
-                    private val coroutineWorkerContext: ExecutorCoroutineDispatcher) : ViewModel() {
+class MainViewModel(private val coroutineWorkerContext: ExecutorCoroutineDispatcher) : ViewModel() {
+    private val numberText = MutableLiveData<String>()
 
-    private val translator: Translator = TranslatorFactory.englishTranslator
-
-    private val _numberWords = MutableLiveData<NumberWords>()
-    private val _error = MutableLiveData<Throwable>()
-
-    val numberWords: LiveData<NumberWords>
-        get() = _numberWords
-
-    val error: LiveData<Throwable>
-        get() = _error
-
-    init {
-        translator.observe { numberText: String, wordsText: String ->
-            viewModelScope.launch(coroutineMainContext) {
-                _numberWords.value = NumberWords(numberText, wordsText)
+    val formattedNumberText: LiveData<String>
+        get() {
+            return Transformations.switchMap(numberText) {
+                liveData(coroutineWorkerContext) {
+                    emit(formatNumber(it, delimiter = ',', delimiterWidth = 3))
+                }
             }
         }
-    }
+
+    val numberWordsText: LiveData<Either<SpellerError, String>>
+        get() {
+            return Transformations.switchMap(numberText) {
+                liveData(coroutineWorkerContext) {
+                    val spelledText = spellNumberInEnglish(it)
+                    emit(spelledText)
+
+                    if (spelledText.isLeft()) {
+                        withContext(Dispatchers.Main) {
+                            backspace()
+                        }
+                    }
+                }
+            }
+        }
 
     override fun onCleared() {
         super.onCleared()
         coroutineWorkerContext.close()
     }
 
-    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        viewModelScope.launch(coroutineMainContext) {
-            _error.value = exception
-        }
-    }
-
     fun append(digit: Char) {
-        viewModelScope.launch(coroutineWorkerContext + exceptionHandler) {
-            try {
-                translator.append(digit)
-            } catch (e: LargeNumberException) {
-                translator.backspace()
-                throw e
-            }
-        }
+        numberText.value = appendDigit(numberText.value ?: "", digit)
     }
 
     fun backspace() {
-        viewModelScope.launch(coroutineWorkerContext + exceptionHandler) {
-            translator.backspace()
-        }
+        numberText.value = deleteDigit(numberText.value ?: "")
     }
 
     fun reset() {
-        viewModelScope.launch(coroutineWorkerContext) {
-            translator.reset()
-        }
+        numberText.value = ""
     }
 
     class MainViewModelFactory : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             @Suppress("UNCHECKED_CAST")
-            return MainViewModel(coroutineMainContext = Dispatchers.Main,
-                    coroutineWorkerContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()) as T
+            return MainViewModel(coroutineWorkerContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()) as T
         }
     }
-
-    data class NumberWords(val numberText: String, val wordsText: String)
 
     companion object {
         val factory: MainViewModelFactory

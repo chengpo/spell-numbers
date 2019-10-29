@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         toolbar.setupWithNavController(navController, appBarConfiguration)
 
         // reserve space for ad
-        adView.minimumHeight = AdSize.SMART_BANNER.getHeightInPixels(this)
+        // adView.minimumHeight = AdSize.SMART_BANNER.getHeightInPixels(this)
 
         // load ad
         adView.adListener = object : AdListener() {

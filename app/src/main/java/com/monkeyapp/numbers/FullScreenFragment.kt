@@ -49,7 +49,8 @@ class FullScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        wordsTextView.text = mainViewModel.numberWords.value?.wordsText
+        // FIXME
+        // wordsTextView.text = mainViewModel.numberWords.value?.wordsText
         wordsTextView.setOnClickListener { copyToClipboard() }
     }
 

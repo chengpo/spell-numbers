@@ -24,16 +24,19 @@ SOFTWARE.
 
 package com.monkeyapp.numbers.translators
 
-interface NumberComposer {
-    @Throws(LargeNumberException::class)
-    fun append(digit: Char)
+fun appendDigit(numberText: String, digit: Char): String {
+    return when {
+        numberText.contains('.') && digit == '.' -> numberText
+        numberText.contains('.') && numberText.substringAfter(delimiter = ".", missingDelimiterValue = "").length >= 3 -> numberText
+        numberText.isEmpty() && digit == '.' -> "0."
 
-    @Throws(LargeNumberException::class)
-    fun backspace()
-
-    fun reset()
+        else -> numberText + digit
+    }
 }
 
-interface ObservableNumberComposer: NumberComposer {
-    fun observe(callback: (numberText: String, wholeNumber: Long, fraction: Float) -> Unit)
+fun deleteDigit(numberText: String): String {
+    return when {
+        numberText.isNotEmpty() -> numberText.substring(0, numberText.length - 1)
+        else -> numberText
+    }
 }

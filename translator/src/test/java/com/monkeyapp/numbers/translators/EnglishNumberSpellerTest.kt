@@ -23,11 +23,12 @@ SOFTWARE.
  */
 
 package com.monkeyapp.numbers.translators
+import arrow.core.Either
 import com.monkeyapp.numbers.testhelpers.shouldEqual
 import org.junit.Test
 
 class EnglishNumberSpellerTest {
-    private class TestSample(var integer: Long = 0L,
+    private data class TestSample(var integer: Long = 0L,
                              var decimal: Float = 0.0F,
                              var expected: String = "")
 
@@ -35,7 +36,11 @@ class EnglishNumberSpellerTest {
 
     private fun verifySpellIntegers(vararg samples: TestSample) {
         samples.forEach { sample ->
-            EnglishNumberSpeller().spellNumber(sample.integer, sample.decimal) shouldEqual sample.expected
+            val englishNumber = EnglishNumber(String.format("%.4f", sample.integer.toDouble() + sample.decimal))
+            val numberWordsText = englishNumber.spell()
+
+            numberWordsText.isRight() shouldEqual true
+            (numberWordsText as Either.Right).b shouldEqual sample.expected
         }
     }
 
@@ -222,8 +227,7 @@ class EnglishNumberSpellerTest {
                     testSample {
                         integer = number * 1000 * 1000L * 1000L + 1000 * 1000L + 1000L
                         expected = "${symbols[number]} Billion One Million One Thousand and 00 / 100"
-                    },
-                    testSample {
+                    },testSample {
                         integer = number * 1000 * 1000L * 1000L + 1000 * 1000L + 1000L + 100L
                         expected = "${symbols[number]} Billion One Million One Thousand One Hundred and 00 / 100"
                     },

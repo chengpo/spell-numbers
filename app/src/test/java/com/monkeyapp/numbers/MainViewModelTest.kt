@@ -29,9 +29,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.Observer
+import arrow.core.Either
+import arrow.core.right
+import com.monkeyapp.numbers.translators.SpellerError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,25 +57,38 @@ class MainViewModelTest {
     @Mock
     lateinit var lifecycleOwner:LifecycleOwner
 
+    private val mainThreadSurrogate = newSingleThreadContext("UI thread")
+
     @Before
     fun setup() {
         val lifecycle = LifecycleRegistry(lifecycleOwner)
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         doReturn(lifecycle).`when`(lifecycleOwner).lifecycle
+
+        Dispatchers.setMain(mainThreadSurrogate)
+    }
+
+    @After
+    fun shutdown() {
+        Dispatchers.resetMain() // reset main dispatcher to the original Main dispatcher
+        mainThreadSurrogate.close()
     }
 
     @Test
     fun mainViewModel_should_return_translated_text_correctly() {
         // ----- Given -----
         @Suppress("UNCHECKED_CAST")
-        val mockObserver = mock(Observer::class.java) as Observer<MainViewModel.NumberWords>
+        val mockNumberWordsTextObserver = mock(Observer::class.java) as Observer<Either<SpellerError, String>>
 
-        val coroutineMainContext = Dispatchers.Unconfined
+        @Suppress("UNCHECKED_CAST")
+        val mockNumberTextObserver = mock(Observer::class.java) as Observer<String>
+
         val coroutineWorkerContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
         // ----- When -----
-        val viewModel = MainViewModel(coroutineMainContext, coroutineWorkerContext)
-        viewModel.numberWords.observe(lifecycleOwner, mockObserver)
+        val viewModel = MainViewModel(coroutineWorkerContext)
+        viewModel.numberWordsText.observe(lifecycleOwner, mockNumberWordsTextObserver)
+        viewModel.formattedNumberText.observe(lifecycleOwner, mockNumberTextObserver)
 
         runBlocking {
             "100000".forEach { digit ->
@@ -77,8 +97,7 @@ class MainViewModelTest {
         }
 
         // ----- Then -----
-        val numberWords = MainViewModel.NumberWords(numberText = "100,000",
-                wordsText = "One Hundred Thousand and 00 / 100")
-        verify(mockObserver, timeout(300).times(1)).onChanged(eq(numberWords))
+        verify(mockNumberWordsTextObserver, timeout(300).times(1)).onChanged(eq("One Hundred Thousand and 00 / 100".right()))
+        verify(mockNumberTextObserver, timeout(300).times(1)).onChanged(eq("100,000"))
     }
 }
