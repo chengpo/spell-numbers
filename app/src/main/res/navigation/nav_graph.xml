@@ -16,8 +16,10 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_right" />
 
-        <action android:id="@+id/action_main_to_full_screen"
-            app:destination="@id/full_screen_fragment"/>
+        <action
+            android:id="@+id/action_main_to_full_screen"
+            app:destination="@+id/full_screen_fragment">
+        </action>
     </fragment>
 
     <fragment
@@ -29,5 +31,9 @@
     <fragment
         android:id="@+id/full_screen_fragment"
         android:name="com.monkeyapp.numbers.FullScreenFragment"
-        android:label="@string/app_name" />
+        android:label="@string/app_name" >
+        <argument
+            android:name="numberWordsText"
+            app:argType="string" />
+    </fragment>
 </navigation>

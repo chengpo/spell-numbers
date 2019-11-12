@@ -30,13 +30,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import arrow.core.Either
+import androidx.navigation.fragment.navArgs
 import com.monkeyapp.numbers.apphelpers.snackbar
 import kotlinx.android.synthetic.main.content_full_screen.*
 
 class FullScreenFragment : Fragment() {
-    private val mainViewModel: MainViewModel by activityViewModels { MainViewModel.factory }
+    private val args: FullScreenFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +49,7 @@ class FullScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        wordsTextView.text = when(val numberWordsText = mainViewModel.numberWordsText.value) {
-            is Either.Right -> numberWordsText.b
-            else -> ""
-        }
+        wordsTextView.text =  args.numberWordsText
 
         wordsTextView.setOnClickListener { copyToClipboard() }
     }

@@ -32,7 +32,7 @@ import android.view.*
 import android.widget.Button
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
@@ -46,8 +46,7 @@ import kotlinx.android.synthetic.main.content_digit_pad.*
 import kotlinx.android.synthetic.main.content_number_word.*
 
 class MainFragment : Fragment() {
-    private val mainViewModel: MainViewModel by activityViewModels { MainViewModel.factory }
-
+    private val mainViewModel: MainViewModel by viewModels { MainViewModel.factory }
     private val ratingPrompter: RatingPrompter = RatingPrompter(this::requireContext) { digitPadView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,8 +95,9 @@ class MainFragment : Fragment() {
             val wordsText = wordsTextView.text.toString()
             if (wordsText.isNotBlank()) {
                 try {
+                    val action = MainFragmentDirections.actionMainToFullScreen(wordsText)
                     NavHostFragment.findNavController(my_nav_host_fragment)
-                            .navigate(R.id.action_main_to_full_screen)
+                            .navigate(action)
                 } catch (e: IllegalArgumentException) {
                     Log.e("MainFragment", "navigation failed", e)
                 }
