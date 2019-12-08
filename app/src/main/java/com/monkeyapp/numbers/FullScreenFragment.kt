@@ -65,19 +65,20 @@ class FullScreenFragment : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-}
 
-/**
- * Copy to clipboard
- */
-private fun FullScreenFragment.copyToClipboard(): Boolean {
-    getSystemService(requireContext(), ClipboardManager::class.java)?.let { clipboard ->
-        val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView.text)
-        clipboard.setPrimaryClip(clip)
+    /**
+     * Copy to clipboard
+     */
+    private fun copyToClipboard(): Boolean {
+        getSystemService(requireContext(), ClipboardManager::class.java)?.let { clipboard ->
+            val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView.text)
+            clipboard.setPrimaryClip(clip)
 
-        wordsTextView.snackbar(R.string.full_screen_copied_to_clipboard)
-        return true
+            wordsTextView.snackbar(R.string.full_screen_copied_to_clipboard)
+            return true
+        }
+
+        return false
     }
-
-    return false
 }
+

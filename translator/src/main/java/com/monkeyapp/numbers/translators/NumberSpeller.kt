@@ -84,31 +84,31 @@ class EnglishNumber(private val numberText: String) {
 
         val words = StringBuilder()
         var number = wholeNumber
-        var radix = 0
+        var exponent = 0
 
         // find the maximum radix
         while (number >= 1000) {
             number /= 1000
 
-            if (++radix >= radixSymbols.size) {
+            if (++exponent >= radixSymbols.size) {
                 return SpellerError.NUMBER_IS_TOO_LARGE.left()
             }
         }
 
         number = wholeNumber
 
-        while (radix >= 0) {
-            val base = 1000.0.pow(radix.toDouble()).toLong()
+        while (exponent >= 0) {
+            val base = 1000.0.pow(exponent.toDouble()).toLong()
             val hundred = number / base
             if (hundred > 0) {
                 spellHundreds(hundred, words)
-                if (radix > 0) {
-                    words.append("${radixSymbols[radix]} ")
+                if (exponent > 0) {
+                    words.append("${radixSymbols[exponent]} ")
                 }
             }
 
             number %= base
-            radix--
+            exponent--
         }
 
         return words.toString().trimEnd().right()

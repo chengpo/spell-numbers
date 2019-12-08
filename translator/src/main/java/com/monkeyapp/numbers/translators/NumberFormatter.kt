@@ -33,9 +33,8 @@ fun formatNumber(numberText: String, delimiter: Char, delimiterWidth: Int): Stri
     val fractionText = if (dotIndex < 0) null else numberText.substring(dotIndex)
     val sb = StringBuilder()
 
-    // trim the leading '0's and separate digits with delimiter
+    // separate digits with delimiter
     wholeNumberText
-            .trimStart { it == '0' }
             .reversed()
             .forEachIndexed { index, digit ->
                 if (index > 0 && index % delimiterWidth == 0) {
@@ -45,11 +44,6 @@ fun formatNumber(numberText: String, delimiter: Char, delimiterWidth: Int): Stri
             }
 
     sb.reverse()
-
-    // set whole number = 0 for empty whole number string
-    if (sb.isEmpty()) {
-        sb.append('0')
-    }
 
     if (fractionText != null) {
         sb.append(fractionText)
