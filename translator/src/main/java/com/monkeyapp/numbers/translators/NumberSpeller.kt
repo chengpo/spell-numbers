@@ -35,7 +35,7 @@ enum class SpellerError {
 
 fun spellNumberInEnglish(numberText: String) = EnglishNumber(numberText).spell()
 
-class Number(private val numberText: String) {
+data class Number(private val numberText: String) {
     val integer: Eval<Long> = Eval.later {
         val wholeNumberText = numberText.substringBefore(delimiter = '.')
         wholeNumberText.fold(0L) { accumulator, digit ->

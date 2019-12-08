@@ -32,7 +32,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -47,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         toolbar.setupWithNavController(navController, appBarConfiguration)
 
-        // reserve space for ad
+        // FIXME: reserve space for ad
         // adView.minimumHeight = AdSize.SMART_BANNER.getHeightInPixels(this)
 
         // load ad

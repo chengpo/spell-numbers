@@ -30,16 +30,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Button
-import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
 import arrow.core.Either
-import com.monkeyapp.numbers.apphelpers.icon
-import com.monkeyapp.numbers.apphelpers.ocrIntent
-import com.monkeyapp.numbers.apphelpers.snackbar
+import com.monkeyapp.numbers.apphelpers.*
 import com.monkeyapp.numbers.translators.SpellerError
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_digit_pad.*
@@ -47,7 +44,7 @@ import kotlinx.android.synthetic.main.content_number_word.*
 
 class MainFragment : Fragment() {
     private val mainViewModel: MainViewModel by viewModels { MainViewModel.factory }
-    private val ratingPrompter: RatingPrompter = RatingPrompter(this::requireContext) { digitPadView }
+    private val ratingPrompter: RatingPrompter by lazy { RatingPrompter(this::requireContext) { digitPadView } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,35 +69,42 @@ class MainFragment : Fragment() {
             }
         }
 
-        digitPadView.forEach {
-            if (it.id == R.id.btnDel) {
-                it.setOnLongClickListener{
-                    mainViewModel.reset()
-                    true
-                }
-            }
+        digitPadView.findFirstAndTakeAction(
+                predicate = {it.id == R.id.btnDel },
+                action = {
+                    // long click to reset number
+                    setOnLongClickListener {
+                        mainViewModel.reset()
+                        true
+                    }
 
-            it.setOnClickListener { button ->
-                when {
-                    button.id == R.id.btnDel ->
+                    // delete last digit
+                    setOnClickListener {
                         mainViewModel.backspace()
+                    }
+                })
 
-                    button is Button && (button.text[0] == '.' || button.text[0] in '0'..'9') ->
-                        mainViewModel.append(button.text[0])
+        digitPadView.findAllAndTakeAction(
+                predicate = { button ->
+                    button is Button && (button.text[0] == '.' || button.text[0] in '0'..'9')},
+
+                action = {
+                    setOnClickListener {
+                        mainViewModel.append((this as Button).text[0])
+                    }
                 }
-            }
-        }
+        )
 
         wordsTextView.setOnClickListener {
-            val wordsText = wordsTextView.text.toString()
-            if (wordsText.isNotBlank()) {
-                try {
+            try {
+                val wordsText = wordsTextView.text.toString()
+                if (wordsText.isNotBlank()) {
                     val action = MainFragmentDirections.actionMainToFullScreen(wordsText)
                     NavHostFragment.findNavController(my_nav_host_fragment)
                             .navigate(action)
-                } catch (e: IllegalArgumentException) {
-                    Log.e("MainFragment", "navigation failed", e)
                 }
+            } catch (e: IllegalArgumentException) {
+                Log.e("MainFragment", "navigation failed", e)
             }
         }
 

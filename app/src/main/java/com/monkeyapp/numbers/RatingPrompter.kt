@@ -34,6 +34,7 @@ import android.view.View
 import androidx.core.content.edit
 import androidx.lifecycle.LifecycleOwner
 import com.monkeyapp.numbers.apphelpers.*
+import kotlin.math.absoluteValue
 
 class RatingPrompter(private val contextProvider: () -> Context,
                      private val anchorViewProvider: () -> View) : LifecycleObserver {
@@ -52,12 +53,10 @@ class RatingPrompter(private val contextProvider: () -> Context,
             val lastPromptTime = ratePrefs.getLong(PREF_KEY_LAST_PROMPT_TIME_LONG, firstInstallTime)
 
             val timeout = (0.5 + Math.random() / 2) * 1000L * 60L * 60L
-            return System.currentTimeMillis() > lastPromptTime + timeout
+            return (System.currentTimeMillis() - lastPromptTime).absoluteValue > timeout
         }
 
-    fun attach(lifecycleOwner: LifecycleOwner) {
-        lifecycleOwner.lifecycle.addObserver(this)
-    }
+    fun attach(lifecycleOwner: LifecycleOwner) = lifecycleOwner.lifecycle.addObserver(this)
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {

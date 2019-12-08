@@ -31,6 +31,8 @@ dependencies {
     implementation("com.google.android.material:material:1.0.0")
     implementation(Config.Libs.appCompat)
     implementation(Config.Libs.kotlin)
+    implementation("androidx.core:core:1.1.0")
+    implementation("androidx.core:core-ktx:1.1.0")
 
     // coroutines
     implementation(Config.Libs.coroutinesCore)
