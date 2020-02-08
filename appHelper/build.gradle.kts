@@ -1,4 +1,4 @@
-
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
 plugins {
     id("com.android.library")
@@ -25,14 +25,24 @@ android {
             consumerProguardFiles("proguard-rules.pro")
         }
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        val options = this as KotlinJvmOptions
+        options.jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.0.0")
+    implementation("com.google.android.material:material:1.1.0")
     implementation(Config.Libs.appCompat)
     implementation(Config.Libs.kotlin)
-    implementation("androidx.core:core:1.1.0")
-    implementation("androidx.core:core-ktx:1.1.0")
+    implementation("androidx.core:core:1.2.0")
+    implementation("androidx.core:core-ktx:1.2.0")
 
     // coroutines
     implementation(Config.Libs.coroutinesCore)
