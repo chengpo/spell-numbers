@@ -4,7 +4,7 @@
 
     <string name="action_about">About</string>
     <string name="about_title">About</string>
-    <string name="about_app_copyright">MIT License\nCopyright &#169; 2019 Po Cheng</string>
+    <string name="about_app_copyright">MIT License\nCopyright &#169; 2020 Po Cheng</string>
     <string name="about_app_version">Version %s</string>
     <string name="about_app_project">Visit project repository to get latest source code or report issues.\n\n\nhttps://github.com/chengpo/spell-numbers</string>
 
