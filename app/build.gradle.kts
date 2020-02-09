@@ -124,7 +124,7 @@ dependencies {
     implementation("com.google.dagger:dagger:2.24")
     kapt("com.google.dagger:dagger-compiler:2.24")
 
-    androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
+    androidTestImplementation("androidx.arch.core:core-testing:2.0.0")
     androidTestImplementation("androidx.test:runner:1.2.0")
 
     androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0-alpha4") {
@@ -135,7 +135,7 @@ dependencies {
 
     testImplementation("junit:junit:4.12")
     testImplementation("org.mockito:mockito-core:1.10.19")
-    testImplementation("androidx.arch.core:core-testing:2.1.0")
+    testImplementation("androidx.arch.core:core-testing:2.0.0")
     testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.2")
 }
