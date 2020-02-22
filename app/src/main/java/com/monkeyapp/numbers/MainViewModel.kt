@@ -49,6 +49,7 @@ class MainViewModel(private val coroutineWorkerContext: ExecutorCoroutineDispatc
                     val spelledText = spellNumberInEnglish(it)
                     emit(spelledText)
 
+                    // if encounter error
                     if (spelledText.isLeft()) {
                         withContext(Dispatchers.Main) {
                             backspace()
@@ -75,7 +76,7 @@ class MainViewModel(private val coroutineWorkerContext: ExecutorCoroutineDispatc
         numberText.value = ""
     }
 
-    class MainViewModelFactory : ViewModelProvider.Factory {
+    private class MainViewModelFactory : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             @Suppress("UNCHECKED_CAST")
             return MainViewModel(coroutineWorkerContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()) as T
@@ -83,7 +84,7 @@ class MainViewModel(private val coroutineWorkerContext: ExecutorCoroutineDispatc
     }
 
     companion object {
-        val factory: MainViewModelFactory
+        val factory: ViewModelProvider.Factory
             get() = MainViewModelFactory()
     }
 }
