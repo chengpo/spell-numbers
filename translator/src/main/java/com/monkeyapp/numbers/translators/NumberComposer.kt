@@ -29,6 +29,7 @@ fun appendDigit(numberText: String, digit: Char): String {
         numberText.contains('.') && digit == '.' -> numberText
         numberText.contains('.') && numberText.substringAfter(delimiter = ".", missingDelimiterValue = "").length >= 3 -> numberText
         numberText.isEmpty() && digit == '.' -> "0."
+        numberText == "0" && digit == '.' -> "0."
         numberText == "0" && digit == '0' -> numberText
         numberText == "0" && digit != '0' -> "$digit"
         else -> numberText + digit

@@ -75,7 +75,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun mainViewModel_should_return_translated_text_correctly() {
+    fun `MainViewModel translates 100000 correctly`() {
         // ----- Given -----
         @Suppress("UNCHECKED_CAST")
         val mockNumberWordsTextObserver = mock(Observer::class.java) as Observer<Either<SpellerError, String>>
@@ -99,5 +99,86 @@ class MainViewModelTest {
         // ----- Then -----
         verify(mockNumberWordsTextObserver, timeout(300).times(1)).onChanged(eq("One Hundred Thousand and 00 / 100".right()))
         verify(mockNumberTextObserver, timeout(300).times(1)).onChanged(eq("100,000"))
+    }
+
+    @Test
+    fun `MainViewModel translates zero-point correctly`() {
+        // ----- Given -----
+        @Suppress("UNCHECKED_CAST")
+        val mockNumberWordsTextObserver = mock(Observer::class.java) as Observer<Either<SpellerError, String>>
+
+        @Suppress("UNCHECKED_CAST")
+        val mockNumberTextObserver = mock(Observer::class.java) as Observer<String>
+
+        val coroutineWorkerContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+
+        // ----- When -----
+        val viewModel = MainViewModel(coroutineWorkerContext)
+        viewModel.numberWordsText.observe(lifecycleOwner, mockNumberWordsTextObserver)
+        viewModel.formattedNumberText.observe(lifecycleOwner, mockNumberTextObserver)
+
+        runBlocking {
+            "0.".forEach { digit ->
+                viewModel.append(digit)
+            }
+        }
+
+        // ----- Then -----
+        verify(mockNumberWordsTextObserver, timeout(300).times(1)).onChanged(eq("Zero and 00 / 100".right()))
+        verify(mockNumberTextObserver, timeout(300).times(1)).onChanged(eq("0."))
+    }
+
+    @Test
+    fun `MainViewModel translates point-zero correctly`() {
+        // ----- Given -----
+        @Suppress("UNCHECKED_CAST")
+        val mockNumberWordsTextObserver = mock(Observer::class.java) as Observer<Either<SpellerError, String>>
+
+        @Suppress("UNCHECKED_CAST")
+        val mockNumberTextObserver = mock(Observer::class.java) as Observer<String>
+
+        val coroutineWorkerContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+
+        // ----- When -----
+        val viewModel = MainViewModel(coroutineWorkerContext)
+        viewModel.numberWordsText.observe(lifecycleOwner, mockNumberWordsTextObserver)
+        viewModel.formattedNumberText.observe(lifecycleOwner, mockNumberTextObserver)
+
+        runBlocking {
+            ".0".forEach { digit ->
+                viewModel.append(digit)
+            }
+        }
+
+        // ----- Then -----
+        verify(mockNumberWordsTextObserver, timeout(300).times(1)).onChanged(eq("Zero and 00 / 100".right()))
+        verify(mockNumberTextObserver, timeout(300).times(1)).onChanged(eq("0.0"))
+    }
+
+    @Test
+    fun `MainViewModel translates point-one correctly`() {
+        // ----- Given -----
+        @Suppress("UNCHECKED_CAST")
+        val mockNumberWordsTextObserver = mock(Observer::class.java) as Observer<Either<SpellerError, String>>
+
+        @Suppress("UNCHECKED_CAST")
+        val mockNumberTextObserver = mock(Observer::class.java) as Observer<String>
+
+        val coroutineWorkerContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+
+        // ----- When -----
+        val viewModel = MainViewModel(coroutineWorkerContext)
+        viewModel.numberWordsText.observe(lifecycleOwner, mockNumberWordsTextObserver)
+        viewModel.formattedNumberText.observe(lifecycleOwner, mockNumberTextObserver)
+
+        runBlocking {
+            ".1".forEach { digit ->
+                viewModel.append(digit)
+            }
+        }
+
+        // ----- Then -----
+        verify(mockNumberWordsTextObserver, timeout(300).times(1)).onChanged(eq("Zero and 10 / 100".right()))
+        verify(mockNumberTextObserver, timeout(300).times(1)).onChanged(eq("0.1"))
     }
 }
