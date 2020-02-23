@@ -11,7 +11,7 @@
     app:columnCount="3"
     app:rowOrderPreserved="true"
     app:useDefaultMargins="false"
-    app:layout_behavior="com.monkeyapp.numbers.EvenlySplittingScreenBehavior"
+    app:layout_behavior="com.monkeyapp.numbers.NumberWordViewBehavior"
     tools:context=".MainActivity">
 
     <Button
