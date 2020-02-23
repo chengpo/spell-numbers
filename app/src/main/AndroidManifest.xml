@@ -15,7 +15,7 @@
         android:resizeableActivity="true"
         android:theme="@style/AppTheme"
         android:appCategory="productivity"
-        tools:targetApi="o"
+        tools:targetApi="Q"
         tools:ignore="AllowBackup">
 
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
