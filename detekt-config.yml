@@ -1,0 +1,11 @@
+style:
+  active: true
+  MagicNumber:
+    active: false
+
+  WildcardImport:
+    active: false
+
+  MaxLineLength:
+    active: true
+    maxLineLength: 180

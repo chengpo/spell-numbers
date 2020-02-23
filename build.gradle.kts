@@ -36,6 +36,11 @@ allprojects {
         plugin("io.gitlab.arturbosch.detekt")
     }
 
+    detekt {
+        buildUponDefaultConfig = true
+        config = files("${rootDir}/detekt-config.yml")
+    }
+
     tasks.withType(Test::class) {
         testLogging {
             exceptionFormat = TestExceptionFormat.FULL

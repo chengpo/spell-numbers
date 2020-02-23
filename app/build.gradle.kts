@@ -99,7 +99,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
-    kapt("androidx.lifecycle:lifecycle-compiler:2.2.0")
+    //kapt("androidx.lifecycle:lifecycle-compiler:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.2.0")
 
     implementation("com.google.firebase:firebase-core:17.2.2")
     implementation("com.google.firebase:firebase-analytics:17.2.2")
