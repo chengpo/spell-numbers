@@ -20,4 +20,4 @@ before_script:
   - echo 'storeFile=xxx' >> keystore.properties
 
 script:
-  - ./gradlew clean lint detekt test
+  - ./gradlew clean lint detekt build test
