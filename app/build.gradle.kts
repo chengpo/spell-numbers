@@ -84,7 +84,7 @@ dependencies {
     implementation("androidx.annotation:annotation:1.1.0")
     implementation("androidx.core:core:1.2.0")
     implementation("androidx.core:core-ktx:1.2.0")
-    implementation("androidx.fragment:fragment-ktx:1.2.1")
+    implementation("androidx.fragment:fragment-ktx:1.2.3")
     implementation("com.google.android.material:material:1.1.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
@@ -93,7 +93,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.0.0-beta4")
 
     // admob
-    implementation("com.google.android.gms:play-services-ads:18.3.0")
+    implementation("com.google.android.gms:play-services-ads:19.0.1")
 
     // viewModel and liveData
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
@@ -102,8 +102,8 @@ dependencies {
     //kapt("androidx.lifecycle:lifecycle-compiler:2.2.0")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.2.0")
 
-    implementation("com.google.firebase:firebase-core:17.2.2")
-    implementation("com.google.firebase:firebase-analytics:17.2.2")
+    implementation("com.google.firebase:firebase-core:17.2.3")
+    implementation("com.google.firebase:firebase-analytics:17.2.3")
 
     // navigation
     implementation("android.arch.navigation:navigation-fragment-ktx:1.0.0")
@@ -125,7 +125,7 @@ dependencies {
     implementation("com.google.dagger:dagger:2.24")
     kapt("com.google.dagger:dagger-compiler:2.24")
 
-    androidTestImplementation("androidx.arch.core:core-testing:2.0.0")
+    androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
     androidTestImplementation("androidx.test:runner:1.2.0")
 
     androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0-alpha4") {
@@ -136,7 +136,7 @@ dependencies {
 
     testImplementation("junit:junit:4.12")
     testImplementation("org.mockito:mockito-core:1.10.19")
-    testImplementation("androidx.arch.core:core-testing:2.0.0")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
     testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.2")
 }

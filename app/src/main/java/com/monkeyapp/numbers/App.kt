@@ -10,7 +10,7 @@ class App : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // enable night mode base on system setting
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         } else {

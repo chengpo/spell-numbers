@@ -33,12 +33,11 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import arrow.core.Either
 import com.monkeyapp.numbers.apphelpers.*
 import com.monkeyapp.numbers.translators.SpellerError
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_digit_pad.*
 import kotlinx.android.synthetic.main.content_number_word.*
 
@@ -65,7 +64,7 @@ class MainFragment : Fragment() {
                     mainViewModel.reset()
 
                 OmniButton.State.Camera ->
-                    startActivityForResult(context!!.ocrIntent, REQUEST_CODE_OCR_CAPTURE)
+                    startActivityForResult(requireContext().ocrIntent, REQUEST_CODE_OCR_CAPTURE)
             }
         }
 
@@ -100,8 +99,8 @@ class MainFragment : Fragment() {
                 val wordsText = wordsTextView.text.toString()
                 if (wordsText.isNotBlank()) {
                     val action = MainFragmentDirections.actionMainToFullScreen(wordsText)
-                    NavHostFragment.findNavController(my_nav_host_fragment)
-                            .navigate(action)
+
+                    findNavController().navigate(action)
                 }
             } catch (e: IllegalArgumentException) {
                 Log.e("MainFragment", "navigation failed", e)
@@ -155,8 +154,7 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val navController = NavHostFragment.findNavController(my_nav_host_fragment)
-        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
+        return item.onNavDestinationSelected(findNavController()) || super.onOptionsItemSelected(item)
     }
 
     private companion object {
