@@ -8,21 +8,18 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
+    <FrameLayout
+        android:id="@+id/adViewContainer"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="@string/ad_unit_id">
-    </com.google.android.gms.ads.AdView>
+        android:minHeight="50dp"/>
 
     <com.google.android.material.appbar.AppBarLayout
-        app:layout_constraintTop_toBottomOf="@id/adView"
+        app:layout_constraintTop_toBottomOf="@id/adViewContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/appBarLayout"
