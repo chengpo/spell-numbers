@@ -26,7 +26,6 @@ package com.monkeyapp.numbers
 
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
