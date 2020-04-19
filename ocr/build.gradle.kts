@@ -5,6 +5,10 @@ plugins {
     kotlin("kapt")
 }
 
+androidExtensions {
+    features = setOf("parcelize")
+}
+
 android {
     buildToolsVersion(Config.Versions.buildTool)
     compileSdkVersion(Config.Android.compileSdk)
@@ -37,6 +41,13 @@ dependencies {
     }
     // kotlin
     implementation(Config.Libs.kotlin)
+
+    // viewModel and liveData
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
+    //kapt("androidx.lifecycle:lifecycle-compiler:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.2.0")
 
     androidTestImplementation("androidx.arch.core:core-testing:2.0.0")
     androidTestImplementation("androidx.test:runner:1.2.0")

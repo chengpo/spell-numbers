@@ -9,6 +9,10 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+androidExtensions {
+    features = setOf("parcelize")
+}
+
 android {
     buildToolsVersion(Config.Versions.buildTool)
     compileSdkVersion(Config.Android.compileSdk)
@@ -84,7 +88,7 @@ dependencies {
     implementation("androidx.annotation:annotation:1.1.0")
     implementation("androidx.core:core:1.2.0")
     implementation("androidx.core:core-ktx:1.2.0")
-    implementation("androidx.fragment:fragment-ktx:1.2.3")
+    implementation("androidx.fragment:fragment-ktx:1.2.4")
     implementation("com.google.android.material:material:1.1.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
@@ -93,7 +97,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.0.0-beta4")
 
     // admob
-    implementation("com.google.android.gms:play-services-ads:19.0.1")
+    implementation("com.google.android.gms:play-services-ads:19.1.0")
 
     // viewModel and liveData
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
@@ -102,8 +106,8 @@ dependencies {
     //kapt("androidx.lifecycle:lifecycle-compiler:2.2.0")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.2.0")
 
-    implementation("com.google.firebase:firebase-core:17.2.3")
-    implementation("com.google.firebase:firebase-analytics:17.2.3")
+    implementation("com.google.firebase:firebase-core:17.3.0")
+    implementation("com.google.firebase:firebase-analytics:17.3.0")
 
     // navigation
     implementation("android.arch.navigation:navigation-fragment-ktx:1.0.0")

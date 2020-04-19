@@ -29,10 +29,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.content_about.*
 
 class AboutFragment : Fragment() {
+    private val appVersionView by lazy { requireView().findViewById<TextView>(R.id.appVersionView) }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.content_about, container, false)
     }

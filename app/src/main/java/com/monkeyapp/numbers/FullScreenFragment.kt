@@ -28,13 +28,15 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.os.Bundle
 import android.view.*
+import android.widget.TextView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.monkeyapp.numbers.apphelpers.snackbar
-import kotlinx.android.synthetic.main.content_full_screen.*
 
 class FullScreenFragment : Fragment() {
+    private val wordsTextView by lazy { requireView().findViewById<TextView>(R.id.wordsTextView) }
+
     private val args: FullScreenFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +73,7 @@ class FullScreenFragment : Fragment() {
      */
     private fun copyToClipboard(): Boolean {
         getSystemService(requireContext(), ClipboardManager::class.java)?.let { clipboard ->
-            val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView.text)
+            val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView?.text)
             clipboard.setPrimaryClip(clip)
 
             wordsTextView.snackbar(R.string.full_screen_copied_to_clipboard)

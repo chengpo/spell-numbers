@@ -44,12 +44,14 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.text.TextBlock
-import kotlinx.android.synthetic.main.activity_ocr_capture.*
 import java.util.regex.Pattern
 
 private const val RC_HANDLE_CAMERA_PERM = 200
 
 class OcrCaptureActivity : AppCompatActivity() {
+    private val ocrOverlayView by lazy { findViewById<OcrOverlayView>(R.id.ocrOverlayView) }
+    private val cameraSourcePreview by lazy { findViewById<CameraSourcePreview>(R.id.cameraSourcePreview) }
+
     private lateinit var scaleGestureDetector: ScaleGestureDetector
     private var cameraSource: CameraSource? = null
     private var textRecognizer: Detector<TextBlock>? = null

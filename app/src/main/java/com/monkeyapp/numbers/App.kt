@@ -18,7 +18,6 @@ class App : MultiDexApplication() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
         }
 
-        // set ads id
-        MobileAds.initialize(this, "ca-app-pub-6498719425690429~1480158317")
+        MobileAds.initialize(this)
     }
 }

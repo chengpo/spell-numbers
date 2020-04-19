@@ -59,11 +59,6 @@ class MainViewModel(private val coroutineWorkerContext: ExecutorCoroutineDispatc
             }
         }
 
-    override fun onCleared() {
-        super.onCleared()
-        coroutineWorkerContext.close()
-    }
-
     fun append(digit: Char) {
         numberText.value = appendDigit(numberText.value ?: "", digit)
     }
@@ -74,6 +69,11 @@ class MainViewModel(private val coroutineWorkerContext: ExecutorCoroutineDispatc
 
     fun reset() {
         numberText.value = ""
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        coroutineWorkerContext.close()
     }
 
     private class MainViewModelFactory : ViewModelProvider.Factory {

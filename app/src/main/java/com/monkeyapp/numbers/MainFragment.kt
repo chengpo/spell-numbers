@@ -30,6 +30,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -38,10 +39,13 @@ import androidx.navigation.ui.onNavDestinationSelected
 import arrow.core.Either
 import com.monkeyapp.numbers.apphelpers.*
 import com.monkeyapp.numbers.translators.SpellerError
-import kotlinx.android.synthetic.main.content_digit_pad.*
-import kotlinx.android.synthetic.main.content_number_word.*
 
 class MainFragment : Fragment() {
+    private val digitPadView by lazy { requireView().findViewById<ViewGroup>(R.id.digitPadView) }
+    private val omniButtonView by lazy { requireView().findViewById<OmniButton>(R.id.omniButtonView) }
+    private val wordsTextView by lazy { requireView().findViewById<TextView>(R.id.wordsTextView) }
+    private val numberTextView by lazy { requireView().findViewById<TextView>(R.id.numberTextView) }
+
     private val mainViewModel: MainViewModel by viewModels { MainViewModel.factory }
     private val ratingPrompter: RatingPrompter by lazy { RatingPrompter(this::requireContext) { digitPadView } }
 
