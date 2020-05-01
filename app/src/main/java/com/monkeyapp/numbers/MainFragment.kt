@@ -41,10 +41,17 @@ import com.monkeyapp.numbers.apphelpers.*
 import com.monkeyapp.numbers.translators.SpellerError
 
 class MainFragment : Fragment() {
-    private val digitPadView by lazy { requireView().findViewById<ViewGroup>(R.id.digitPadView) }
-    private val omniButtonView by lazy { requireView().findViewById<OmniButton>(R.id.omniButtonView) }
-    private val wordsTextView by lazy { requireView().findViewById<TextView>(R.id.wordsTextView) }
-    private val numberTextView by lazy { requireView().findViewById<TextView>(R.id.numberTextView) }
+    private val digitPadView
+        get() = requireView().findViewById<ViewGroup>(R.id.digitPadView)
+
+    private val omniButtonView
+        get() = requireView().findViewById<OmniButton>(R.id.omniButtonView)
+
+    private val wordsTextView
+        get() = requireView().findViewById<TextView>(R.id.wordsTextView)
+
+    private val numberTextView
+        get() = requireView().findViewById<TextView>(R.id.numberTextView)
 
     private val mainViewModel: MainViewModel by viewModels { MainViewModel.factory }
     private val ratingPrompter: RatingPrompter by lazy { RatingPrompter(this::requireContext) { digitPadView } }

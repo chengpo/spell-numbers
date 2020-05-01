@@ -49,8 +49,11 @@ import java.util.regex.Pattern
 private const val RC_HANDLE_CAMERA_PERM = 200
 
 class OcrCaptureActivity : AppCompatActivity() {
-    private val ocrOverlayView by lazy { findViewById<OcrOverlayView>(R.id.ocrOverlayView) }
-    private val cameraSourcePreview by lazy { findViewById<CameraSourcePreview>(R.id.cameraSourcePreview) }
+    private val ocrOverlayView
+        get() = findViewById<OcrOverlayView>(R.id.ocrOverlayView)
+
+    private val cameraSourcePreview
+        get() = findViewById<CameraSourcePreview>(R.id.cameraSourcePreview)
 
     private lateinit var scaleGestureDetector: ScaleGestureDetector
     private var cameraSource: CameraSource? = null

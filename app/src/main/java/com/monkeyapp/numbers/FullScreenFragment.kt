@@ -35,7 +35,8 @@ import androidx.navigation.fragment.navArgs
 import com.monkeyapp.numbers.apphelpers.snackbar
 
 class FullScreenFragment : Fragment() {
-    private val wordsTextView by lazy { requireView().findViewById<TextView>(R.id.wordsTextView) }
+    private val wordsTextView
+        get() = requireView().findViewById<TextView>(R.id.wordsTextView)
 
     private val args: FullScreenFragmentArgs by navArgs()
 
