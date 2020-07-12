@@ -40,9 +40,10 @@ import com.google.android.gms.ads.AdView
 import com.google.firebase.analytics.FirebaseAnalytics
 
 class MainActivity : AppCompatActivity() {
-    private val toolbar by lazy { findViewById<Toolbar>(R.id.toolbar )}
-    private val adContainerView by lazy { findViewById<FrameLayout>(R.id.adViewContainer) }
-    private val adView by lazy { AdView(this).also { adContainerView.addView(it) } }
+    private val adContainerView: FrameLayout
+            get() = findViewById(R.id.adViewContainer)
+
+    private lateinit var adView: AdView
 
     private val adaptiveAdSize: AdSize
         get() {
@@ -64,6 +65,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+
         setSupportActionBar(toolbar)
 
         val navController = Navigation.findNavController(this, R.id.my_nav_host_fragment)
@@ -72,18 +76,19 @@ class MainActivity : AppCompatActivity() {
         toolbar.setupWithNavController(navController, appBarConfiguration)
 
         // load ad
-        adView.apply {
-            adSize = adaptiveAdSize
-            adUnitId = resources.getString(R.string.ad_unit_id)
-            adListener = object : AdListener() {
-                override fun onAdFailedToLoad(errorCode: Int) {
-                    FirebaseAnalytics.getInstance(applicationContext)
-                            .logEvent("AdLoadingFailed", bundleOf("ErrorCode" to errorCode.toString()))
+        adView = AdView(this).apply {
+                    adSize = adaptiveAdSize
+                    adUnitId = resources.getString(R.string.ad_unit_id)
+                    adListener = object : AdListener() {
+                        override fun onAdFailedToLoad(errorCode: Int) {
+                            FirebaseAnalytics.getInstance(applicationContext)
+                                    .logEvent("AdLoadingFailed", bundleOf("ErrorCode" to errorCode.toString()))
+                        }
+                    }
+                }.also {
+                    adContainerView.addView(it)
+                    it.loadAd(AdRequest.Builder().build())
                 }
-            }
-
-            loadAd(AdRequest.Builder().build())
-        }
     }
 
     override fun onResume() {
