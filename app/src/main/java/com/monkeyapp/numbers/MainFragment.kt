@@ -143,7 +143,7 @@ class MainFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
             val number = data?.getStringExtra("number") ?: ""
-            if (number.isNotEmpty()) {
+            if (number.isNotBlank()) {
                 mainViewModel.reset()
                 number.forEach { digit ->
                     mainViewModel.append(digit)
