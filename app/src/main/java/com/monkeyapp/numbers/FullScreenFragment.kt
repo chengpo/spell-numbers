@@ -63,7 +63,10 @@ class FullScreenFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.copy_to_clipboard -> copyToClipboard()
+            R.id.copy_to_clipboard -> {
+                copyToClipboard()
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -71,16 +74,13 @@ class FullScreenFragment : Fragment() {
     /**
      * Copy to clipboard
      */
-    private fun copyToClipboard(): Boolean {
+    private fun copyToClipboard() {
         getSystemService(requireContext(), ClipboardManager::class.java)?.let { clipboard ->
             val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView.text)
             clipboard.setPrimaryClip(clip)
 
             wordsTextView.snackbar(R.string.full_screen_copied_to_clipboard)
-            return true
         }
-
-        return false
     }
 }
 

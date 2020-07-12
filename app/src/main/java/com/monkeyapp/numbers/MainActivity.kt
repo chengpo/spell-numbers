@@ -40,55 +40,20 @@ import com.google.android.gms.ads.AdView
 import com.google.firebase.analytics.FirebaseAnalytics
 
 class MainActivity : AppCompatActivity() {
-    private val adContainerView: FrameLayout
-            get() = findViewById(R.id.adViewContainer)
-
     private lateinit var adView: AdView
-
-    private val adaptiveAdSize: AdSize
-        get() {
-            val display = windowManager.defaultDisplay
-            val outMetrics = DisplayMetrics()
-            display.getMetrics(outMetrics)
-
-            val density = outMetrics.density
-
-            var adWidthPixels = adContainerView.width.toFloat()
-            if (adWidthPixels == 0f) {
-                adWidthPixels = outMetrics.widthPixels.toFloat()
-            }
-
-            val adWidth = (adWidthPixels / density).toInt()
-            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-
-        setSupportActionBar(toolbar)
-
         val navController = Navigation.findNavController(this, R.id.my_nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(navController.graph)
 
         toolbar.setupWithNavController(navController, appBarConfiguration)
+        setSupportActionBar(toolbar)
 
-        // load ad
-        adView = AdView(this).apply {
-                    adSize = adaptiveAdSize
-                    adUnitId = resources.getString(R.string.ad_unit_id)
-                    adListener = object : AdListener() {
-                        override fun onAdFailedToLoad(errorCode: Int) {
-                            FirebaseAnalytics.getInstance(applicationContext)
-                                    .logEvent("AdLoadingFailed", bundleOf("ErrorCode" to errorCode.toString()))
-                        }
-                    }
-                }.also {
-                    adContainerView.addView(it)
-                    it.loadAd(AdRequest.Builder().build())
-                }
+        adView = AdView(this).also(::setupAdView)
     }
 
     override fun onResume() {
@@ -108,4 +73,38 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp() =
             Navigation.findNavController(this, R.id.my_nav_host_fragment).navigateUp()
+}
+
+private fun MainActivity.setupAdView(adView: AdView) {
+    val adContainerView = findViewById<FrameLayout>(R.id.adViewContainer)
+
+    fun adaptiveAdSize(): AdSize {
+        val display = windowManager.defaultDisplay
+        val outMetrics = DisplayMetrics()
+        display.getMetrics(outMetrics)
+
+        val density = outMetrics.density
+
+        var adWidthPixels = adContainerView.width.toFloat()
+        if (adWidthPixels == 0.0f) {
+            adWidthPixels = outMetrics.widthPixels.toFloat()
+        }
+
+        val adWidth = (adWidthPixels / density).toInt()
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+    }
+
+    adView.apply {
+        adSize = adaptiveAdSize()
+        adUnitId = resources.getString(R.string.ad_unit_id)
+        adListener = object : AdListener() {
+            override fun onAdFailedToLoad(errorCode: Int) {
+                FirebaseAnalytics.getInstance(applicationContext)
+                        .logEvent("AdLoadingFailed", bundleOf("ErrorCode" to errorCode.toString()))
+            }
+        }
+    }
+
+    adContainerView.addView(adView)
+    adView.loadAd(AdRequest.Builder().build())
 }
