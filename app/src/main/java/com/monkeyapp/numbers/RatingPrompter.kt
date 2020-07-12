@@ -36,28 +36,30 @@ import androidx.lifecycle.LifecycleOwner
 import com.monkeyapp.numbers.apphelpers.*
 import kotlin.math.absoluteValue
 
-class RatingPrompter(private val contextProvider: () -> Context,
-                     private val anchorViewProvider: () -> View) : LifecycleObserver {
+class RatingPrompter(private val context: Context,
+                     private val anchorView: View) : LifecycleObserver {
+
     private var snackbar: Snackbar? = null
     private var dismissCallback: Snackbar.Callback? = null
 
     private val ratePrefs: SharedPreferences
-        get() = contextProvider().getSharedPreferences(PREF_NAME_RATE_APP, 0)
+        get() = context.getSharedPreferences(PREF_NAME_RATE_APP, 0)
 
     private val isRated: Boolean
         get() = ratePrefs.getBoolean(PREF_KEY_IS_RATED_BOOLEAN, false)
 
     private val shouldPrompt: Boolean
         get() {
-            val firstInstallTime = contextProvider().packageManager.getPackageInfo(contextProvider().packageName, 0).firstInstallTime
+            val firstInstallTime = context.packageManager.getPackageInfo(context.packageName, 0).firstInstallTime
             val lastPromptTime = ratePrefs.getLong(PREF_KEY_LAST_PROMPT_TIME_LONG, firstInstallTime)
 
             val timeout = (0.5 + Math.random() / 2) * 1000L * 60L * 60L
             return (System.currentTimeMillis() - lastPromptTime).absoluteValue > timeout
         }
 
-    fun attach(lifecycleOwner: LifecycleOwner) = lifecycleOwner.lifecycle.addObserver(this)
+    fun bind(lifecycleOwner: LifecycleOwner) = lifecycleOwner.lifecycle.addObserver(this)
 
+    @Suppress("unused")
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
         if (!isRated && shouldPrompt) {
@@ -65,6 +67,7 @@ class RatingPrompter(private val contextProvider: () -> Context,
         }
     }
 
+    @Suppress("unused")
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
         snackbar?.let {
@@ -77,14 +80,14 @@ class RatingPrompter(private val contextProvider: () -> Context,
     }
 
     private fun promptRating() {
-        snackbar = anchorViewProvider().snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE) {
+        snackbar = anchorView.snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE) {
             icon(R.drawable.ic_rate_app, R.color.accent)
 
             action(R.string.rate_sure, View.OnClickListener {
-                contextProvider().browse(url = "market://details?id=com.monkeyapp.numbers",
+                context.browse(url = "market://details?id=com.monkeyapp.numbers",
                         newTask = true,
                         onError = {
-                            contextProvider().browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
+                           context.browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
                                     newTask = true)
                         })
 
@@ -99,9 +102,9 @@ class RatingPrompter(private val contextProvider: () -> Context,
                         putLong(PREF_KEY_LAST_PROMPT_TIME_LONG, System.currentTimeMillis())
                     }
                 }
+            }.also {
+                addCallback(it)
             }
-
-            addCallback(dismissCallback!!)
         }
     }
 

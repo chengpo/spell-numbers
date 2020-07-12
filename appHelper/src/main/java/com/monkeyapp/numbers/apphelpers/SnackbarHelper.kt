@@ -34,28 +34,27 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
-inline fun View.snackbar(stringId: Int, length: Int = Snackbar.LENGTH_SHORT, prepare: Snackbar.() -> Snackbar = {this}) =
-    Snackbar.make(this, stringId, length).apply {
-        val snackText = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-        if (snackText != null) {
-            val snackbarIconPadding = TypedValue()
-            context.theme.resolveAttribute(R.attr.snackbarIconPadding, snackbarIconPadding, true)
-            snackText.compoundDrawablePadding = context.resources.getDimensionPixelOffset(snackbarIconPadding.resourceId)
+fun View.snackbar(stringId: Int, length: Int = Snackbar.LENGTH_SHORT, prepare: Snackbar.() -> Unit = {}) =
+        Snackbar.make(this, stringId, length)
+                .apply {
+                    snackText?.let { snackText ->
+                        val snackbarIconPadding = TypedValue()
+                        context.theme.resolveAttribute(R.attr.snackbarIconPadding, snackbarIconPadding, true)
+                        snackText.compoundDrawablePadding = context.resources.getDimensionPixelSize(snackbarIconPadding.resourceId)
 
-            val snackbarBgColor = TypedValue()
-            context.theme.resolveAttribute(R.attr.snackbarBackground, snackbarBgColor, true)
-            view.setBackgroundColor(ContextCompat.getColor(context, snackbarBgColor.resourceId))
-        }
+                        val snackbarBgColor = TypedValue()
+                        context.theme.resolveAttribute(R.attr.snackbarBackground, snackbarBgColor, true)
+                        view.setBackgroundColor(ContextCompat.getColor(context, snackbarBgColor.resourceId))
+                    }
+                }
+                .also(prepare)
+                .also(Snackbar::show)
 
-        prepare()
-        show()
-    }
-
-fun Snackbar.action(@StringRes stringId: Int, onClickListener: View.OnClickListener) = setAction(stringId, onClickListener)
+fun Snackbar.action(@StringRes stringId: Int, onClickListener: View.OnClickListener) =
+        setAction(stringId, onClickListener)
 
 fun Snackbar.icon(@DrawableRes drawableId: Int, @ColorRes tintColorId: Int): Snackbar {
-    val snackText = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-    if (snackText != null) {
+    snackText?.let { snackText ->
         val errorDrawable = context.getVectorDrawable(drawableId)!!
                 .tintColor(context.getCompatColor(tintColorId))
 
@@ -64,3 +63,6 @@ fun Snackbar.icon(@DrawableRes drawableId: Int, @ColorRes tintColorId: Int): Sna
 
     return this
 }
+
+private val Snackbar.snackText: TextView?
+    get() = view.findViewById(com.google.android.material.R.id.snackbar_text)

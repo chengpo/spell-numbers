@@ -31,6 +31,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -41,20 +42,7 @@ import com.monkeyapp.numbers.apphelpers.*
 import com.monkeyapp.numbers.translators.SpellerError
 
 class MainFragment : Fragment() {
-    private val digitPadView
-        get() = requireView().findViewById<ViewGroup>(R.id.digitPadView)
-
-    private val omniButtonView
-        get() = requireView().findViewById<OmniButton>(R.id.omniButtonView)
-
-    private val wordsTextView
-        get() = requireView().findViewById<TextView>(R.id.wordsTextView)
-
-    private val numberTextView
-        get() = requireView().findViewById<TextView>(R.id.numberTextView)
-
-    private val mainViewModel: MainViewModel by viewModels { MainViewModel.factory }
-    private val ratingPrompter: RatingPrompter by lazy { RatingPrompter(this::requireContext) { digitPadView } }
+    private val mainViewModel: MainViewModel by viewModels { MainViewModel.Factory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +57,11 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val omniButtonView: OmniButton = view.findViewById(R.id.omniButtonView)
+        val digitPadView: ViewGroup = view.findViewById(R.id.digitPadView)
+        val wordsTextView: TextView = view.findViewById(R.id.wordsTextView)
+        val numberTextView: TextView = view.findViewById(R.id.numberTextView)
+
         omniButtonView.setOnClickListener {
             when ((it as OmniButton).state) {
                 OmniButton.State.Clean ->
@@ -79,31 +72,28 @@ class MainFragment : Fragment() {
             }
         }
 
-        digitPadView.findFirstAndTakeAction(
-                predicate = {it.id == R.id.btnDel },
-                action = {
+        digitPadView.children
+                .first { it.id == R.id.btnDel }
+                .apply {
                     // long click to reset number
                     setOnLongClickListener {
                         mainViewModel.reset()
-                        true
+                        return@setOnLongClickListener true
                     }
 
                     // delete last digit
                     setOnClickListener {
                         mainViewModel.backspace()
                     }
-                })
+                }
 
-        digitPadView.findAllAndTakeAction(
-                predicate = { button ->
-                    button is Button && (button.text[0] == '.' || button.text[0] in '0'..'9')},
-
-                action = {
-                    setOnClickListener {
-                        mainViewModel.append((this as Button).text[0])
+        digitPadView.children
+                .filter { it is Button && (it.text[0] == '.' || it.text[0] in '0'..'9') }
+                .forEach { child ->
+                    child.setOnClickListener {
+                        mainViewModel.append((it as Button).text[0])
                     }
                 }
-        )
 
         wordsTextView.setOnClickListener {
             try {
@@ -144,14 +134,16 @@ class MainFragment : Fragment() {
         })
 
         // attach rating prompter
-        ratingPrompter.attach(viewLifecycleOwner)
+        RatingPrompter(context = requireContext(), anchorView = digitPadView).run {
+            bind(viewLifecycleOwner)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
             val number = data?.getStringExtra("number") ?: ""
-            if (number.isNotBlank()) {
+            if (number.isNotEmpty()) {
                 mainViewModel.reset()
                 number.forEach { digit ->
                     mainViewModel.append(digit)

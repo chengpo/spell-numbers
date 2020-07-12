@@ -27,25 +27,10 @@ package com.monkeyapp.numbers.apphelpers
 import android.content.res.Configuration
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.children
 import androidx.core.view.forEach
 
 val View.isPortraitMode: Boolean
     get() {
         return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     }
-
-fun ViewGroup.findFirstAndTakeAction(predicate: (v: View) -> Boolean, action: View.() -> Unit) {
-    this.forEach {
-        if (predicate(it)) {
-            return it.action()
-        }
-    }
-}
-
-fun ViewGroup.findAllAndTakeAction(predicate: (v: View) -> Boolean, action: View.() -> Unit) {
-    this.forEach {
-        if (predicate(it)) {
-            it.action()
-        }
-    }
-}

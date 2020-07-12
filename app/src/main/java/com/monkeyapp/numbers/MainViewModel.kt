@@ -76,16 +76,11 @@ class MainViewModel(private val coroutineWorkerContext: ExecutorCoroutineDispatc
         coroutineWorkerContext.close()
     }
 
-    private class MainViewModelFactory : ViewModelProvider.Factory {
+    class Factory : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             @Suppress("UNCHECKED_CAST")
             return MainViewModel(coroutineWorkerContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()) as T
         }
-    }
-
-    companion object {
-        val factory: ViewModelProvider.Factory
-            get() = MainViewModelFactory()
     }
 }
 
