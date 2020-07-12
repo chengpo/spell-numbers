@@ -37,7 +37,7 @@ import java.lang.Exception
 
 private const val INTENT_ACTION_OCR_CAPTURE = "com.monkeyapp.numbers.intent.OCR_CAPTURE"
 
-val Context.isOcrAvailable:Boolean
+inline val Context.isOcrAvailable:Boolean
     get() {
         return applicationContext
                 .packageManager

@@ -37,75 +37,77 @@ import com.monkeyapp.numbers.apphelpers.*
 import kotlin.math.absoluteValue
 
 class RatingPrompter(private val context: Context,
-                     private val anchorView: View) : LifecycleObserver {
-
+                     private val anchorView: View) : LifecycleObserver, Snackbar.Callback() {
     private var snackbar: Snackbar? = null
-    private var dismissCallback: Snackbar.Callback? = null
 
-    private val ratePrefs: SharedPreferences
+    private inline val ratePrefs: SharedPreferences
         get() = context.getSharedPreferences(PREF_NAME_RATE_APP, 0)
 
-    private val isRated: Boolean
+    private inline var isRated: Boolean
         get() = ratePrefs.getBoolean(PREF_KEY_IS_RATED_BOOLEAN, false)
 
-    private val shouldPrompt: Boolean
+        set(value) {
+            ratePrefs.edit {
+                putBoolean(PREF_KEY_IS_RATED_BOOLEAN, value)
+            }
+        }
+
+    private inline var lastPromptTime: Long
         get() {
             val firstInstallTime = context.packageManager.getPackageInfo(context.packageName, 0).firstInstallTime
-            val lastPromptTime = ratePrefs.getLong(PREF_KEY_LAST_PROMPT_TIME_LONG, firstInstallTime)
+            return ratePrefs.getLong(PREF_KEY_LAST_PROMPT_TIME_LONG, firstInstallTime)
+        }
 
+        set(value) {
+            ratePrefs.edit {
+                putLong(PREF_KEY_LAST_PROMPT_TIME_LONG, value)
+            }
+        }
+
+    private inline val shouldPrompt: Boolean
+        get() {
             val timeout = (0.5 + Math.random() / 2) * 1000L * 60L * 60L
-            return (System.currentTimeMillis() - lastPromptTime).absoluteValue > timeout
+            return (System.currentTimeMillis() - lastPromptTime).absoluteValue >= timeout
         }
 
     fun bind(lifecycleOwner: LifecycleOwner) = lifecycleOwner.lifecycle.addObserver(this)
 
     @Suppress("unused")
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
-        if (!isRated && shouldPrompt) {
-            promptRating()
+    fun showSnackbar() {
+        if (snackbar == null && !isRated && shouldPrompt) {
+            snackbar = anchorView.snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE) {
+                icon(R.drawable.ic_rate_app, R.color.accent)
+
+                action(R.string.rate_sure, View.OnClickListener {
+                    context.browse(url = "market://details?id=com.monkeyapp.numbers",
+                            newTask = true,
+                            onError = {
+                                context.browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
+                                        newTask = true)
+                            })
+
+                    isRated = true
+                })
+
+                addCallback(this@RatingPrompter)
+            }
         }
     }
 
     @Suppress("unused")
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onPause() {
+    fun hideSnackbar() {
         snackbar?.let {
-            it.removeCallback(dismissCallback!!)
+            it.removeCallback(this)
             it.dismiss()
         }
 
         snackbar = null
-        dismissCallback = null
     }
 
-    private fun promptRating() {
-        snackbar = anchorView.snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE) {
-            icon(R.drawable.ic_rate_app, R.color.accent)
-
-            action(R.string.rate_sure, View.OnClickListener {
-                context.browse(url = "market://details?id=com.monkeyapp.numbers",
-                        newTask = true,
-                        onError = {
-                           context.browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
-                                    newTask = true)
-                        })
-
-                ratePrefs.edit {
-                    putBoolean(PREF_KEY_IS_RATED_BOOLEAN, true)
-                }
-            })
-
-            dismissCallback = object : Snackbar.Callback() {
-                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                    ratePrefs.edit {
-                        putLong(PREF_KEY_LAST_PROMPT_TIME_LONG, System.currentTimeMillis())
-                    }
-                }
-            }.also {
-                addCallback(it)
-            }
-        }
+    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+        lastPromptTime = System.currentTimeMillis()
     }
 
     private companion object {

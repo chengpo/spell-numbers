@@ -45,17 +45,15 @@ class OmniButton : AppCompatImageButton {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private var isOcrAvailable = lazy { context.isOcrAvailable }
-
     var state: State = State.None
         set(value) {
             val old = field
 
             field = when {
-                value == State.Camera && isOcrAvailable.value -> {
+                value == State.Camera && context.isOcrAvailable -> {
                     State.Camera
                 }
-                value == State.Camera && !isOcrAvailable.value -> {
+                value == State.Camera && !context.isOcrAvailable -> {
                     // hide button when camera is not available
                     State.None
                 }
