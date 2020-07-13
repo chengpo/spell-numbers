@@ -31,35 +31,40 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.forEach
+import androidx.core.view.children
 import androidx.gridlayout.widget.GridLayout
 import com.monkeyapp.numbers.apphelpers.isPortraitMode
 
 @Suppress("unused")
-class NumberWordViewBehavior(context: Context?, attrs: AttributeSet?): CoordinatorLayout.Behavior<ViewGroup>(context, attrs) {
-    override fun onMeasureChild(parent: CoordinatorLayout, child: ViewGroup, parentWidthMeasureSpec: Int, widthUsed: Int, parentHeightMeasureSpec: Int, heightUsed: Int): Boolean {
-        var extraHeight = 0
+class NumberWordViewBehavior(context: Context?, attrs: AttributeSet?):
+        CoordinatorLayout.Behavior<ViewGroup>(context, attrs) {
 
-        parent.forEach {
-            if (it !is ConstraintLayout && it !is GridLayout) {
-                extraHeight += it.measuredHeight
-            }
-        }
+    override fun onMeasureChild(parent: CoordinatorLayout,
+                                child: ViewGroup,
+                                parentWidthMeasureSpec: Int,
+                                widthUsed: Int,
+                                parentHeightMeasureSpec: Int,
+                                heightUsed: Int): Boolean {
+
+        val extraHeight: Int = parent.children
+              .filter { it !is ConstraintLayout && it !is GridLayout }
+              .map { it.measuredHeight }
+              .sum()
 
         if (parent.isPortraitMode) {
-            var height = View.MeasureSpec.getSize(parentHeightMeasureSpec) / 2
-            if (child is ConstraintLayout) {
-                height -= extraHeight
+            val height = if (child is ConstraintLayout) {
+                View.MeasureSpec.getSize(parentHeightMeasureSpec) / 2 - extraHeight
+            } else {
+                View.MeasureSpec.getSize(parentHeightMeasureSpec) / 2
             }
 
             parent.onMeasureChild(child,
                     parentWidthMeasureSpec, widthUsed,
                     View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY), heightUsed)
         } else {
-            var height = View.MeasureSpec.getSize(parentHeightMeasureSpec)
-            height -= extraHeight
-
+            val height = View.MeasureSpec.getSize(parentHeightMeasureSpec) - extraHeight
             val width = View.MeasureSpec.getSize(parentWidthMeasureSpec) / 2
+
             parent.onMeasureChild(child,
                     View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), widthUsed,
                     View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY), heightUsed)
@@ -68,7 +73,10 @@ class NumberWordViewBehavior(context: Context?, attrs: AttributeSet?): Coordinat
         return true
     }
 
-    override fun onLayoutChild(parent: CoordinatorLayout, child: ViewGroup, layoutDirection: Int): Boolean {
+    override fun onLayoutChild(parent: CoordinatorLayout,
+                               child: ViewGroup,
+                               layoutDirection: Int): Boolean {
+
         if (child is GridLayout) {
             val lp = child.layoutParams
             if (lp is CoordinatorLayout.LayoutParams) {
