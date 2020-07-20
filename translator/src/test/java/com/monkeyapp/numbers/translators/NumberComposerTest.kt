@@ -30,7 +30,7 @@ class NumberComposerTest {
 
     @Test
     fun `NumberComposer should append digit correctly`() {
-        data class TestSample(var number: String = "", var numberText: String = "", var integer: Long = 0, var fraction: Float = 0.0F)
+        data class TestSample(var number: String = "", var numberText: String = "", var wholeNumber: Long = 0, var fraction: Float = 0.0F)
 
         fun testSample(action: TestSample.() -> Unit) = TestSample().apply(action)
 
@@ -46,7 +46,7 @@ class NumberComposerTest {
                 val formattedNumberText = formatNumber(numberText, delimiter = ',', delimiterWidth = 3)
 
                 formattedNumberText shouldEqual sample.numberText
-                number.integer.value() shouldEqual sample.integer
+                number.wholeNumber.value() shouldEqual sample.wholeNumber
                 number.fraction.value() shouldEqual sample.fraction
             }
         }
@@ -55,55 +55,55 @@ class NumberComposerTest {
                 testSample {
                     number = "1000"
                     numberText = "1,000"
-                    integer = 1000
+                    wholeNumber = 1000
                     fraction = 0F
                 },
                 testSample {
                     number = "1000.00"
                     numberText = "1,000.00"
-                    integer = 1000
+                    wholeNumber = 1000
                     fraction = 0F
                 },
                 testSample {
                     number = "1000.1"
                     numberText = "1,000.1"
-                    integer = 1000
+                    wholeNumber = 1000
                     fraction = 0.1F
                 },
                 testSample {
                     number = "1000.10"
                     numberText = "1,000.10"
-                    integer = 1000
+                    wholeNumber = 1000
                     fraction = 0.1F
                 },
                 testSample {
                     number = "1000.101"
                     numberText = "1,000.101"
-                    integer = 1000
+                    wholeNumber = 1000
                     fraction = 0.101F
                 },
                 testSample {
                     number = "1000.106"
                     numberText = "1,000.106"
-                    integer = 1000
+                    wholeNumber = 1000
                     fraction = 0.106F
                 },
                 testSample {
                     number = "1000.1001"
                     numberText = "1,000.100"
-                    integer = 1000
+                    wholeNumber = 1000
                     fraction = 0.10F
                 },
                 testSample {
                     number = "1000.1016"
                     numberText = "1,000.101"
-                    integer = 1000
+                    wholeNumber = 1000
                     fraction = 0.101F
                 },
                 testSample {
                     number = "1000000.1016"
                     numberText = "1,000,000.101"
-                    integer = 1000000
+                    wholeNumber = 1000000
                     fraction = 0.101F
                 }
         )
@@ -111,7 +111,7 @@ class NumberComposerTest {
 
     @Test
     fun `EnglishNumberComposer should append and backspace correctly`() {
-        data class Expected(var numberText: String = "", var integer: Long = 0, var fraction: Float = 0.0F)
+        data class Expected(var numberText: String = "", var wholeNumber: Long = 0, var fraction: Float = 0.0F)
         fun expected(action: Expected.() -> Unit) =Expected().apply(action)
 
         class TestSample(var number: String = "", var expected: List<Expected> = emptyList())
@@ -132,7 +132,7 @@ class NumberComposerTest {
                     val expected = sample.expected[expectedCount++]
 
                     formattedNumberText shouldEqual expected.numberText
-                    number.integer.value() shouldEqual expected.integer
+                    number.wholeNumber.value() shouldEqual expected.wholeNumber
                     number.fraction.value() shouldEqual expected.fraction
                 }
 
@@ -147,7 +147,7 @@ class NumberComposerTest {
                     val expected = sample.expected[expectedCount++]
 
                     formattedNumberText shouldEqual expected.numberText
-                    number.integer.value() shouldEqual expected.integer
+                    number.wholeNumber.value() shouldEqual expected.wholeNumber
                     number.fraction.value() shouldEqual expected.fraction
                 }
             }
@@ -159,52 +159,52 @@ class NumberComposerTest {
                     expected = listOf(
                             expected {
                               numberText = "1"
-                              integer = 1
+                              wholeNumber = 1
                               fraction = 0.0F
                              },
                             expected {
                                 numberText = "12"
-                                integer = 12
+                                wholeNumber = 12
                                 fraction = 0.0F
                             },
                             expected {
                                 numberText = "12."
-                                integer = 12
+                                wholeNumber = 12
                                 fraction = 0.0F
                             },
                             expected {
                                 numberText = "12.0"
-                                integer = 12
+                                wholeNumber = 12
                                 fraction = 0.0F
                             },
                             expected {
                                 numberText = "12.03"
-                                integer = 12
+                                wholeNumber = 12
                                 fraction = 0.03F
                             },
                             expected {
                                 numberText = "12.0"
-                                integer = 12
+                                wholeNumber = 12
                                 fraction = 0.0F
                             },
                             expected {
                                 numberText = "12."
-                                integer = 12
+                                wholeNumber = 12
                                 fraction = 0.0F
                             },
                             expected {
                                 numberText = "12"
-                                integer = 12
+                                wholeNumber = 12
                                 fraction = 0.0F
                             },
                             expected {
                                 numberText = "1"
-                                integer = 1
+                                wholeNumber = 1
                                 fraction = 0.0F
                             },
                             expected {
                                 numberText = ""
-                                integer = 0
+                                wholeNumber = 0
                                 fraction = 0.0F
                             }
                     )
@@ -225,7 +225,7 @@ class NumberComposerTest {
         val formattedNumberText = formatNumber(numberText, delimiter = ',', delimiterWidth = 3)
 
         formattedNumberText shouldEqual "1,000."
-        number.integer.value() shouldEqual 1000
+        number.wholeNumber.value() shouldEqual 1000
         number.fraction.value() shouldEqual 0.0F
     }
 }

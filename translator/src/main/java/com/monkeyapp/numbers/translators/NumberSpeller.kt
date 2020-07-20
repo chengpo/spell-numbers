@@ -36,7 +36,7 @@ enum class SpellerError {
 fun spellNumberInEnglish(numberText: String) = EnglishNumber(numberText).spell()
 
 data class Number(private val numberText: String) {
-    val integer: Eval<Long> = Eval.later {
+    val wholeNumber: Eval<Long> = Eval.later {
         val wholeNumberText = numberText.substringBefore(delimiter = '.')
         wholeNumberText.fold(0L) { accumulator, digit ->
             (accumulator * 10) + (digit - '0')
@@ -66,18 +66,18 @@ class EnglishNumber(private val numberText: String) {
 
         val number = Number(numberText)
 
-        val decimalText = number.fraction.map(::spellDecimal)
-        val integerText = number.integer.map(::spellInteger)
+        val fractionText = number.fraction.map(::spellFraction)
+        val wholeNumberText = number.wholeNumber.map(::spellWholeNumber)
 
-        return integerText
+        return wholeNumberText
                 .value()
-                .map { "$it and ${decimalText.value()}" }
+                .map { "$it and ${fractionText.value()}" }
     }
 
-    private fun spellDecimal(decimal: Float): String =
-            String.format("%02d / 100", (decimal * 100).roundToLong())
+    private fun spellFraction(fraction: Float): String =
+            String.format("%02d / 100", (fraction * 100).roundToLong())
 
-    private fun spellInteger(wholeNumber: Long): Either<SpellerError, String> {
+    private fun spellWholeNumber(wholeNumber: Long): Either<SpellerError, String> {
         if (wholeNumber == 0L) {
             return symbols[0].right()
         }
