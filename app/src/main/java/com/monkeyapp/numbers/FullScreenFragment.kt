@@ -35,6 +35,7 @@ import androidx.navigation.fragment.navArgs
 import com.monkeyapp.numbers.apphelpers.snackbar
 
 class FullScreenFragment : Fragment() {
+    private val args: FullScreenFragmentArgs by navArgs()
     private lateinit var wordsTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,8 +49,6 @@ class FullScreenFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val args: FullScreenFragmentArgs by navArgs()
 
         wordsTextView = view.findViewById<TextView>(R.id.wordsTextView).apply {
             text =  args.numberWordsText
@@ -73,7 +72,7 @@ class FullScreenFragment : Fragment() {
 
     private fun copyToClipboard() {
         getSystemService(requireContext(), ClipboardManager::class.java)?.let { clipboard ->
-            val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView.text)
+            val clip = ClipData.newPlainText(getString(R.string.app_name), args.numberWordsText)
             clipboard.setPrimaryClip(clip)
 
             wordsTextView.snackbar(R.string.full_screen_copied_to_clipboard)
