@@ -40,6 +40,9 @@ class AboutFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<TextView>(R.id.appVersionView).text = getString(R.string.about_app_version, BuildConfig.VERSION_NAME)
+        view.findViewById<TextView>(R.id.appVersionView).text = appVersion
     }
 }
+
+private inline val AboutFragment.appVersion: CharSequence
+    get() = getString(R.string.about_app_version, BuildConfig.VERSION_NAME)

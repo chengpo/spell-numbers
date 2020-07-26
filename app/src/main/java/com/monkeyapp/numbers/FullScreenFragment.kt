@@ -71,9 +71,6 @@ class FullScreenFragment : Fragment() {
         }
     }
 
-    /**
-     * Copy to clipboard
-     */
     private fun copyToClipboard() {
         getSystemService(requireContext(), ClipboardManager::class.java)?.let { clipboard ->
             val clip = ClipData.newPlainText(getString(R.string.app_name), wordsTextView.text)
@@ -83,4 +80,5 @@ class FullScreenFragment : Fragment() {
         }
     }
 }
+
 
