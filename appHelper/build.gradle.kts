@@ -38,11 +38,11 @@ android {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.1.0")
+    implementation("com.google.android.material:material:1.3.0")
     implementation(Config.Libs.appCompat)
     implementation(Config.Libs.kotlin)
-    implementation("androidx.core:core:1.2.0")
-    implementation("androidx.core:core-ktx:1.2.0")
+    implementation("androidx.core:core:1.3.2")
+    implementation("androidx.core:core-ktx:1.3.2")
 
     // coroutines
     implementation(Config.Libs.coroutinesCore)

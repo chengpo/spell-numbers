@@ -41,9 +41,9 @@ import com.monkeyapp.numbers.apphelpers.isOcrAvailable
 import com.monkeyapp.numbers.apphelpers.tintColor
 
 class OmniButton : AppCompatImageButton {
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     var state: State = State.None
         set(value) {

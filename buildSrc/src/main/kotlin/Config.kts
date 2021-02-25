@@ -5,12 +5,12 @@ import java.util.*
 
 object Versions {
     const val buildTool = "29.0.3"
-    const val androidPlugin = "4.0.1"
+    const val androidPlugin = "4.1.2"
     const val detektPlugin = "1.0.0-RC15"
-    const val kotlin = "1.3.50"
+    const val kotlin = "1.4.30"
     const val arrow = "0.10.1"
     const val appcompat = "1.1.0"
-    const val coroutines = "1.3.3"
+    const val coroutines = "1.4.2"
 }
 
 object Plugins {
@@ -30,9 +30,9 @@ object Libs {
 }
 
 object Android {
-    const val compileSdk = 29
+    const val compileSdk = 30
     const val minSdk = 17
-    const val targetSdk = 29
+    const val targetSdk = 30
 }
 
 data class KeyStore(
