@@ -17,6 +17,8 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
 
+before_install:
+  - yes | sdkmanager "platforms;android-30"
 
 before_script:
   - echo 'storePassword=xxx' >  keystore.properties
