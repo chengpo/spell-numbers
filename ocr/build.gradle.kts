@@ -24,11 +24,17 @@ android {
             consumerProguardFiles("proguard-rules.pro")
         }
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation(project(":appHelper"))
     implementation(Config.Libs.appCompat)
+    implementation("androidx.activity:activity-ktx:1.3.0-alpha03")
 
     // google vision service
     implementation("com.google.android.gms:play-services-vision:17.0.2") {
