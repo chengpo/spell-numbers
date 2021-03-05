@@ -45,7 +45,6 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            isZipAlignEnabled = true
             isDebuggable = false
             isJniDebuggable = false
             isRenderscriptDebuggable = false
@@ -58,12 +57,9 @@ android {
             applicationIdSuffix = ".debug"
         }
     }
-    lintOptions {
+    lint {
         checkOnly("NewApi", "HandlerLeak")
         isAbortOnError = true
-    }
-    dexOptions {
-        javaMaxHeapSize = "2048m"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

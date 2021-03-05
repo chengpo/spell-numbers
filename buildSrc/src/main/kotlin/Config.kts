@@ -5,7 +5,7 @@ import java.util.*
 
 object Versions {
     const val buildTool = "29.0.3"
-    const val androidPlugin = "4.1.2"
+    const val androidPlugin = "7.0.0-alpha08"
     const val detektPlugin = "1.0.0-RC15"
     const val kotlin = "1.4.30"
     const val arrow = "0.10.1"
