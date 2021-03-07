@@ -29,15 +29,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 
 class AboutFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // return inflater.inflate(R.layout.content_about, container, false)
         return ComposeView(requireContext()).apply {
             setContent {
                 aboutView()
@@ -45,18 +51,21 @@ class AboutFragment : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        //view.findViewById<TextView>(R.id.appVersionView).text = appVersion
-    }
-
-    @Preview
+    @Preview("about", showSystemUi = true, showBackground = false)
     @Composable
     private fun aboutView() {
-        Text(text = "hello world")
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(painter = painterResource(id = R.mipmap.ic_launcher_round),
+                  modifier = Modifier.size(96.dp),
+                  contentDescription = getString(R.string.app_name))
+            
+            Text(text = getString(R.string.app_name))
+
+            Text(text = getString(R.string.about_app_version, BuildConfig.VERSION_NAME))
+
+            Text(text = getString(R.string.about_app_project))
+
+            Text(text = getString(R.string.about_app_copyright))
+        }
     }
 }
-
-private inline val AboutFragment.appVersion: CharSequence
-    get() = getString(R.string.about_app_version, BuildConfig.VERSION_NAME)
