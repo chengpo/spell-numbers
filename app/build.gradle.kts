@@ -21,12 +21,16 @@ android {
         targetSdkVersion(Config.Android.targetSdk)
         multiDexEnabled = true
 
-        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders.putAll(mapOf("is_ocr_supported" to true))
 
         resConfigs("en", "nodpi")
+    }
+
+    buildFeatures {
+        // Enables Jetpack Compose for this module
+        compose = true
     }
 
     signingConfigs {
@@ -57,13 +61,23 @@ android {
             applicationIdSuffix = ".debug"
         }
     }
+
     lint {
         checkOnly("NewApi", "HandlerLeak")
         isAbortOnError = true
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion  = "1.0.0-beta01"
     }
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> { kotlinOptions.jvmTarget = "1.8" }
@@ -116,9 +130,31 @@ dependencies {
     implementation(Config.Libs.coroutinesCore)
     implementation(Config.Libs.coroutinesAndroid)
 
+    // compose
+    implementation("androidx.compose.ui:ui:1.0.0-beta01")
+    // Tooling support (Previews, etc.)
+    implementation("androidx.compose.ui:ui-tooling:1.0.0-beta01")
+    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+    implementation("androidx.compose.foundation:foundation:1.0.0-beta01")
+    // Material Design
+    implementation("androidx.compose.material:material:1.0.0-beta01")
+    // Material design icons
+    implementation( "androidx.compose.material:material-icons-core:1.0.0-beta01")
+    implementation("androidx.compose.material:material-icons-extended:1.0.0-beta01")
+    // Integration with activities
+    implementation("androidx.activity:activity-compose:1.3.0-alpha03")
+    // Integration with ViewModels
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02")
+    // Integration with observables
+    implementation("androidx.compose.runtime:runtime-livedata:1.0.0-beta01")
+    implementation("androidx.compose.runtime:runtime-rxjava2:1.0.0-beta01")
+
+    // UI Tests
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.0-beta01")
+
     // dagger2
-    implementation("com.google.dagger:dagger:2.24")
-    kapt("com.google.dagger:dagger-compiler:2.24")
+    // implementation("com.google.dagger:dagger:2.24")
+    // kapt("com.google.dagger:dagger-compiler:2.24")
 
     androidTestImplementation("androidx.arch.core:core-testing:2.0.0")
     androidTestImplementation("androidx.test:runner:1.2.0")
