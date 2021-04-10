@@ -72,15 +72,14 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.0.0-beta04"
+    }
+
     kotlinOptions {
+        useIR = true
         jvmTarget = "1.8"
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion  = "1.0.0-beta01"
-    }
-
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> { kotlinOptions.jvmTarget = "1.8" }
 }
 
 dependencies {
@@ -98,6 +97,7 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
     implementation(Config.Libs.appCompat)
+    implementation(Config.Libs.appCompatResources)
     implementation("androidx.gridlayout:gridlayout:1.0.0")
     implementation("androidx.constraintlayout:constraintlayout:2.0.0")
 
@@ -115,8 +115,9 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics:18.0.2")
 
     // navigation
-    implementation("android.arch.navigation:navigation-fragment-ktx:1.0.0")
-    implementation("android.arch.navigation:navigation-ui-ktx:1.0.0")
+    implementation(Config.Libs.navigationFragment)
+    implementation(Config.Libs.navigationUI)
+    implementation("androidx.navigation:navigation-compose:1.0.0-alpha10")
 
     // optional - Test helpers
     // this library depends on the Kotlin standard library
@@ -131,6 +132,7 @@ dependencies {
     implementation(Config.Libs.coroutinesAndroid)
 
     // compose
+    implementation("androidx.compose.compiler:compiler:1.0.0-beta04")
     implementation("androidx.compose.ui:ui:1.0.0-beta01")
     // Tooling support (Previews, etc.)
     implementation("androidx.compose.ui:ui-tooling:1.0.0-beta01")

@@ -32,40 +32,44 @@ import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 
 class AboutFragment : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                aboutView()
+                MaterialTheme {
+                    aboutView()
+                }
             }
         }
     }
 
-    @Preview("about", showSystemUi = true, showBackground = false)
+    @Preview("About", showSystemUi = true, showBackground = true)
     @Composable
     private fun aboutView() {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(painter = painterResource(id = R.mipmap.ic_launcher_round),
                   modifier = Modifier.size(96.dp),
-                  contentDescription = getString(R.string.app_name))
+                  contentDescription = stringResource(id = R.string.app_name))
             
-            Text(text = getString(R.string.app_name))
+            Text(text = stringResource(R.string.app_name))
 
-            Text(text = getString(R.string.about_app_version, BuildConfig.VERSION_NAME))
+            Text(text = stringResource(R.string.about_app_version, BuildConfig.VERSION_NAME))
 
-            Text(text = getString(R.string.about_app_project))
+            Text(text = stringResource(R.string.about_app_project))
 
-            Text(text = getString(R.string.about_app_copyright))
+            Text(text = stringResource(R.string.about_app_copyright))
         }
     }
 }
