@@ -26,20 +26,28 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.VerticalAlignmentLine
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -55,21 +63,41 @@ class AboutFragment : Fragment() {
         }
     }
 
-    @Preview("About", showSystemUi = true, showBackground = true)
+    @Preview("About", showSystemUi = true)
     @Composable
     private fun aboutView() {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(painter = painterResource(id = R.mipmap.ic_launcher_round),
-                  modifier = Modifier.size(96.dp),
-                  contentDescription = stringResource(id = R.string.app_name))
-            
-            Text(text = stringResource(R.string.app_name))
+        Column (verticalArrangement = Arrangement.SpaceEvenly, horizontalAlignment = Alignment.CenterHorizontally){
+            Image(painter = painterResource(R.mipmap.ic_launcher_round),
+                  modifier = Modifier
+                      .size(160.dp)
+                      .padding(30.dp),
+                  contentScale = ContentScale.FillBounds,
+                  contentDescription = stringResource(R.string.app_name))
 
-            Text(text = stringResource(R.string.about_app_version, BuildConfig.VERSION_NAME))
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.h5)
+                Spacer(modifier = Modifier.size(10.dp))
+                Text(text = stringResource(R.string.about_app_version, BuildConfig.VERSION_NAME),
+                    style = MaterialTheme.typography.body2)
+            }
 
-            Text(text = stringResource(R.string.about_app_project))
+            Column {
+                Text(text = stringResource(R.string.about_app_project),
+                    modifier = Modifier.fillMaxWidth().padding(30.dp),
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily.SansSerif,
+                    style = MaterialTheme.typography.body2)
+            }
 
-            Text(text = stringResource(R.string.about_app_copyright))
+            Column {
+                Text(text = stringResource(R.string.about_app_copyright),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.caption)
+            }
+
         }
+
     }
 }
