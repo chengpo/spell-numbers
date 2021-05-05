@@ -9,23 +9,23 @@ plugins {
 }
 
 android {
-    buildToolsVersion(Config.Versions.buildTool)
-    compileSdkVersion(Config.Android.compileSdk)
+    buildToolsVersion = Config.Versions.buildTool
+    compileSdk = Config.Android.compileSdk
 
     defaultConfig {
         applicationId = "com.monkeyapp.numbers"
         versionCode = 42
         versionName = "1.0.21.202102250205"
 
-        minSdkVersion(Config.Android.minSdk)
-        targetSdkVersion(Config.Android.targetSdk)
+        minSdk = Config.Android.minSdk
+        targetSdk = Config.Android.targetSdk
         multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders.putAll(mapOf("is_ocr_supported" to true))
 
-        resConfigs("en", "nodpi")
+        resourceConfigurations.addAll(listOf("en", "nodpi"))
     }
 
     buildFeatures {
@@ -48,7 +48,6 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
-            isShrinkResources = true
             isDebuggable = false
             isJniDebuggable = false
             isRenderscriptDebuggable = false

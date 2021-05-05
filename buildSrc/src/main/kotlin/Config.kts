@@ -5,10 +5,10 @@ import java.util.*
 
 object Versions {
     const val buildTool = "30.0.2"
-    const val androidPlugin = "7.0.0-alpha14"
+    const val androidPlugin = "7.0.0-alpha15"
     const val detektPlugin = "1.0.0-RC15"
     const val googleServicesPlugin = "4.3.5"
-    const val kotlin = "1.4.30"
+    const val kotlin = "1.4.32"
     const val arrow = "0.10.1"
     const val appcompat = "1.3.0-rc01"
     const val coroutines = "1.4.2"
