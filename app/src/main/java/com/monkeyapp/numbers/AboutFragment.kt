@@ -31,15 +31,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,41 +61,47 @@ class AboutFragment : Fragment() {
         }
     }
 
-    @Preview("About", showSystemUi = true)
+    @Preview("About")
     @Composable
     private fun aboutView() {
-        Column (verticalArrangement = Arrangement.SpaceEvenly, horizontalAlignment = Alignment.CenterHorizontally){
-            Image(painter = painterResource(R.mipmap.ic_launcher_round),
-                  modifier = Modifier
-                      .size(160.dp)
-                      .padding(30.dp),
-                  contentScale = ContentScale.FillBounds,
-                  contentDescription = stringResource(R.string.app_name))
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize()) {
+                Image(painter = painterResource(R.mipmap.ic_launcher_round),
+                    modifier = Modifier
+                        .size(160.dp)
+                        .padding(10.dp),
+                    contentScale = ContentScale.FillBounds,
+                    contentDescription = stringResource(R.string.app_name))
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.h5)
-                Spacer(modifier = Modifier.size(10.dp))
-                Text(text = stringResource(R.string.about_app_version, BuildConfig.VERSION_NAME),
-                    style = MaterialTheme.typography.body2)
-            }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = stringResource(R.string.app_name),
+                        style = MaterialTheme.typography.h5)
+                    Spacer(modifier = Modifier.size(10.dp))
+                    Text(text = stringResource(R.string.about_app_version, BuildConfig.VERSION_NAME),
+                        style = MaterialTheme.typography.body2)
+                }
 
-            Column {
-                Text(text = stringResource(R.string.about_app_project),
-                    modifier = Modifier.fillMaxWidth().padding(30.dp),
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily.SansSerif,
-                    style = MaterialTheme.typography.body2)
-            }
+                Spacer(modifier = Modifier.size(160.dp))
 
-            Column {
+                Column {
+                    Text(text = stringResource(R.string.about_app_project),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(30.dp),
+                        textAlign = TextAlign.Center,
+                        fontFamily = FontFamily.SansSerif,
+                        style = MaterialTheme.typography.body2)
+                }
+
+
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
                 Text(text = stringResource(R.string.about_app_copyright),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.caption)
             }
-
         }
-
     }
 }
