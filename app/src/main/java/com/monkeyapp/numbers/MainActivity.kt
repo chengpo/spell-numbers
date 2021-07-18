@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp() =
-            Navigation.findNavController(this, R.id.my_nav_host_fragment).navigateUp()
+            Navigation.findNavController(this, R.id.my_nav_host_fragment).navigateUp() || super.onSupportNavigateUp()
 }
 
 private fun MainActivity.setupAdView(adView: AdView) {

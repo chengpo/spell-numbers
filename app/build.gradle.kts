@@ -72,11 +72,10 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-beta04"
+        kotlinCompilerExtensionVersion = Config.Versions.compose
     }
 
     kotlinOptions {
-        useIR = true
         jvmTarget = "1.8"
     }
 }
@@ -116,7 +115,7 @@ dependencies {
     // navigation
     implementation(Config.Libs.navigationFragment)
     implementation(Config.Libs.navigationUI)
-    implementation("androidx.navigation:navigation-compose:1.0.0-alpha10")
+    //implementation("androidx.navigation:navigation-compose:2.4.0-alpha04")
 
     // optional - Test helpers
     // this library depends on the Kotlin standard library
@@ -131,27 +130,25 @@ dependencies {
     implementation(Config.Libs.coroutinesAndroid)
 
     // compose
-    implementation("androidx.compose.compiler:compiler:1.0.0-beta04")
-    implementation("androidx.compose.ui:ui:1.0.0-beta01")
+    implementation("androidx.compose.ui:ui:${Config.Versions.compose}")
     // Tooling support (Previews, etc.)
-    implementation("androidx.compose.ui:ui-tooling:1.0.0-beta01")
+    implementation("androidx.compose.ui:ui-tooling:${Config.Versions.compose}")
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation("androidx.compose.foundation:foundation:1.0.0-beta01")
+    implementation("androidx.compose.foundation:foundation:${Config.Versions.compose}")
     // Material Design
-    implementation("androidx.compose.material:material:1.0.0-beta01")
+    implementation("androidx.compose.material:material:${Config.Versions.compose}")
     // Material design icons
-    implementation( "androidx.compose.material:material-icons-core:1.0.0-beta01")
-    implementation("androidx.compose.material:material-icons-extended:1.0.0-beta01")
-    // Integration with activities
-    implementation("androidx.activity:activity-compose:1.3.0-alpha03")
-    // Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02")
+    implementation("androidx.compose.material:material-icons-core:${Config.Versions.compose}")
+    implementation("androidx.compose.material:material-icons-extended:${Config.Versions.compose}")
     // Integration with observables
-    implementation("androidx.compose.runtime:runtime-livedata:1.0.0-beta01")
-    implementation("androidx.compose.runtime:runtime-rxjava2:1.0.0-beta01")
+    implementation("androidx.compose.runtime:runtime-livedata:${Config.Versions.compose}")
+    implementation("androidx.compose.runtime:runtime-rxjava2:${Config.Versions.compose}")
+
 
     // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.0-beta01")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Config.Versions.compose}")
+
+    implementation( "androidx.browser:browser:1.3.0")
 
     // dagger2
     // implementation("com.google.dagger:dagger:2.24")

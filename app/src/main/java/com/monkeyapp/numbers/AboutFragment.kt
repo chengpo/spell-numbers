@@ -25,10 +25,12 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
@@ -37,15 +39,18 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -84,13 +89,31 @@ class AboutFragment : Fragment() {
                 Spacer(modifier = Modifier.size(160.dp))
 
                 Column {
-                    Text(text = stringResource(R.string.about_app_project),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(30.dp),
-                        textAlign = TextAlign.Center,
-                        fontFamily = FontFamily.SansSerif,
-                        style = MaterialTheme.typography.body2)
+                    val aboutText = buildAnnotatedString  {
+                        val projectUrl = "https://github.com/chengpo/spell-numbers"
+                        append(stringResource(R.string.about_app_project))
+
+                        pushStringAnnotation(tag = "URL", annotation = projectUrl)
+                        withStyle(style = SpanStyle(
+                            color = Color.Companion.Blue,
+                            textDecoration = TextDecoration.Underline
+                        )) {
+                            append(projectUrl)
+                        }
+                    }
+
+                    val aboutModifier = Modifier.fillMaxWidth().padding(30.dp)
+                    val aboutStyle = TextStyle(textAlign = TextAlign.Center, fontFamily = FontFamily.SansSerif)
+                                        .merge(MaterialTheme.typography.body2)
+
+                    ClickableText(text = aboutText,
+                        modifier = aboutModifier,
+                        style = aboutStyle) { offset ->
+                            aboutText.getStringAnnotations(tag = "URL", offset, offset)
+                                .firstOrNull()?.let { annotation ->
+                                    CustomTabsIntent.Builder().build().launchUrl(requireContext(), Uri.parse(annotation.item))
+                                }
+                    }
                 }
 
 
