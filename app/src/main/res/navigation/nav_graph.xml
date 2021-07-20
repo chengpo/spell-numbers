@@ -25,8 +25,7 @@
     <fragment
         android:id="@+id/about_fragment"
         android:name="com.monkeyapp.numbers.AboutFragment"
-        android:label="@string/about_title"
-        tools:layout="@layout/content_about" />
+        android:label="@string/about_title" />
 
     <fragment
         android:id="@+id/full_screen_fragment"

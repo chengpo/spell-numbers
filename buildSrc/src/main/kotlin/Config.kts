@@ -4,34 +4,41 @@ import java.io.FileInputStream
 import java.util.*
 
 object Versions {
-    const val buildTool = "29.0.3"
-    const val androidPlugin = "7.0.0-alpha08"
+    const val buildTool = "30.0.2"
+    const val androidPlugin = "7.1.0-alpha03"
     const val detektPlugin = "1.0.0-RC15"
-    const val kotlin = "1.4.30"
+    const val googleServicesPlugin = "4.3.5"
+    const val kotlin = "1.5.10"
     const val arrow = "0.10.1"
-    const val appcompat = "1.1.0"
+    const val appcompat = "1.3.0-rc01"
     const val coroutines = "1.4.2"
+    const val navigation = "2.3.5"
+    const val compose = "1.0.0-rc02"
 }
 
 object Plugins {
     const val android = "com.android.tools.build:gradle:${Versions.androidPlugin}"
     const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
-    const val navigation = "android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0"
-    const val googleService = "com.google.gms:google-services:4.2.0"
+    const val navigation = "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.navigation}"
+    const val googleService = "com.google.gms:google-services:${Versions.googleServicesPlugin}"
     const val detekt = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${Versions.detektPlugin}"
 }
 
 object Libs {
     const val appCompat = "androidx.appcompat:appcompat:${Versions.appcompat}"
+    const val appCompatResources = "androidx.appcompat:appcompat-resources:${Versions.appcompat}"
     const val kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}"
     const val arrow = "io.arrow-kt:arrow-core:${Versions.arrow}"
     const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
     const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
+
+    const val navigationFragment = "androidx.navigation:navigation-fragment-ktx:${Versions.navigation}"
+    const val navigationUI = "androidx.navigation:navigation-ui-ktx:${Versions.navigation}"
 }
 
 object Android {
     const val compileSdk = 30
-    const val minSdk = 17
+    const val minSdk = 21
     const val targetSdk = 30
 }
 

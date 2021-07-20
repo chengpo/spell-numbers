@@ -9,24 +9,28 @@ plugins {
 }
 
 android {
-    buildToolsVersion(Config.Versions.buildTool)
-    compileSdkVersion(Config.Android.compileSdk)
+    buildToolsVersion = Config.Versions.buildTool
+    compileSdk = Config.Android.compileSdk
 
     defaultConfig {
         applicationId = "com.monkeyapp.numbers"
         versionCode = 42
         versionName = "1.0.21.202102250205"
 
-        minSdkVersion(Config.Android.minSdk)
-        targetSdkVersion(Config.Android.targetSdk)
+        minSdk = Config.Android.minSdk
+        targetSdk = Config.Android.targetSdk
         multiDexEnabled = true
 
-        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders.putAll(mapOf("is_ocr_supported" to true))
 
-        resConfigs("en", "nodpi")
+        resourceConfigurations.addAll(listOf("en", "nodpi"))
+    }
+
+    buildFeatures {
+        // Enables Jetpack Compose for this module
+        compose = true
     }
 
     signingConfigs {
@@ -44,7 +48,6 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
-            isShrinkResources = true
             isDebuggable = false
             isJniDebuggable = false
             isRenderscriptDebuggable = false
@@ -57,16 +60,24 @@ android {
             applicationIdSuffix = ".debug"
         }
     }
+
     lint {
         checkOnly("NewApi", "HandlerLeak")
         isAbortOnError = true
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> { kotlinOptions.jvmTarget = "1.8" }
+    composeOptions {
+        kotlinCompilerExtensionVersion = Config.Versions.compose
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -84,6 +95,7 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
     implementation(Config.Libs.appCompat)
+    implementation(Config.Libs.appCompatResources)
     implementation("androidx.gridlayout:gridlayout:1.0.0")
     implementation("androidx.constraintlayout:constraintlayout:2.0.0")
 
@@ -101,8 +113,9 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics:18.0.2")
 
     // navigation
-    implementation("android.arch.navigation:navigation-fragment-ktx:1.0.0")
-    implementation("android.arch.navigation:navigation-ui-ktx:1.0.0")
+    implementation(Config.Libs.navigationFragment)
+    implementation(Config.Libs.navigationUI)
+    //implementation("androidx.navigation:navigation-compose:2.4.0-alpha04")
 
     // optional - Test helpers
     // this library depends on the Kotlin standard library
@@ -116,9 +129,40 @@ dependencies {
     implementation(Config.Libs.coroutinesCore)
     implementation(Config.Libs.coroutinesAndroid)
 
+    // compose
+    implementation("androidx.compose.ui:ui:${Config.Versions.compose}")
+    // Tooling support (Previews, etc.)
+    implementation("androidx.compose.ui:ui-tooling:${Config.Versions.compose}") {
+        version {
+            // TODO: Remove this when Android Studio has become compatible again
+            // Android Studio Bumblebee | 2021.1.1 Canary 3 is not compatible with module ui-tooling 1.0.0-rc01 or higher.
+            // The Run Configuration for Composable Previews that Android Studio makes expects a PreviewActivity class
+            // in the `androidx.compose.ui.tooling.preview` package, but it was moved in 1.0.0-rc01, and thus causes error:
+            // "androidx.compose.ui.tooling.preview.PreviewActivity is not an Activity subclass or alias".
+            // For more, see: https://stackoverflow.com/questions/68224361/jetpack-compose-cant-preview-after-updating-to-1-0-0-rc01
+            strictly("1.0.0-beta09")
+        }
+    }
+    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+    implementation("androidx.compose.foundation:foundation:${Config.Versions.compose}")
+    // Material Design
+    implementation("androidx.compose.material:material:${Config.Versions.compose}")
+    // Material design icons
+    implementation("androidx.compose.material:material-icons-core:${Config.Versions.compose}")
+    implementation("androidx.compose.material:material-icons-extended:${Config.Versions.compose}")
+    // Integration with observables
+    implementation("androidx.compose.runtime:runtime-livedata:${Config.Versions.compose}")
+    implementation("androidx.compose.runtime:runtime-rxjava2:${Config.Versions.compose}")
+
+
+    // UI Tests
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Config.Versions.compose}")
+
+    implementation( "androidx.browser:browser:1.3.0")
+
     // dagger2
-    implementation("com.google.dagger:dagger:2.24")
-    kapt("com.google.dagger:dagger-compiler:2.24")
+    // implementation("com.google.dagger:dagger:2.24")
+    // kapt("com.google.dagger:dagger-compiler:2.24")
 
     androidTestImplementation("androidx.arch.core:core-testing:2.0.0")
     androidTestImplementation("androidx.test:runner:1.2.0")

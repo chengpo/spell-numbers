@@ -27,10 +27,13 @@ package com.monkeyapp.numbers
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -38,10 +41,16 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import arrow.core.Either
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.monkeyapp.numbers.apphelpers.*
 import com.monkeyapp.numbers.translators.SpellerError
 
 class MainFragment : Fragment() {
+    private lateinit var adView: AdView
     private val mainViewModel: MainViewModel by viewModels { MainViewModel.Factory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,12 +59,29 @@ class MainFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
+    override fun onResume() {
+        super.onResume()
+        adView.resume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        adView.pause()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        adView.destroy()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.content_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        adView = AdView(requireContext()).apply(::setupAdView)
 
         val omniButtonView: OmniButton = view.findViewById(R.id.omniButtonView)
         val digitPadView: ViewGroup = view.findViewById(R.id.digitPadView)
@@ -163,4 +189,38 @@ class MainFragment : Fragment() {
     private companion object {
         const val REQUEST_CODE_OCR_CAPTURE = 1000
     }
+}
+
+private fun MainFragment.setupAdView(adView: AdView) {
+    val adContainerView = requireView().findViewById<FrameLayout>(R.id.adViewContainer)
+
+    fun adaptiveAdSize(): AdSize {
+        val display = requireActivity().windowManager.defaultDisplay
+        val outMetrics = DisplayMetrics()
+        display.getMetrics(outMetrics)
+
+        val density = outMetrics.density
+
+        var adWidthPixels = adContainerView.width.toFloat()
+        if (adWidthPixels == 0.0f) {
+            adWidthPixels = outMetrics.widthPixels.toFloat()
+        }
+
+        val adWidth = (adWidthPixels / density).toInt()
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(requireContext(), adWidth)
+    }
+
+    adView.apply {
+        adSize = adaptiveAdSize()
+        adUnitId = resources.getString(R.string.ad_unit_id)
+        adListener = object : AdListener() {
+            override fun onAdFailedToLoad(errorCode: Int) {
+                FirebaseAnalytics.getInstance(requireContext())
+                    .logEvent("AdLoadingFailed", bundleOf("ErrorCode" to errorCode.toString()))
+            }
+        }
+    }
+
+    adContainerView.addView(adView)
+    adView.loadAd(AdRequest.Builder().build())
 }

@@ -6,7 +6,6 @@ import org.gradle.kotlin.dsl.*
 buildscript {
     repositories {
         google()
-        jcenter()
         maven(url = "https://plugins.gradle.org/m2/")
     }
 
@@ -28,8 +27,10 @@ plugins {
 allprojects {
     repositories {
         google()
-        jcenter()
         mavenCentral()
+        maven {
+            url = java.net.URI("https://kotlin.bintray.com/kotlinx")
+        }
     }
 
     apply {
