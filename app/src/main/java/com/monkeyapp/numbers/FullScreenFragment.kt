@@ -28,7 +28,19 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.os.Bundle
 import android.view.*
-import android.widget.TextView
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
@@ -36,7 +48,6 @@ import com.monkeyapp.numbers.apphelpers.snackbar
 
 class FullScreenFragment : Fragment() {
     private val args: FullScreenFragmentArgs by navArgs()
-    private lateinit var wordsTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,15 +55,42 @@ class FullScreenFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.content_full_screen, container, false)
+        return ComposeView(requireContext()).apply {
+            setContent {
+                MaterialTheme {
+                    numberWordsView()
+                }
+            }
+        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    @Preview
+    @Composable
+    private fun numberWordsView() {
+        Column(horizontalAlignment = Alignment.CenterHorizontally,
+               verticalArrangement = Arrangement.Center) {
 
-        wordsTextView = view.findViewById<TextView>(R.id.wordsTextView).apply {
-            text =  args.numberWordsText
-            setOnClickListener { copyToClipboard() }
+            var multiplier by remember { mutableStateOf(1f) }
+            val textStyle = MaterialTheme.typography.h5
+
+            ClickableText(
+                text = buildAnnotatedString {
+                    append(args.numberWordsText)
+                },
+                maxLines = 5,
+                modifier = Modifier.padding(20.dp),
+                overflow = TextOverflow.Visible,
+                style = textStyle.copy(
+                    fontSize = textStyle.fontSize * multiplier
+                ),
+                onTextLayout = {
+                    if (it.hasVisualOverflow) {
+                        multiplier *= 0.99f
+                    }
+                },
+            ) {
+                copyToClipboard()
+            }
         }
     }
 
@@ -75,7 +113,7 @@ class FullScreenFragment : Fragment() {
             val clip = ClipData.newPlainText(getString(R.string.app_name), args.numberWordsText)
             clipboard.setPrimaryClip(clip)
 
-            wordsTextView.snackbar(R.string.full_screen_copied_to_clipboard)
+            requireView().snackbar(R.string.full_screen_copied_to_clipboard)
         }
     }
 }
