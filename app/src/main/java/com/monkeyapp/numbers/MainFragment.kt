@@ -26,6 +26,7 @@ package com.monkeyapp.numbers
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -35,6 +36,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.core.view.children
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -204,23 +206,28 @@ private fun MainFragment.setupAdView(adView: AdView) {
         var adWidthPixels = adContainerView.width.toFloat()
         if (adWidthPixels == 0.0f) {
             adWidthPixels = outMetrics.widthPixels.toFloat()
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                adWidthPixels /= 2
+            }
         }
 
         val adWidth = (adWidthPixels / density).toInt()
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(requireContext(), adWidth)
     }
 
-    adView.apply {
-        adSize = adaptiveAdSize()
-        adUnitId = resources.getString(R.string.ad_unit_id)
-        adListener = object : AdListener() {
-            override fun onAdFailedToLoad(errorCode: Int) {
-                FirebaseAnalytics.getInstance(requireContext())
-                    .logEvent("AdLoadingFailed", bundleOf("ErrorCode" to errorCode.toString()))
+    adContainerView.doOnLayout {
+        adView.apply {
+            adSize = adaptiveAdSize()
+            adUnitId = resources.getString(R.string.ad_unit_id)
+            adListener = object : AdListener() {
+                override fun onAdFailedToLoad(errorCode: Int) {
+                    FirebaseAnalytics.getInstance(requireContext())
+                        .logEvent("AdLoadingFailed", bundleOf("ErrorCode" to errorCode.toString()))
+                }
             }
         }
-    }
 
-    adContainerView.addView(adView)
-    adView.loadAd(AdRequest.Builder().build())
+        adContainerView.addView(adView)
+        adView.loadAd(AdRequest.Builder().build())
+    }
 }
