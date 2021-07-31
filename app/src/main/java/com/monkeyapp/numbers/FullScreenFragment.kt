@@ -33,10 +33,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.primarySurface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +47,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.google.accompanist.appcompattheme.createAppCompatTheme
 import com.monkeyapp.numbers.apphelpers.snackbar
 
 class FullScreenFragment : Fragment() {
@@ -57,10 +62,15 @@ class FullScreenFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                MaterialTheme {
-                    numberWordsView()
-                }
+                contentView()
             }
+        }
+    }
+
+    @Composable
+    private fun contentView() {
+        AppCompatTheme {
+            numberWordsView()
         }
     }
 
@@ -81,7 +91,8 @@ class FullScreenFragment : Fragment() {
                 modifier = Modifier.padding(20.dp),
                 overflow = TextOverflow.Visible,
                 style = textStyle.copy(
-                    fontSize = textStyle.fontSize * multiplier
+                    fontSize = textStyle.fontSize * multiplier,
+                    color = colorResource(id = R.color.primary_text)
                 ),
                 onTextLayout = {
                     if (it.hasVisualOverflow) {

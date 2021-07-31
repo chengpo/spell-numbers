@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -56,6 +57,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import com.google.accompanist.appcompattheme.AppCompatTheme
 
 class AboutFragment : Fragment() {
     override fun onCreateView(
@@ -65,10 +67,15 @@ class AboutFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                MaterialTheme {
-                    aboutView()
-                }
+                contentView()
             }
+        }
+    }
+
+    @Composable
+    private fun contentView() {
+        AppCompatTheme {
+            aboutView()
         }
     }
 
@@ -79,7 +86,9 @@ class AboutFragment : Fragment() {
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
         ) {
             Image(
                 painter = painterResource(R.mipmap.ic_launcher_round),
@@ -125,7 +134,9 @@ class AboutFragment : Fragment() {
                     .fillMaxWidth()
                     .padding(30.dp)
                 val aboutStyle =
-                    TextStyle(textAlign = TextAlign.Center, fontFamily = FontFamily.SansSerif)
+                    TextStyle(textAlign = TextAlign.Center,
+                             fontFamily = FontFamily.SansSerif,
+                             color = colorResource(id = R.color.primary_text))
                         .merge(MaterialTheme.typography.body2)
 
                 ClickableText(

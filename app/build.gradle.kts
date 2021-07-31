@@ -47,6 +47,7 @@ android {
 
     buildTypes {
         getByName("release") {
+            isShrinkResources = true
             isMinifyEnabled = true
             isDebuggable = false
             isJniDebuggable = false
@@ -154,11 +155,11 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:${Config.Versions.compose}")
     implementation("androidx.compose.runtime:runtime-rxjava2:${Config.Versions.compose}")
 
+    implementation("com.google.accompanist:accompanist-appcompat-theme:0.15.0")
+    implementation( "androidx.browser:browser:1.3.0")
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Config.Versions.compose}")
-
-    implementation( "androidx.browser:browser:1.3.0")
 
     // dagger2
     // implementation("com.google.dagger:dagger:2.24")
