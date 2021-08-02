@@ -7,4 +7,5 @@
     <color name="secondary_text">#a6a6a6</color>
     <color name="divider">#ebebeb</color>
     <color name="control_normal">#ebebeb</color>
+    <color name="link_text">#0099FF</color>
 </resources>

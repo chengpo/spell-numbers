@@ -121,7 +121,7 @@ class AboutFragment : Fragment() {
                     pushStringAnnotation(tag = "URL", annotation = projectUrl)
                     withStyle(
                         style = SpanStyle(
-                            color = Color.Companion.Blue,
+                            color = colorResource(id = R.color.link_text),
                             textDecoration = TextDecoration.Underline
                         )
                     ) {
