@@ -24,24 +24,30 @@ SOFTWARE.
 
 package com.monkeyapp.numbers
 
+import android.app.Activity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import com.google.android.material.snackbar.Snackbar
 import android.view.View
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.edit
 import androidx.lifecycle.LifecycleOwner
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import com.monkeyapp.numbers.apphelpers.*
 import kotlin.math.absoluteValue
 
-class RatingPrompter(private val context: Context,
+class RatingPrompter(private val activity: Activity,
                      private val anchorView: View) : LifecycleObserver, Snackbar.Callback() {
     private var snackbar: Snackbar? = null
 
     private inline val ratePrefs: SharedPreferences
-        get() = context.getSharedPreferences(PREF_NAME_RATE_APP, 0)
+        get() = activity.getSharedPreferences(PREF_NAME_RATE_APP, 0)
 
     private inline var isRated: Boolean
         get() = ratePrefs.getBoolean(PREF_KEY_IS_RATED_BOOLEAN, false)
@@ -54,7 +60,7 @@ class RatingPrompter(private val context: Context,
 
     private inline var lastPromptTime: Long
         get() {
-            val firstInstallTime = context.packageManager.getPackageInfo(context.packageName, 0).firstInstallTime
+            val firstInstallTime = activity.packageManager.getPackageInfo(activity.packageName, 0).firstInstallTime
             return ratePrefs.getLong(PREF_KEY_LAST_PROMPT_TIME_LONG, firstInstallTime)
         }
 
@@ -74,21 +80,48 @@ class RatingPrompter(private val context: Context,
 
     @Suppress("unused")
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun showSnackbar() {
-        if (snackbar == null && !isRated && shouldPrompt) {
+    fun onResume() {
+        if (snackbar == null && shouldPrompt) {
+            // launch in-app review flow
+            val reviewManager = ReviewManagerFactory.create(activity)
+            val request = reviewManager.requestReviewFlow()
+            request.addOnSuccessListener { reviewInfo ->
+                reviewManager.launchReviewFlow(activity, reviewInfo)
+                    .addOnFailureListener {
+                        Firebase.analytics.logEvent("LaunchReviewFlowFailed") {}
+                        showSnackbar()
+                    }
+                    .addOnCompleteListener {
+                        Firebase.analytics.logEvent("LaunchReviewFlowCompleted") {}
+                        lastPromptTime = System.currentTimeMillis()
+                    }
+            }.addOnFailureListener {
+                Firebase.analytics.logEvent("RequestReviewFlowFailed") {
+                    param("error", it.message ?: "unknown error")
+                }
+                showSnackbar()
+            }
+        }
+    }
+
+    private fun showSnackbar() {
+        if (!isRated) {
+            Firebase.analytics.logEvent("ShowRatingPromptSnackbar") {}
+
             snackbar = anchorView.snackbar(R.string.rate_spell_numbers, Snackbar.LENGTH_INDEFINITE) {
                 icon(R.drawable.ic_rate_app, R.color.accent)
 
-                action(R.string.rate_sure, View.OnClickListener {
-                    context.browse(url = "market://details?id=com.monkeyapp.numbers",
-                            newTask = true,
-                            onError = {
-                                context.browse(url = "https://play.google.com/store/apps/details?id=com.monkeyapp.numbers",
-                                        newTask = true)
-                            })
+                action(R.string.rate_sure) {
+                    activity.browse(url = "market://details?id=com.monkeyapp.numbers",
+                        newTask = true,
+                        onError = {
+                            CustomTabsIntent.Builder().build()
+                                .launchUrl(activity,  Uri.parse("https://play.google.com/store/apps/details?id=com.monkeyapp.numbers"))
+                        })
 
+                    Firebase.analytics.logEvent("LaunchGooglePlay") {}
                     isRated = true
-                })
+                }
 
                 addCallback(this@RatingPrompter)
             }

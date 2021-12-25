@@ -63,8 +63,8 @@ android {
     }
 
     lint {
-        checkOnly("NewApi", "HandlerLeak")
-        isAbortOnError = true
+        checkOnly += setOf("NewApi", "HandlerLeak")
+        abortOnError = true
     }
 
     compileOptions {
@@ -88,9 +88,9 @@ dependencies {
 
     implementation("androidx.multidex:multidex:2.0.1")
 
-    implementation("androidx.annotation:annotation:1.1.0")
-    implementation("androidx.core:core:1.3.2")
-    implementation("androidx.core:core-ktx:1.3.2")
+    implementation("androidx.annotation:annotation:1.2.0")
+    implementation("androidx.core:core:1.6.0")
+    implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.fragment:fragment-ktx:1.3.0")
     implementation("com.google.android.material:material:1.3.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
@@ -112,6 +112,7 @@ dependencies {
 
     implementation("com.google.firebase:firebase-core:18.0.2")
     implementation("com.google.firebase:firebase-analytics:18.0.2")
+    implementation("com.google.firebase:firebase-analytics-ktx:18.0.2")
 
     // navigation
     implementation(Config.Libs.navigationFragment)
@@ -133,17 +134,8 @@ dependencies {
     // compose
     implementation("androidx.compose.ui:ui:${Config.Versions.compose}")
     // Tooling support (Previews, etc.)
-    implementation("androidx.compose.ui:ui-tooling:${Config.Versions.compose}") {
-        version {
-            // TODO: Remove this when Android Studio has become compatible again
-            // Android Studio Bumblebee | 2021.1.1 Canary 3 is not compatible with module ui-tooling 1.0.0-rc01 or higher.
-            // The Run Configuration for Composable Previews that Android Studio makes expects a PreviewActivity class
-            // in the `androidx.compose.ui.tooling.preview` package, but it was moved in 1.0.0-rc01, and thus causes error:
-            // "androidx.compose.ui.tooling.preview.PreviewActivity is not an Activity subclass or alias".
-            // For more, see: https://stackoverflow.com/questions/68224361/jetpack-compose-cant-preview-after-updating-to-1-0-0-rc01
-            strictly("1.0.0-beta09")
-        }
-    }
+    implementation("androidx.compose.ui:ui-tooling:${Config.Versions.compose}")
+
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation("androidx.compose.foundation:foundation:${Config.Versions.compose}")
     // Material Design
@@ -157,6 +149,13 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-appcompat-theme:0.15.0")
     implementation( "androidx.browser:browser:1.3.0")
+
+    // This dependency is downloaded from the Google’s Maven repository.
+    // So, make sure you also include that repository in your project's build.gradle file.
+    implementation("com.google.android.play:core:1.10.0")
+
+    // For Kotlin users also import the Kotlin extensions library for Play Core:
+    implementation("com.google.android.play:core-ktx:1.8.1")
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Config.Versions.compose}")

@@ -41,7 +41,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
@@ -58,6 +57,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 
 class AboutFragment : Fragment() {
     override fun onCreateView(
@@ -72,6 +75,7 @@ class AboutFragment : Fragment() {
         }
     }
 
+    @Preview("About")
     @Composable
     private fun contentView() {
         AppCompatTheme {
@@ -79,7 +83,6 @@ class AboutFragment : Fragment() {
         }
     }
 
-    @Preview("About")
     @Composable
     private fun aboutView() {
         val scrollState = rememberScrollState()
@@ -162,6 +165,15 @@ class AboutFragment : Fragment() {
                     style = MaterialTheme.typography.caption
                 )
             }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        Firebase.analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+            param(FirebaseAnalytics.Param.SCREEN_NAME, AboutFragment::class.java.simpleName)
+            param(FirebaseAnalytics.Param.SCREEN_CLASS, AboutFragment::class.java.simpleName)
         }
     }
 }

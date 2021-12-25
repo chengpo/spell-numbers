@@ -25,6 +25,7 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -34,12 +35,11 @@ import android.view.*
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.core.os.bundleOf
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.view.children
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import arrow.core.Either
@@ -48,32 +48,55 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import com.monkeyapp.numbers.apphelpers.*
 import com.monkeyapp.numbers.translators.SpellerError
 
 class MainFragment : Fragment() {
-    private lateinit var adView: AdView
+    private var adView: AdView? = null
     private val mainViewModel: MainViewModel by viewModels { MainViewModel.Factory() }
+
+    private val ocrScannerLauncher =  registerForActivityResult( object : ActivityResultContract<Unit, String>() {
+        override fun createIntent(context: Context, input: Unit?): Intent {
+            return context.ocrIntent
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): String {
+            return if (resultCode == Activity.RESULT_OK)
+                intent?.getStringExtra("number") ?: ""
+            else
+                ""
+        }
+    }) { number ->
+        if (number.isNotBlank()) {
+            mainViewModel.reset()
+            number.forEach { digit ->
+                mainViewModel.append(digit)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setHasOptionsMenu(true)
     }
 
     override fun onResume() {
         super.onResume()
-        adView.resume()
+        adView?.resume()
     }
 
     override fun onPause() {
         super.onPause()
-        adView.pause()
+        adView?.pause()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        adView.destroy()
+        adView?.destroy()
+        adView = null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -83,20 +106,21 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adView = AdView(requireContext()).apply(::setupAdView)
+        if (adView == null){
+            adView = AdView(requireContext()).apply(::setupAdView)
+        }
 
         val omniButtonView: OmniButton = view.findViewById(R.id.omniButtonView)
         val digitPadView: ViewGroup = view.findViewById(R.id.digitPadView)
         val wordsTextView: TextView = view.findViewById(R.id.wordsTextView)
         val numberTextView: TextView = view.findViewById(R.id.numberTextView)
 
-        omniButtonView.setOnClickListener {
-            when ((it as OmniButton).state) {
-                OmniButton.State.Clean ->
+        omniButtonView.setOnClickListener { omniButton ->
+            (omniButton as? OmniButton)?.state?.let {
+                if (it == OmniButton.State.Clean)
                     mainViewModel.reset()
-
-                OmniButton.State.Camera ->
-                    startActivityForResult(requireContext().ocrIntent, REQUEST_CODE_OCR_CAPTURE)
+                else if (it == OmniButton.State.Camera)
+                    ocrScannerLauncher.launch(Unit)
             }
         }
 
@@ -136,7 +160,7 @@ class MainFragment : Fragment() {
             }
         }
 
-        mainViewModel.formattedNumberText.observe(viewLifecycleOwner, Observer {
+        mainViewModel.formattedNumberText.observe(viewLifecycleOwner) {
             numberTextView.text = it
 
             omniButtonView.state = if (it.isEmpty()) {
@@ -144,9 +168,9 @@ class MainFragment : Fragment() {
             } else {
                 OmniButton.State.Clean
             }
-        })
+        }
 
-        mainViewModel.numberWordsText.observe(viewLifecycleOwner, Observer {
+        mainViewModel.numberWordsText.observe(viewLifecycleOwner) {
             when (it) {
                 is Either.Right -> wordsTextView.text = it.b
                 is Either.Left -> {
@@ -159,24 +183,15 @@ class MainFragment : Fragment() {
                     }
                 }
             }
-        })
+        }
 
         // attach rating prompter
-        RatingPrompter(context = requireContext(), anchorView = digitPadView).run {
-            bind(viewLifecycleOwner)
-        }
-    }
+        RatingPrompter(activity = requireActivity(), anchorView = digitPadView)
+            .bind(viewLifecycleOwner)
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_OCR_CAPTURE && resultCode == Activity.RESULT_OK) {
-            val number = data?.getStringExtra("number") ?: ""
-            if (number.isNotBlank()) {
-                mainViewModel.reset()
-                number.forEach { digit ->
-                    mainViewModel.append(digit)
-                }
-            }
+        Firebase.analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+            param(FirebaseAnalytics.Param.SCREEN_NAME, MainFragment::class.java.simpleName)
+            param(FirebaseAnalytics.Param.SCREEN_CLASS, MainFragment::class.java.simpleName)
         }
     }
 
@@ -186,10 +201,6 @@ class MainFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return item.onNavDestinationSelected(findNavController()) || super.onOptionsItemSelected(item)
-    }
-
-    private companion object {
-        const val REQUEST_CODE_OCR_CAPTURE = 1000
     }
 }
 
@@ -221,8 +232,9 @@ private fun MainFragment.setupAdView(adView: AdView) {
             adUnitId = resources.getString(R.string.ad_unit_id)
             adListener = object : AdListener() {
                 override fun onAdFailedToLoad(errorCode: Int) {
-                    FirebaseAnalytics.getInstance(requireContext())
-                        .logEvent("AdLoadingFailed", bundleOf("ErrorCode" to errorCode.toString()))
+                    Firebase.analytics.logEvent("AdLoadingFailed") {
+                        param("ErrorCode", errorCode.toString() )
+                    }
                 }
             }
         }

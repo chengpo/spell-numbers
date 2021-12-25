@@ -33,12 +33,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.primarySurface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
@@ -48,7 +46,10 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.google.accompanist.appcompattheme.AppCompatTheme
-import com.google.accompanist.appcompattheme.createAppCompatTheme
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import com.monkeyapp.numbers.apphelpers.snackbar
 
 class FullScreenFragment : Fragment() {
@@ -67,16 +68,23 @@ class FullScreenFragment : Fragment() {
         }
     }
 
+    @Preview
     @Composable
-    private fun contentView() {
+    private fun preview() {
         AppCompatTheme {
-            numberWordsView()
+            numberWordsView("One Hundred")
         }
     }
 
-    @Preview
     @Composable
-    private fun numberWordsView() {
+    private fun contentView() {
+        AppCompatTheme {
+            numberWordsView(args.numberWordsText)
+        }
+    }
+
+    @Composable
+    private fun numberWordsView(numberWordsText: String) {
         Column(horizontalAlignment = Alignment.CenterHorizontally,
                verticalArrangement = Arrangement.Center) {
 
@@ -85,7 +93,7 @@ class FullScreenFragment : Fragment() {
 
             ClickableText(
                 text = buildAnnotatedString {
-                    append(args.numberWordsText)
+                    append(numberWordsText)
                 },
                 maxLines = 5,
                 modifier = Modifier.padding(20.dp),
@@ -102,6 +110,15 @@ class FullScreenFragment : Fragment() {
             ) {
                 copyToClipboard()
             }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        Firebase.analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+            param(FirebaseAnalytics.Param.SCREEN_NAME, FullScreenFragment::class.java.simpleName)
+            param(FirebaseAnalytics.Param.SCREEN_CLASS, FullScreenFragment::class.java.simpleName)
         }
     }
 
