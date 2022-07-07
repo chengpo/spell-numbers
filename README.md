@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/chengpo/spell-numbers.svg?branch=master)](https://travis-ci.org/chengpo/spell-numbers)
+![android workflow](https://github.com/chengpo/spell-numbers/actions/workflows/android.yml/badge.svg)
+
 
 # Spell Numbers
 
