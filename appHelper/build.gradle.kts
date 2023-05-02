@@ -6,6 +6,7 @@ plugins {
 }
 
 android {
+    namespace = "com.monkeyapp.numbers"
     buildToolsVersion = Config.Versions.buildTool
     compileSdk = Config.Android.compileSdk
 
