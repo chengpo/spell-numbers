@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.monkeyapp.numbers"
+    namespace = "com.monkeyapp.numbers.translator"
     buildToolsVersion = Config.Versions.buildTool
     compileSdk = Config.Android.compileSdk
 
@@ -21,6 +21,11 @@ android {
             isMinifyEnabled = true
             consumerProguardFiles("proguard-rules.pro")
         }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 

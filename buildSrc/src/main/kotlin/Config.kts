@@ -8,12 +8,13 @@ object Versions {
     const val androidPlugin = "8.0.1"
     const val detektPlugin = "1.0.0-RC15"
     const val googleServicesPlugin = "4.3.5"
-    const val kotlin = "1.8.20"
+    const val kotlin = "1.8.21"
     const val arrow = "0.10.1"
     const val appcompat = "1.3.0-rc01"
     const val coroutines = "1.4.2"
-    const val navigation = "2.3.5"
-    const val compose = "1.0.1"
+    const val navigation = "2.5.0"
+    const val composeCompiler = "1.4.7"
+    const val compose = "1.4.3"
 }
 
 object Plugins {
@@ -37,9 +38,9 @@ object Libs {
 }
 
 object Android {
-    const val compileSdk = 30
+    const val compileSdk = 33
     const val minSdk = 21
-    const val targetSdk = 30
+    const val targetSdk = 33
 }
 
 data class KeyStore(

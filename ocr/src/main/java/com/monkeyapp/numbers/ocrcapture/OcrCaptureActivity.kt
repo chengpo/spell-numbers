@@ -73,19 +73,7 @@ class OcrCaptureActivity : AppCompatActivity() {
         }
 
         scaleGestureDetector = ScaleGestureDetector(this,
-                object:ScaleGestureDetector.SimpleOnScaleGestureListener(){
-                    override fun onScaleBegin(detector: ScaleGestureDetector?): Boolean {
-                        return true
-                    }
-
-                    override fun onScaleEnd(detector: ScaleGestureDetector?) {
-                        // TODO: scale to zoom
-                    }
-
-                    override fun onScale(detector: ScaleGestureDetector?): Boolean {
-                        return false
-                    }
-                })
+                ScaleGestureDetector.SimpleOnScaleGestureListener())
     }
 
     override fun onResume() {
@@ -137,7 +125,7 @@ class OcrCaptureActivity : AppCompatActivity() {
         }
     }
 
-    override fun onTouchEvent(event: MotionEvent?) =
+    override fun onTouchEvent(event: MotionEvent) =
             scaleGestureDetector.onTouchEvent(event) || super.onTouchEvent(event)
 
 

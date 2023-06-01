@@ -47,6 +47,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
@@ -59,7 +60,7 @@ class MainFragment : Fragment() {
     private val mainViewModel: MainViewModel by viewModels { MainViewModel.Factory() }
 
     private val ocrScannerLauncher =  registerForActivityResult( object : ActivityResultContract<Unit, String>() {
-        override fun createIntent(context: Context, input: Unit?): Intent {
+        override fun createIntent(context: Context, input: Unit): Intent {
             return context.ocrIntent
         }
 
@@ -228,12 +229,13 @@ private fun MainFragment.setupAdView(adView: AdView) {
 
     adContainerView.doOnLayout {
         adView.apply {
-            adSize = adaptiveAdSize()
+            setAdSize(adaptiveAdSize())
             adUnitId = resources.getString(R.string.ad_unit_id)
             adListener = object : AdListener() {
-                override fun onAdFailedToLoad(errorCode: Int) {
+                override fun onAdFailedToLoad(error: LoadAdError) {
                     Firebase.analytics.logEvent("AdLoadingFailed") {
-                        param("ErrorCode", errorCode.toString() )
+                        param("ErrorCode", error.code.toString() )
+                        param("ErrorMessage", error.message)
                     }
                 }
             }

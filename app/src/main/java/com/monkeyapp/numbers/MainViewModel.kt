@@ -35,7 +35,7 @@ class MainViewModel(private val coroutineWorkerContext: ExecutorCoroutineDispatc
 
     val formattedNumberText: LiveData<String>
         get() {
-            return Transformations.switchMap(numberText) {
+            return numberText.switchMap {
                 liveData(coroutineWorkerContext) {
                     emit(formatNumber(it, delimiter = ',', delimiterWidth = 3))
                 }
@@ -44,7 +44,7 @@ class MainViewModel(private val coroutineWorkerContext: ExecutorCoroutineDispatc
 
     val numberWordsText: LiveData<Either<SpellerError, String>>
         get() {
-            return Transformations.switchMap(numberText) {
+            return numberText.switchMap {
                 liveData(coroutineWorkerContext) {
                     val spelledText = spellNumberInEnglish(it)
                     emit(spelledText)
@@ -77,7 +77,7 @@ class MainViewModel(private val coroutineWorkerContext: ExecutorCoroutineDispatc
     }
 
     class Factory : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             @Suppress("UNCHECKED_CAST")
             return MainViewModel(coroutineWorkerContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()) as T
         }

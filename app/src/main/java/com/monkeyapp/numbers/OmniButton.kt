@@ -90,10 +90,10 @@ class OmniButton : AppCompatImageButton {
         val fadeOutAnimator = ObjectAnimator.ofFloat(this, View.ALPHA, 1.0F, 0.0F)
         val fadeInAnimator = ObjectAnimator.ofFloat(this, View.ALPHA, 0.0F, 1.0F)
         fadeInAnimator.addListener(object: Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) = Unit
-            override fun onAnimationEnd(animation: Animator?) = Unit
-            override fun onAnimationCancel(animation: Animator?) = Unit
-            override fun onAnimationStart(animation: Animator?) = onStart()
+            override fun onAnimationRepeat(animation: Animator) = Unit
+            override fun onAnimationEnd(animation: Animator) = Unit
+            override fun onAnimationCancel(animation: Animator) = Unit
+            override fun onAnimationStart(animation: Animator) = onStart()
         })
 
         val animatorSet = AnimatorSet()
@@ -106,10 +106,10 @@ class OmniButton : AppCompatImageButton {
     private fun fadeOut(onEnd: () -> Unit) {
         val animator = ObjectAnimator.ofFloat(this, View.ALPHA, 1.0F, 0.0F)
         animator.addListener(object: Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) = Unit
-            override fun onAnimationEnd(animation: Animator?) = onEnd()
-            override fun onAnimationCancel(animation: Animator?) = Unit
-            override fun onAnimationStart(animation: Animator?) = Unit
+            override fun onAnimationRepeat(animation: Animator) = Unit
+            override fun onAnimationEnd(animation: Animator) = onEnd()
+            override fun onAnimationCancel(animation: Animator) = Unit
+            override fun onAnimationStart(animation: Animator) = Unit
         })
         animator.duration = 300L
         animator.interpolator = AccelerateDecelerateInterpolator()

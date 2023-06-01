@@ -32,6 +32,8 @@ android {
     buildFeatures {
         // Enables Jetpack Compose for this module
         compose = true
+
+        buildConfig = true
     }
 
     signingConfigs {
@@ -56,10 +58,13 @@ android {
             isPseudoLocalesEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("release")
+
+            buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
         }
 
         getByName("debug") {
             applicationIdSuffix = ".debug"
+            buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
         }
     }
 
@@ -69,16 +74,16 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Config.Versions.compose
+        kotlinCompilerExtensionVersion = Config.Versions.composeCompiler
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17.majorVersion
     }
 }
 
@@ -102,7 +107,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.0.0")
 
     // admob
-    implementation("com.google.android.gms:play-services-ads:19.7.0")
+    implementation("com.google.android.gms:play-services-ads:22.1.0")
 
     // viewModel and liveData
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
@@ -111,9 +116,11 @@ dependencies {
     //kapt("androidx.lifecycle:lifecycle-compiler:2.2.0")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.3.0")
 
-    implementation("com.google.firebase:firebase-core:18.0.2")
-    implementation("com.google.firebase:firebase-analytics:18.0.2")
-    implementation("com.google.firebase:firebase-analytics-ktx:18.0.2")
+    //implementation("com.google.firebase:firebase-core:18.0.2")
+    implementation("com.google.firebase:firebase-analytics:21.3.0")
+    implementation("com.google.firebase:firebase-analytics-ktx:21.3.0")
+    implementation("com.google.firebase:firebase-bom:30.1.0")
+    //implementation("com.google.android.gms:play-services-measurement-api:21.3.0")
 
     // navigation
     implementation(Config.Libs.navigationFragment)
@@ -153,8 +160,7 @@ dependencies {
 
     // This dependency is downloaded from the Google’s Maven repository.
     // So, make sure you also include that repository in your project's build.gradle file.
-    implementation("com.google.android.play:core:1.10.0")
-
+    implementation("com.google.android.play:core:1.10.3")
     // For Kotlin users also import the Kotlin extensions library for Play Core:
     implementation("com.google.android.play:core-ktx:1.8.1")
 

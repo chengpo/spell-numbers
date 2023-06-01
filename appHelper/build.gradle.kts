@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.monkeyapp.numbers"
+    namespace = "com.monkeyapp.numbers.apphelpers"
     buildToolsVersion = Config.Versions.buildTool
     compileSdk = Config.Android.compileSdk
 
@@ -25,13 +25,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
         val options = this as KotlinJvmOptions
-        options.jvmTarget = JavaVersion.VERSION_1_8.toString()
+        options.jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
 
