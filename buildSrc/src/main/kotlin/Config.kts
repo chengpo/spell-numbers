@@ -4,10 +4,9 @@ import java.io.FileInputStream
 import java.util.*
 
 object Versions {
-    const val buildTool = "30.0.3"
-    const val androidPlugin = "8.0.1"
+    const val androidPlugin = "8.7.0"
     const val detektPlugin = "1.0.0-RC15"
-    const val googleServicesPlugin = "4.3.5"
+    const val googleServicesPlugin = "4.4.2"
     const val kotlin = "1.8.21"
     const val arrow = "0.10.1"
     const val appcompat = "1.3.0-rc01"
@@ -38,9 +37,9 @@ object Libs {
 }
 
 object Android {
-    const val compileSdk = 33
+    const val compileSdk = 35
     const val minSdk = 21
-    const val targetSdk = 33
+    const val targetSdk = 35
 }
 
 data class KeyStore(

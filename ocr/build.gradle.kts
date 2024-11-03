@@ -6,14 +6,17 @@ plugins {
 
 android {
     namespace = "com.monkeyapp.numbers.ocrcapture"
-    buildToolsVersion = Config.Versions.buildTool
     compileSdk = Config.Android.compileSdk
 
     defaultConfig {
         minSdk = Config.Android.minSdk
-        targetSdk = Config.Android.targetSdk
+
 
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    lint {
+        targetSdk = Config.Android.targetSdk
     }
 
     buildTypes {
@@ -26,6 +29,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 

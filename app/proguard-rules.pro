@@ -21,3 +21,14 @@
 #-renamesourcefileattribute SourceFile
 
 -keep public class com.google.android.gms.*
+
+-dontwarn com.monkeyapp.numbers.apphelpers.ViewHelperKt
+-dontwarn java.lang.invoke.StringConcatFactory
+
+-dontwarn com.monkeyapp.numbers.apphelpers.ContextHelperKt
+-dontwarn com.monkeyapp.numbers.apphelpers.DrawableHelperKt
+-dontwarn com.monkeyapp.numbers.apphelpers.SnackbarHelperKt
+-dontwarn com.monkeyapp.numbers.translators.NumberComposerKt
+-dontwarn com.monkeyapp.numbers.translators.NumberFormatterKt
+-dontwarn com.monkeyapp.numbers.translators.NumberSpellerKt
+-dontwarn com.monkeyapp.numbers.translators.SpellerError

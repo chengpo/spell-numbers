@@ -106,9 +106,9 @@ class OcrOverlayView @JvmOverloads constructor(context: Context, attrs: Attribut
         viewRect.set(0F, 0F, viewWidth.toFloat(), viewHeight.toFloat())
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas?.let { theCanvas ->
+        canvas.let { theCanvas ->
             // draw the capture rectangle
             theCanvas.drawRect(captureRect, rectPaint)
 

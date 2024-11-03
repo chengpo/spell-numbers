@@ -10,13 +10,12 @@ plugins {
 
 android {
     namespace = "com.monkeyapp.numbers"
-    buildToolsVersion = Config.Versions.buildTool
     compileSdk = Config.Android.compileSdk
 
     defaultConfig {
         applicationId = "com.monkeyapp.numbers"
-        versionCode = 47
-        versionName = "1.0.24.202306011639"
+        versionCode = 48
+        versionName = "1.0.25.202411161349"
 
         minSdk = Config.Android.minSdk
         targetSdk = Config.Android.targetSdk
@@ -54,7 +53,6 @@ android {
             isMinifyEnabled = true
             isDebuggable = false
             isJniDebuggable = false
-            isRenderscriptDebuggable = false
             isPseudoLocalesEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("release")
@@ -78,12 +76,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = Config.Versions.composeCompiler
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.majorVersion
+    composeOptions {
+        kotlinCompilerExtensionVersion = Config.Versions.composeCompiler
     }
 }
 
@@ -107,25 +105,21 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.0.0")
 
     // admob
-    implementation("com.google.android.gms:play-services-ads:22.1.0")
+    implementation("com.google.android.gms:play-services-ads:23.5.0")
 
     // viewModel and liveData
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0")
-    //kapt("androidx.lifecycle:lifecycle-compiler:2.2.0")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.3.0")
 
-    //implementation("com.google.firebase:firebase-core:18.0.2")
     implementation("com.google.firebase:firebase-analytics:21.3.0")
     implementation("com.google.firebase:firebase-analytics-ktx:21.3.0")
     implementation("com.google.firebase:firebase-bom:30.1.0")
-    //implementation("com.google.android.gms:play-services-measurement-api:21.3.0")
 
     // navigation
     implementation(Config.Libs.navigationFragment)
     implementation(Config.Libs.navigationUI)
-    //implementation("androidx.navigation:navigation-compose:2.4.0-alpha04")
 
     // optional - Test helpers
     // this library depends on the Kotlin standard library
@@ -160,16 +154,36 @@ dependencies {
 
     // This dependency is downloaded from the Google’s Maven repository.
     // So, make sure you also include that repository in your project's build.gradle file.
-    implementation("com.google.android.play:core:1.10.3")
-    // For Kotlin users also import the Kotlin extensions library for Play Core:
-    implementation("com.google.android.play:core-ktx:1.8.1")
+    implementation("com.google.android.play:asset-delivery:2.2.2")
+
+    // For Kotlin users also import the Kotlin extensions library for Play Asset Delivery:
+    implementation("com.google.android.play:asset-delivery-ktx:2.2.2")
+
+    // This dependency is downloaded from the Google’s Maven repository.
+    // Make sure you also include that repository in your project's build.gradle file.
+    implementation("com.google.android.play:feature-delivery:2.1.0")
+
+    // For Kotlin users, also import the Kotlin extensions library for Play Feature Delivery:
+    implementation("com.google.android.play:feature-delivery-ktx:2.1.0")
+
+    // This dependency is downloaded from the Google’s Maven repository.
+    // Make sure you also include that repository in your project's build.gradle file.
+    implementation("com.google.android.play:review:2.0.2")
+
+    // For Kotlin users, also import the Kotlin extensions library for Play In-App Review:
+    implementation("com.google.android.play:review-ktx:2.0.2")
+
+    // This dependency is downloaded from the Google’s Maven repository.
+    // Make sure you also include that repository in your project's build.gradle file.
+    implementation("com.google.android.play:app-update:2.1.0")
+
+    // For Kotlin users, also import the Kotlin extensions library for Play In-App Update:
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
+
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Config.Versions.compose}")
 
-    // dagger2
-    // implementation("com.google.dagger:dagger:2.24")
-    // kapt("com.google.dagger:dagger-compiler:2.24")
 
     androidTestImplementation("androidx.arch.core:core-testing:2.0.0")
     androidTestImplementation("androidx.test:runner:1.2.0")
