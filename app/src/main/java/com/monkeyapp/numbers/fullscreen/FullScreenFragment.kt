@@ -33,6 +33,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -44,8 +45,24 @@ import com.monkeyapp.numbers.apphelpers.snackbar
 class FullScreenFragment : Fragment() {
     private val args: FullScreenFragmentArgs by navArgs()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                ContentView(numberWordsText = args.numberWordsText) {
+                    copyToClipboard()
+                }
+            }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupMenu()
+        trackScreen()
+    }
+
+    private fun setupMenu() {
         (requireActivity() as MenuHost).addMenuProvider(
             object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -61,23 +78,10 @@ class FullScreenFragment : Fragment() {
                         else -> false
                     }
                 }
-            }
-        )
+            }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                ContentView(numberWordsText = args.numberWordsText) {
-                    copyToClipboard()
-                }
-            }
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    private fun trackScreen() {
         Firebase.analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
             param(FirebaseAnalytics.Param.SCREEN_NAME, FullScreenFragment::class.java.simpleName)
             param(FirebaseAnalytics.Param.SCREEN_CLASS, FullScreenFragment::class.java.simpleName)

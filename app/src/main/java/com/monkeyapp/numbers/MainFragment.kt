@@ -83,19 +83,6 @@ class MainFragment : Fragment() {
             }
         }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.main, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return menuItem.onNavDestinationSelected(findNavController())
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-    }
-
     override fun onResume() {
         super.onResume()
         adView?.resume()
@@ -200,14 +187,32 @@ class MainFragment : Fragment() {
             }
         }
 
+        setupMenu()
+
         // attach rating prompter
         RatingPrompter(activity = requireActivity(), anchorView = digitPadView)
             .bind(viewLifecycleOwner)
 
+        trackScreen()
+    }
+
+    private fun trackScreen() {
         Firebase.analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
             param(FirebaseAnalytics.Param.SCREEN_NAME, MainFragment::class.java.simpleName)
             param(FirebaseAnalytics.Param.SCREEN_CLASS, MainFragment::class.java.simpleName)
         }
+    }
+
+    private fun setupMenu() {
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.main, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return menuItem.onNavDestinationSelected(findNavController())
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun setupAdView(adView: AdView) {
