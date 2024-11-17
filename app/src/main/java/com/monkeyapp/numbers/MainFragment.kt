@@ -36,10 +36,13 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.children
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import arrow.core.Either
@@ -59,29 +62,38 @@ class MainFragment : Fragment() {
     private var adView: AdView? = null
     private val mainViewModel: MainViewModel by viewModels { MainViewModel.Factory() }
 
-    private val ocrScannerLauncher =  registerForActivityResult( object : ActivityResultContract<Unit, String>() {
-        override fun createIntent(context: Context, input: Unit): Intent {
-            return context.ocrIntent
-        }
+    private val ocrScannerLauncher =
+        registerForActivityResult(object : ActivityResultContract<Unit, String>() {
+            override fun createIntent(context: Context, input: Unit): Intent {
+                return context.ocrIntent
+            }
 
-        override fun parseResult(resultCode: Int, intent: Intent?): String {
-            return if (resultCode == Activity.RESULT_OK)
-                intent?.getStringExtra("number") ?: ""
-            else
-                ""
-        }
-    }) { number ->
-        if (number.isNotBlank()) {
-            mainViewModel.reset()
-            number.forEach { digit ->
-                mainViewModel.append(digit)
+            override fun parseResult(resultCode: Int, intent: Intent?): String {
+                return if (resultCode == Activity.RESULT_OK)
+                    intent?.getStringExtra("number").orEmpty()
+                else
+                    ""
+            }
+        }) { number ->
+            if (number.isNotBlank()) {
+                mainViewModel.reset()
+                number.forEach { digit ->
+                    mainViewModel.append(digit)
+                }
             }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.main, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return menuItem.onNavDestinationSelected(findNavController())
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     override fun onResume() {
@@ -100,21 +112,23 @@ class MainFragment : Fragment() {
         adView = null
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.content_main, container, false)
-    }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = inflater.inflate(R.layout.content_main, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (adView == null){
+        if (adView == null) {
             adView = AdView(requireContext()).apply(::setupAdView)
         }
 
-        val omniButtonView: OmniButton = view.findViewById(R.id.omniButtonView)
-        val digitPadView: ViewGroup = view.findViewById(R.id.digitPadView)
-        val wordsTextView: TextView = view.findViewById(R.id.wordsTextView)
-        val numberTextView: TextView = view.findViewById(R.id.numberTextView)
+        val omniButtonView = view.findViewById<OmniButton>(R.id.omniButtonView)
+        val digitPadView = view.findViewById<ViewGroup>(R.id.digitPadView)
+        val wordsTextView = view.findViewById<TextView>(R.id.wordsTextView)
+        val numberTextView = view.findViewById<TextView>(R.id.numberTextView)
 
         omniButtonView.setOnClickListener { omniButton ->
             (omniButton as? OmniButton)?.state?.let {
@@ -126,27 +140,27 @@ class MainFragment : Fragment() {
         }
 
         digitPadView.children
-                .first { it.id == R.id.btnDel }
-                .apply {
-                    // long click to reset number
-                    setOnLongClickListener {
-                        mainViewModel.reset()
-                        return@setOnLongClickListener true
-                    }
-
-                    // delete last digit
-                    setOnClickListener {
-                        mainViewModel.backspace()
-                    }
+            .first { it.id == R.id.btnDel }
+            .apply {
+                // long click to reset number
+                setOnLongClickListener {
+                    mainViewModel.reset()
+                    return@setOnLongClickListener true
                 }
+
+                // delete last digit
+                setOnClickListener {
+                    mainViewModel.backspace()
+                }
+            }
 
         digitPadView.children
-                .filter { it is Button && (it.text[0] == '.' || it.text[0] in '0'..'9') }
-                .forEach { child ->
-                    child.setOnClickListener {
-                        mainViewModel.append((it as Button).text[0])
-                    }
+            .filter { it is Button && (it.text[0] == '.' || it.text[0] in '0'..'9') }
+            .forEach { child ->
+                child.setOnClickListener {
+                    mainViewModel.append((it as Button).text[0])
                 }
+            }
 
         wordsTextView.setOnClickListener {
             try {
@@ -196,52 +210,47 @@ class MainFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main, menu)
-    }
+    private fun setupAdView(adView: AdView) {
+        val adContainerView = requireView().findViewById<FrameLayout>(R.id.adViewContainer)
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return item.onNavDestinationSelected(findNavController()) || super.onOptionsItemSelected(item)
-    }
-}
+        fun adaptiveAdSize(): AdSize {
+            val display = requireActivity().windowManager.defaultDisplay
+            val outMetrics = DisplayMetrics()
+            display.getMetrics(outMetrics)
 
-private fun MainFragment.setupAdView(adView: AdView) {
-    val adContainerView = requireView().findViewById<FrameLayout>(R.id.adViewContainer)
+            val density = outMetrics.density
 
-    fun adaptiveAdSize(): AdSize {
-        val display = requireActivity().windowManager.defaultDisplay
-        val outMetrics = DisplayMetrics()
-        display.getMetrics(outMetrics)
-
-        val density = outMetrics.density
-
-        var adWidthPixels = adContainerView.width.toFloat()
-        if (adWidthPixels == 0.0f) {
-            adWidthPixels = outMetrics.widthPixels.toFloat()
-            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                adWidthPixels /= 2
+            var adWidthPixels = adContainerView.width.toFloat()
+            if (adWidthPixels == 0.0f) {
+                adWidthPixels = outMetrics.widthPixels.toFloat()
+                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    adWidthPixels /= 2
+                }
             }
+
+            val adWidth = (adWidthPixels / density).toInt()
+            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
+                requireContext(),
+                adWidth
+            )
         }
 
-        val adWidth = (adWidthPixels / density).toInt()
-        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(requireContext(), adWidth)
-    }
-
-    adContainerView.doOnLayout {
-        adView.apply {
-            setAdSize(adaptiveAdSize())
-            adUnitId = resources.getString(R.string.ad_unit_id)
-            adListener = object : AdListener() {
-                override fun onAdFailedToLoad(error: LoadAdError) {
-                    Firebase.analytics.logEvent("AdLoadingFailed") {
-                        param("ErrorCode", error.code.toString() )
-                        param("ErrorMessage", error.message)
+        adContainerView.doOnLayout {
+            adView.apply {
+                setAdSize(adaptiveAdSize())
+                adUnitId = resources.getString(R.string.ad_unit_id)
+                adListener = object : AdListener() {
+                    override fun onAdFailedToLoad(error: LoadAdError) {
+                        Firebase.analytics.logEvent("AdLoadingFailed") {
+                            param("ErrorCode", error.code.toString())
+                            param("ErrorMessage", error.message)
+                        }
                     }
                 }
             }
-        }
 
-        adContainerView.addView(adView)
-        adView.loadAd(AdRequest.Builder().build())
+            adContainerView.addView(adView)
+            adView.loadAd(AdRequest.Builder().build())
+        }
     }
 }

@@ -60,11 +60,11 @@ class MainViewModel(private val coroutineWorkerContext: ExecutorCoroutineDispatc
         }
 
     fun append(digit: Char) {
-        numberText.value = appendDigit(numberText.value ?: "", digit)
+        numberText.value = appendDigit(numberText.value.orEmpty(), digit)
     }
 
     fun backspace() {
-        numberText.value = deleteDigit(numberText.value ?: "")
+        numberText.value = deleteDigit(numberText.value.orEmpty())
     }
 
     fun reset() {

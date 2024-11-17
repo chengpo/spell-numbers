@@ -25,15 +25,13 @@ SOFTWARE.
 package com.monkeyapp.numbers
 
 import android.app.Activity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import android.content.SharedPreferences
 import android.net.Uri
 import com.google.android.material.snackbar.Snackbar
 import android.view.View
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.edit
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.ktx.analytics
@@ -43,7 +41,7 @@ import com.monkeyapp.numbers.apphelpers.*
 import kotlin.math.absoluteValue
 
 class RatingPrompter(private val activity: Activity,
-                     private val anchorView: View) : LifecycleObserver, Snackbar.Callback() {
+                     private val anchorView: View) : DefaultLifecycleObserver, Snackbar.Callback() {
     private var snackbar: Snackbar? = null
 
     private inline val ratePrefs: SharedPreferences
@@ -78,9 +76,7 @@ class RatingPrompter(private val activity: Activity,
 
     fun bind(lifecycleOwner: LifecycleOwner) = lifecycleOwner.lifecycle.addObserver(this)
 
-    @Suppress("unused")
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
+    override fun onResume(owner: LifecycleOwner) {
         if (snackbar == null && shouldPrompt) {
             // launch in-app review flow
             val reviewManager = ReviewManagerFactory.create(activity)
@@ -128,9 +124,7 @@ class RatingPrompter(private val activity: Activity,
         }
     }
 
-    @Suppress("unused")
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun hideSnackbar() {
+    override fun onPause(owner: LifecycleOwner) {
         snackbar?.let {
             it.removeCallback(this)
             it.dismiss()

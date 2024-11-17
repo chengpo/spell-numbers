@@ -22,34 +22,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package com.monkeyapp.numbers
+package com.monkeyapp.numbers.fullscreen
 
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.os.Bundle
 import android.view.*
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
+import com.monkeyapp.numbers.R
 import com.monkeyapp.numbers.apphelpers.snackbar
 
 class FullScreenFragment : Fragment() {
@@ -57,58 +46,31 @@ class FullScreenFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+        (requireActivity() as MenuHost).addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.full_screen, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.copy_to_clipboard -> {
+                            copyToClipboard()
+                            return true
+                        }
+                        else -> false
+                    }
+                }
+            }
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                contentView()
-            }
-        }
-    }
-
-    @Preview
-    @Composable
-    private fun preview() {
-        AppCompatTheme {
-            numberWordsView("One Hundred")
-        }
-    }
-
-    @Composable
-    private fun contentView() {
-        AppCompatTheme {
-            numberWordsView(args.numberWordsText)
-        }
-    }
-
-    @Composable
-    private fun numberWordsView(numberWordsText: String) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally,
-               verticalArrangement = Arrangement.Center) {
-
-            var multiplier by remember { mutableStateOf(1f) }
-            val textStyle = MaterialTheme.typography.h5
-
-            ClickableText(
-                text = buildAnnotatedString {
-                    append(numberWordsText)
-                },
-                maxLines = 5,
-                modifier = Modifier.padding(20.dp),
-                overflow = TextOverflow.Visible,
-                style = textStyle.copy(
-                    fontSize = textStyle.fontSize * multiplier,
-                    color = colorResource(id = R.color.primary_text)
-                ),
-                onTextLayout = {
-                    if (it.hasVisualOverflow) {
-                        multiplier *= 0.99f
-                    }
-                },
-            ) {
-                copyToClipboard()
+                ContentView(numberWordsText = args.numberWordsText) {
+                    copyToClipboard()
+                }
             }
         }
     }
@@ -119,20 +81,6 @@ class FullScreenFragment : Fragment() {
         Firebase.analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
             param(FirebaseAnalytics.Param.SCREEN_NAME, FullScreenFragment::class.java.simpleName)
             param(FirebaseAnalytics.Param.SCREEN_CLASS, FullScreenFragment::class.java.simpleName)
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.full_screen, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.copy_to_clipboard -> {
-                copyToClipboard()
-                return true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 
