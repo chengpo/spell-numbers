@@ -46,7 +46,7 @@ class AboutFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                ContentView()
+                ContentView(onLaunchUrl = ::launchUrl)
             }
         }
     }
