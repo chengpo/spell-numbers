@@ -37,9 +37,9 @@ object Libs {
 }
 
 object Android {
-    const val compileSdk = 35
+    const val compileSdk = 36
     const val minSdk = 21
-    const val targetSdk = 35
+    const val targetSdk = 36
 }
 
 data class KeyStore(
