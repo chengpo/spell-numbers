@@ -27,30 +27,21 @@ package com.monkeyapp.numbers
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.children
-import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import arrow.core.Either
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.LoadAdError
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
@@ -59,7 +50,6 @@ import com.monkeyapp.numbers.apphelpers.*
 import com.monkeyapp.numbers.translators.SpellerError
 
 class MainFragment : Fragment() {
-    private var adView: AdView? = null
     private val mainViewModel: MainViewModel by viewModels { MainViewModel.Factory() }
 
     private val ocrScannerLauncher =
@@ -83,22 +73,6 @@ class MainFragment : Fragment() {
             }
         }
 
-    override fun onResume() {
-        super.onResume()
-        adView?.resume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        adView?.pause()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        adView?.destroy()
-        adView = null
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -107,10 +81,6 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        if (adView == null) {
-            adView = AdView(requireContext()).apply(::setupAdView)
-        }
 
         val omniButtonView = view.findViewById<OmniButton>(R.id.omniButtonView)
         val digitPadView = view.findViewById<ViewGroup>(R.id.digitPadView)
@@ -213,49 +183,5 @@ class MainFragment : Fragment() {
                 return menuItem.onNavDestinationSelected(findNavController())
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-    }
-
-    private fun setupAdView(adView: AdView) {
-        val adContainerView = requireView().findViewById<FrameLayout>(R.id.adViewContainer)
-
-        fun adaptiveAdSize(): AdSize {
-            val display = requireActivity().windowManager.defaultDisplay
-            val outMetrics = DisplayMetrics()
-            display.getMetrics(outMetrics)
-
-            val density = outMetrics.density
-
-            var adWidthPixels = adContainerView.width.toFloat()
-            if (adWidthPixels == 0.0f) {
-                adWidthPixels = outMetrics.widthPixels.toFloat()
-                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    adWidthPixels /= 2
-                }
-            }
-
-            val adWidth = (adWidthPixels / density).toInt()
-            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
-                requireContext(),
-                adWidth
-            )
-        }
-
-        adContainerView.doOnLayout {
-            adView.apply {
-                setAdSize(adaptiveAdSize())
-                adUnitId = resources.getString(R.string.ad_unit_id)
-                adListener = object : AdListener() {
-                    override fun onAdFailedToLoad(error: LoadAdError) {
-                        Firebase.analytics.logEvent("AdLoadingFailed") {
-                            param("ErrorCode", error.code.toString())
-                            param("ErrorMessage", error.message)
-                        }
-                    }
-                }
-            }
-
-            adContainerView.addView(adView)
-            adView.loadAd(AdRequest.Builder().build())
-        }
     }
 }

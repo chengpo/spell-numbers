@@ -27,7 +27,6 @@ package com.monkeyapp.numbers
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
-import com.google.android.gms.ads.MobileAds
 
 @Suppress("unused")
 class App : MultiDexApplication() {
@@ -41,7 +40,5 @@ class App : MultiDexApplication() {
             // enable night mode when battery save mode is on
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
         }
-
-        MobileAds.initialize(this)
     }
 }

@@ -38,7 +38,7 @@
         app:layout_constraintTop_toBottomOf="@id/numberTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/adViewContainer"
+        app:layout_constraintBottom_toTopOf="@id/wordsTextView"
         android:layout_marginBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -46,20 +46,9 @@
         android:layout_marginStart="10dp"
         android:background="@color/divider" />
 
-    <FrameLayout
-        android:id="@+id/adViewContainer"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/wordsTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:minHeight="50dp"/>
-
     <TextView
         android:id="@+id/wordsTextView"
-        app:layout_constraintTop_toBottomOf="@id/adViewContainer"
+        app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

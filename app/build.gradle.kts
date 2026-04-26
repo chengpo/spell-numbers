@@ -104,9 +104,6 @@ dependencies {
     implementation("androidx.gridlayout:gridlayout:1.0.0")
     implementation("androidx.constraintlayout:constraintlayout:2.0.0")
 
-    // admob
-    implementation("com.google.android.gms:play-services-ads:23.5.0")
-
     // viewModel and liveData
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0")
